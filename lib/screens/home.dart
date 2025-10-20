@@ -45,8 +45,8 @@ class NavScreen extends StatelessWidget {
   }
 }
 
-class HomeBtn extends StatelessWidget {
-  const HomeBtn({super.key});
+class NavScreenLink extends StatelessWidget {
+  const NavScreenLink({super.key});
 
   @override
   Widget build(BuildContext context) {

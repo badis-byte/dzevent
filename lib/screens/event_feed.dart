@@ -9,7 +9,7 @@ class EventFeed extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Sample App")),
-      body: Column(children: [HomeBtn()]),
+      body: Column(children: [NavScreenLink()]),
     );
   }
 }
