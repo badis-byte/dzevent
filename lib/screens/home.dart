@@ -1,6 +1,15 @@
 import 'package:dzevent/screens/event_feed.dart';
 import 'package:flutter/material.dart';
 
+/// # New Screen Setup
+/// - Add screen entry to _links
+///
+/// - ensure [page] is the screen compoenent
+///
+/// **NOTE**
+///
+/// NavScreenLink is provided for you. You can use it to return back
+/// to NavScreen
 class Link {
   final IconData icon;
   final String label;
