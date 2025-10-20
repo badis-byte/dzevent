@@ -1,3 +1,5 @@
+import 'package:dzevent/screens/event_feed.dart';
+import 'package:dzevent/screens/home.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -9,12 +11,9 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
-      ),
+    return MaterialApp(
+      routes: {EventFeed.pageRoute: (ctx) => EventFeed()},
+      home: Scaffold(body: Home()),
     );
   }
 }
