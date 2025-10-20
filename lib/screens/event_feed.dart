@@ -1,3 +1,4 @@
+import 'package:dzevent/screens/home.dart';
 import 'package:flutter/material.dart';
 
 class EventFeed extends StatelessWidget {
@@ -6,6 +7,9 @@ class EventFeed extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Text("EventFeed");
+    return Scaffold(
+      appBar: AppBar(title: Text("Sample App")),
+      body: Column(children: [HomeBtn()]),
+    );
   }
 }

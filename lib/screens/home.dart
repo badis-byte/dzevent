@@ -34,9 +34,7 @@ class NavScreen extends StatelessWidget {
             onDestinationSelected: (value) {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => Screen(screen: _links[value].page),
-                ),
+                MaterialPageRoute(builder: (context) => _links[value].page),
               );
             },
           ),
@@ -47,36 +45,27 @@ class NavScreen extends StatelessWidget {
   }
 }
 
-class Screen extends StatelessWidget {
-  final Widget screen;
-  const Screen({super.key, required this.screen});
+class HomeBtn extends StatelessWidget {
+  const HomeBtn({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [
-          Center(
-            child: Container(
-              width: double.infinity,
-              margin: EdgeInsets.only(bottom: 8),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => NavScreen()),
-                  );
-                },
-                child: const Text("Home"),
-              ),
-            ),
+    return Center(
+      child: SizedBox(
+        width: double.infinity,
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            foregroundColor: Theme.of(context).colorScheme.onPrimary,
           ),
-          screen,
-        ],
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => NavScreen()),
+            );
+          },
+          child: const Text("Home"),
+        ),
       ),
     );
   }
