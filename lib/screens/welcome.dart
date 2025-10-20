@@ -56,8 +56,9 @@ class _ImageCarouselState extends State<ImageCarousel> {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        
         SizedBox(
-          height: 250,
+          height: 400,
           child: PageView.builder(
             controller: _controller,
             onPageChanged: (index) {
@@ -120,6 +121,7 @@ class _ImageCarouselState extends State<ImageCarousel> {
             );
           }),
         ),
+        
       ],
     );
   }
