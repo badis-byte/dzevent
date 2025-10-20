@@ -8,6 +8,7 @@ class Home extends StatelessWidget {
     return Row(
       children: [
         NavigationRail(
+          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
           destinations: [
             NavigationRailDestination(
               icon: Icon(Icons.abc),
@@ -16,7 +17,7 @@ class Home extends StatelessWidget {
           ],
           selectedIndex: 0,
         ),
-        Center(child: Text("This is a temporary page")),
+        Expanded(child: Center(child: Text("This is a temporary page"))),
       ],
     );
   }
