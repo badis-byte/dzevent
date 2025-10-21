@@ -1,4 +1,4 @@
-import 'package:dzevent/screens/welcome.dart';
+import 'package:dzevent/screens/home.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -10,8 +10,6 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: ImageCarousel()
-    );
+    return MaterialApp(home: NavScreen());
   }
 }
