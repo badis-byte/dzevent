@@ -16,9 +16,9 @@ class _ImageCarouselState extends State<ImageCarousel> {
   Timer? _timer;
 
   final List<Map<String, String>> items = [
-    {'image': 'assets/icons/run.png', 'text': 'Stay fit with our running plan'},
-    {'image': 'assets/icons/yoga.png', 'text': 'Relax and focus with daily yoga'},
-    {'image': 'assets/icons/food.png', 'text': 'Eat healthy, live strong'},
+    {'image': 'assets/images/hackathon.jpg', 'text': 'Stay fit with our running plan'},
+    {'image': 'assets/images/concert.jpg', 'text': 'Relax and focus with daily yoga'},
+    {'image': 'assets/images/lecture.jpg', 'text': 'Eat healthy, live strong'},
   ];
 
   @override
@@ -34,7 +34,7 @@ class _ImageCarouselState extends State<ImageCarousel> {
 
     // Start auto-scroll after first frame to avoid the initial jump.
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _timer = Timer.periodic(const Duration(seconds: 3), (_) {
+      _timer = Timer.periodic(const Duration(seconds: 5), (_) {
         if (_controller.hasClients) {
           _controller.nextPage(
             duration: const Duration(milliseconds: 500),
@@ -58,7 +58,7 @@ class _ImageCarouselState extends State<ImageCarousel> {
       children: [
         
         SizedBox(
-          height: 400,
+          height: 381,
           child: PageView.builder(
             controller: _controller,
             onPageChanged: (index) {
@@ -70,15 +70,9 @@ class _ImageCarouselState extends State<ImageCarousel> {
                 duration: const Duration(milliseconds: 400),
                 margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
+                  borderRadius: BorderRadius.circular(10),
                   color: Colors.white,
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.black26,
-                      blurRadius: 6,
-                      offset: Offset(0, 4),
-                    ),
-                  ],
+                  
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -87,17 +81,13 @@ class _ImageCarouselState extends State<ImageCarousel> {
                       borderRadius: BorderRadius.circular(12),
                       child: Image.asset(
                         item['image']!,
-                        width: 120,
-                        height: 120,
+                        width: 500,
+                        height: 353,
                         fit: BoxFit.cover,
                       ),
                     ),
                     const SizedBox(height: 12),
-                    Text(
-                      item['text']!,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                    ),
+                    
                   ],
                 ),
               );
@@ -121,6 +111,62 @@ class _ImageCarouselState extends State<ImageCarousel> {
             );
           }),
         ),
+        SizedBox(height: 65),
+
+        ElevatedButton(
+        onPressed: () {
+          print('Button 1 pressed!');
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color.fromARGB(255, 3, 16, 202),           // Button color
+            foregroundColor: Colors.white,          // Text color
+            minimumSize: const Size(400, 60),       // Width x Height
+            padding: const EdgeInsets.symmetric(
+              horizontal: 24, 
+              vertical: 12
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12), // Rounded corners
+            ),
+            elevation: 5,                           // Shadow depth
+          ),
+          child: const Text(
+            'Sign Up',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+        ),
+
+        SizedBox(height: 17),
+
+        ElevatedButton(
+        onPressed: () {
+          print('Button 2 pressed!');
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color.fromARGB(255, 220, 216, 216) ,           // Button color
+            foregroundColor: Colors.black,          // Text color
+            minimumSize: const Size(400, 60),       // Width x Height
+            padding: const EdgeInsets.symmetric(
+              horizontal: 24, 
+              vertical: 12
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12), // Rounded corners
+            ),
+            elevation: 5,                           // Shadow depth
+          ),
+          child: const Text(
+            'Login',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+        ),
+
+        SizedBox(height: 15),
+
+        Container(
+          margin: const EdgeInsets.only(top: 20),
+          child: Text("Continue as Guest", style: TextStyle(color: Colors.black, fontSize: 15,decoration: TextDecoration.none ),),
+        )
         
       ],
     );
