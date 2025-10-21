@@ -32,6 +32,69 @@ class _AssocadminState extends State<Assocadmin> {
     );
   }
 
+  Widget btn(String text, Color colorr) {
+    return SizedBox(
+      height: 40,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: colorr, // Button color
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12), // Rounded corners
+          ),
+          elevation: 4, // Shadow depth
+        ),
+        onPressed: () {},
+        //style
+        child: Text(
+          text,
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
+  }
+
+  Widget cardAssoc(String title, String description, String date) {
+    return Card(
+      elevation: 4,
+      color: Colors.white,
+      child: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: SizedBox(
+          width: double.infinity,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+              ),
+              SizedBox(height: 8),
+              Text(
+                description,
+                style: TextStyle(
+                  color: const Color.fromARGB(255, 107, 107, 107),
+                ),
+              ),
+              Text(
+                "Requested on: $date",
+                style: TextStyle(color: Color.fromARGB(255, 107, 107, 107)),
+              ),
+              SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  btn("Reject", Colors.red),
+                  SizedBox(width: 8),
+                  btn("Accept", Colors.green),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   var Selected1 = true;
   var Selected2 = false;
   var Selected3 = false;
@@ -39,6 +102,7 @@ class _AssocadminState extends State<Assocadmin> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: Container(
           decoration: BoxDecoration(color: Colors.white),
@@ -146,31 +210,47 @@ class _AssocadminState extends State<Assocadmin> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 20),
-                  Card(
-                    elevation: 4,
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: Column(
-                        children: [
-                          Text(
-                            "Tech Innovators Society",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 24,
-                            ),
-                            textAlign: TextAlign.start,
-                          ),
-                          SizedBox(height: 8),
-                          Text(
-                            "A community for tech enthusiasts and proffesionals.",
-                          ),
-                        ],
-                      ),
+                  SizedBox(height: 8),
+                  Expanded(
+                    child: 
+                    ListView(
+                      children: [
+                        cardAssoc(
+                          "Tech Innovators Society",
+                          "A community for tech enthusiasts and professionals",
+                          "2024-10-26",
+                        ),
+                        cardAssoc(
+                          "Future Leaders Initiative",
+                          "Empowering the next generation of innovators and leaders",
+                          "2024-10-25",
+                        ),
+
+                        cardAssoc(
+                          "AI Enthusiasts Club",
+                          "Learn, share, and explore AI technologies together",
+                          "2024-11-01",
+                        ),
+
+                        cardAssoc(
+                          "Open Source Developers",
+                          "Collaborate on open source projects and improve your skills",
+                          "2024-11-05",
+                        ),
+
+                        cardAssoc(
+                          "Cybersecurity Network",
+                          "Stay updated with the latest in cybersecurity and ethical hacking",
+                          "2024-11-10",
+                        ),
+
+                        SizedBox(height: 16),
+                      ],
                     ),
                   ),
                 ],
               ),
+              // ),
             ),
           ),
         ),
