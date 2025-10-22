@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dzevent/screens/assocAdmin.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -27,12 +28,20 @@ class _AddeventState extends State<Addevent> {
         appBar: AppBar(
           elevation: 0,
           backgroundColor: Colors.white,
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              // your action here
-            },
+          leading: Builder(
+            builder: (context) {
+              return IconButton(
+                icon: Icon(Icons.arrow_back),
+                onPressed: () {
+                  Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Assocadmin()),
+                );
+                },
+              );
+            }
           ),
+
           shape: Border(
             bottom: BorderSide(
               color: Colors.grey, // border color
@@ -265,15 +274,16 @@ class _AddeventState extends State<Addevent> {
                                 color: Colors.black,
                               ),
                             ),
-                            child: Text("Preview Event",
+                            child: Text(
+                              "Preview Event",
                               style: TextStyle(
                                 color: Colors.black,
-                                            fontWeight: FontWeight.bold
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
                         ),
-                        SizedBox(height: 8,),
+                        SizedBox(height: 8),
                         SizedBox(
                           height: 48,
                           width: double.infinity,
