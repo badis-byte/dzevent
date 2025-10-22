@@ -79,8 +79,8 @@ class EventFeed extends StatelessWidget {
 }
 
 class Filters extends StatelessWidget {
-  final filters;
-  Filters({super.key, required this.filters});
+  final List<String> filters;
+  const Filters({super.key, required this.filters});
 
   @override
   Widget build(BuildContext context) {
@@ -101,60 +101,80 @@ class EventCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: double.infinity,
       height: _height,
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage(event.image_url),
-          fit: BoxFit.fill,
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          // crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Flexible(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Spacer(),
-                  Text(
-                    event.title,
-                    style: headingStyle.copyWith(color: Colors.white),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    DateFormat("E, MMM d\n").add_jm().format(event.datetime),
-                    style: subtitleStyle.copyWith(color: Colors.grey.shade400),
-                  ),
-                  Text(
-                    event.location,
-                    style: subtitleStyle.copyWith(color: Colors.grey.shade400),
-                  ),
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          Image.asset(event.image_url, fit: BoxFit.cover),
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Colors.black.withValues(alpha: .6),
+                  Colors.transparent,
                 ],
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
               ),
             ),
-            Flexible(
-              child: Column(
-                children: [
-                  Spacer(),
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: ElevatedButton.icon(
-                      onPressed: () {},
-                      label: Text("Show Interest"),
-                      icon: Icon(Icons.favorite_border),
-                      iconAlignment: IconAlignment.end,
-                      style: getPrimaryBtnStyle(context: context, raduis: 15),
-                    ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Spacer(),
+                      Text(
+                        event.title,
+                        style: headingStyle.copyWith(color: Colors.white),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        DateFormat(
+                          "E, MMM d\n",
+                        ).add_jm().format(event.datetime),
+                        style: subtitleStyle.copyWith(
+                          color: Colors.grey.shade400,
+                        ),
+                      ),
+                      Text(
+                        event.location,
+                        style: subtitleStyle.copyWith(
+                          color: Colors.grey.shade400,
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+                Flexible(
+                  child: Column(
+                    children: [
+                      Spacer(),
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: ElevatedButton.icon(
+                          onPressed: () {},
+                          label: Text("Show Interest"),
+                          icon: Icon(Icons.favorite_border),
+                          iconAlignment: IconAlignment.end,
+                          style: getPrimaryBtnStyle(
+                            context: context,
+                            raduis: 15,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
