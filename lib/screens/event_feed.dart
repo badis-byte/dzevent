@@ -32,6 +32,7 @@ class EventFeed extends StatelessWidget {
       location: "Chicago",
     ),
   ];
+  final filters = ["All", "Music", "Sports", "Arts", "Tech"];
   EventFeed({super.key});
 
   @override
@@ -62,7 +63,7 @@ class EventFeed extends StatelessWidget {
               suggestionsBuilder: (context, controller) => [],
               barHintText: "Search for events ...",
             ),
-            Filters(),
+            Filters(filters: filters),
             Expanded(
               child: ListView.builder(
                 itemCount: events.length,
@@ -78,15 +79,15 @@ class EventFeed extends StatelessWidget {
 }
 
 class Filters extends StatelessWidget {
-  final _filters = ["All", "Music", "Sports", "Arts", "Tech"];
-  Filters({super.key});
+  final filters;
+  Filters({super.key, required this.filters});
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
-        for (final filter in _filters)
+        for (final filter in filters)
           OutlinedButton(onPressed: () {}, child: Text(filter)),
       ],
     );
