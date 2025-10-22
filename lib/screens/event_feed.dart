@@ -12,6 +12,7 @@ class EventFeed extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
+          spacing: 16.0,
           children: [
             Row(
               children: [
@@ -33,9 +34,26 @@ class EventFeed extends StatelessWidget {
               suggestionsBuilder: (context, controller) => [],
               barHintText: "Search for events ...",
             ),
+            Filters(),
           ],
         ),
       ),
+    );
+  }
+}
+
+class Filters extends StatelessWidget {
+  final _filters = ["All", "Music", "Sports", "Arts", "Tech"];
+  Filters({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        for (final filter in _filters)
+          OutlinedButton(onPressed: () {}, child: Text(filter)),
+      ],
     );
   }
 }
