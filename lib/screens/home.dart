@@ -1,5 +1,6 @@
 import 'package:dzevent/screens/event_details.dart';
 import 'package:dzevent/screens/event_feed.dart';
+import 'package:dzevent/screens/public_assoc_profile.dart';
 import 'package:dzevent/screens/welcome.dart';
 import 'package:flutter/material.dart';
 
@@ -26,6 +27,11 @@ final _links = [
     icon: Icons.details_outlined,
     label: "event_details",
     page: EventDetails(),
+  ),
+  Link(
+    icon: Icons.person,
+    label: "public association profile",
+    page: PublicAssocProfile(),
   ),
 ];
 

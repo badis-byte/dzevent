@@ -1,4 +1,4 @@
-import 'package:dzevent/lib/common.dart';
+import 'package:dzevent/lib/defs.dart';
 import 'package:dzevent/lib/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
