@@ -47,9 +47,14 @@ InputDecoration getInputDecoration({required String hint}) {
   );
 }
 
-ButtonStyle getButtonStyle({required BuildContext context, required}) {
+ButtonStyle getPrimaryBtnStyle({
+  required BuildContext context,
+  double? raduis,
+}) {
   return ElevatedButton.styleFrom(
     backgroundColor: Theme.of(context).primaryColorLight,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(raduis ?? 5.0),
+    ),
   );
 }
