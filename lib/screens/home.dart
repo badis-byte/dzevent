@@ -28,6 +28,7 @@ final _links = [
     label: "event_details",
     page: EventDetails(),
   ),
+  Link(icon: Icons.login, label: "Login", page: Login()),
 ];
 
 class NavScreen extends StatelessWidget {
