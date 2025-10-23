@@ -25,177 +25,195 @@ class _LoginState extends State<Login> {
                 height: 125,
                 width: 125,
                 child: Image.asset('assets/images/logo.png'),
-                ),
-          
-                Text("Welcome Back", textAlign: TextAlign.center ,style: TextStyle(color: Colors.black, fontSize: 35, decoration: TextDecoration.none, fontWeight: FontWeight.bold),),
-                SizedBox(height: 20),
-                Container(
-                  margin: EdgeInsets.only(left: 25),
-                  child: Text("Email or Username", style: TextStyle(fontWeight: FontWeight.w600 , fontSize: 15, color: const Color.fromARGB(255, 60, 59, 59)), )
-                  ),
-                Container(
-                  margin: EdgeInsets.only(left: 25, right: 25, top: 7),
-                  child: TextField(
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.white,
-                      border: OutlineInputBorder(),
-                      hintText: 'Enter your email or username',
-                      hintStyle: TextStyle(color: Color.fromARGB(255, 124, 124, 157), fontSize: 15),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey),
-                        borderRadius: BorderRadius.circular(8)
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 20),
-                Container(
-                  margin: EdgeInsets.only(left: 25),
-                  child: Text("Password", style: TextStyle(fontWeight: FontWeight.w600 , fontSize: 15, color: const Color.fromARGB(255, 60, 59, 59)), )
-                  ),
-                Container(
-                  margin: EdgeInsets.only(left: 25, right: 25, top: 7),
-                  child: TextField(
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(),
-                      hintText: 'Enter your password',
-                      hintStyle: TextStyle(color: Color.fromARGB(255, 124, 124, 157), fontSize: 15),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey),
-                        borderRadius: BorderRadius.circular(8)
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10),
-                Container(margin: EdgeInsets.only(right: 25) ,child: Text("Forgot Password?", textAlign: TextAlign.right ,style: TextStyle(color: const Color.fromARGB(255, 37, 153, 237), fontSize: 15, decoration: TextDecoration.none, fontWeight: FontWeight.w400),)),
-                SizedBox(height: 30),
-                Container(
-                  margin: EdgeInsets.only(left: 25, right: 25),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 0, 51, 102) ,           // Button color
-                      foregroundColor: Colors.white,          // Text color
-                      minimumSize: const Size(400, 60),       // Width x Height
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 24, 
-                        vertical: 12
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(6), // Rounded corners
-                      ),
-                      elevation: 5,                           // Shadow depth
-                    ),
-                    onPressed: () {
-                      print('Login button pressed!');
-                    },
-                    child: const Text(
-                      'Login',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 30),
-                Row(
-                  children: const [
-                    Expanded(
-                      child: Divider(
-                        color: Colors.grey,
-                        thickness: 1,
-                        indent: 25,   // left spacing
-                        endIndent: 10, // space before "OR"
-                      ),
-                    ),
-                    Text(
-                      "or",
-                      style: TextStyle(
-                        color: Color.fromARGB(255, 109, 107, 107),
-                        fontWeight: FontWeight.normal,
-                      ),
-                    ),
-                    Expanded(
-                      child: Divider(
-                        color: Colors.grey,
-                        thickness: 1,
-                        indent: 10,  // space after "OR"
-                        endIndent: 25,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 30),
+              ),
 
-                Container(
-                  margin: EdgeInsets.only(left: 25, right: 25),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor:  Colors.white,           // Button color
-                      foregroundColor: Colors.black,          // Text color
-                      minimumSize: const Size(400, 60),       // Width x Height
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 24, 
-                        vertical: 12
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(6), // Rounded corners
-                        side: BorderSide(
-                          color: Colors.grey, // Border color
-                          width: 1,           // Border width
-                        )
-                      ),
-                      //elevation: 5,                           // Shadow depth
-                    ),
-                    onPressed: () {
-                      print('Login button pressed!');
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset("assets/images/google1.png", height: 35, width: 35,),
-                        SizedBox(width: 10),
-                        Text(
-                          'Continue with Google',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                      ],
-                    ),
+              Text(
+                "Welcome Back",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 35,
+                  decoration: TextDecoration.none,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 20),
+              buildInput(label: "Email or username", hint: "Enter your email"),
+              SizedBox(height: 20),
+              buildInput(label: "Password", hint: "Enter your password"),
+              SizedBox(height: 10),
+              Container(
+                margin: EdgeInsets.only(right: 25),
+                child: Text(
+                  "Forgot Password?",
+                  textAlign: TextAlign.right,
+                  style: TextStyle(
+                    color: const Color.fromARGB(255, 37, 153, 237),
+                    fontSize: 15,
+                    decoration: TextDecoration.none,
+                    fontWeight: FontWeight.w400,
                   ),
                 ),
-                SizedBox(height: 30),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text("Dont't have an account?", textAlign: TextAlign.center ,style: TextStyle(color: Colors.black, fontSize: 15,decoration: TextDecoration.none ),),
-                    Text(" Sign up", textAlign: TextAlign.center ,style: TextStyle(color: Colors.blue, fontSize: 15,decoration: TextDecoration.none ),),
-
-                  ],
+              ),
+              SizedBox(height: 30),
+              Container(
+                margin: EdgeInsets.only(left: 25, right: 25),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255,0,51,102,), // Button color
+                    foregroundColor: Colors.white, // Text color
+                    minimumSize: const Size(400, 60), // Width x Height
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 12,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6), // Rounded corners
+                    ),
+                    elevation: 5, // Shadow depth
+                  ),
+                  onPressed: () {
+                    print('Login button pressed!');
+                  },
+                  child: const Text('Login', style: TextStyle(fontSize: 16)),
                 ),
-                SizedBox(height: 40),
+              ),
+              SizedBox(height: 30),
+              Row(
+                children: const [
+                  Expanded(
+                    child: Divider(
+                      color: Colors.grey,
+                      thickness: 1,
+                      indent: 25, // left spacing
+                      endIndent: 10, // space before "OR"
+                    ),
+                  ),
+                  Text(
+                    "or",
+                    style: TextStyle(
+                      color: Color.fromARGB(255, 109, 107, 107),
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
+                  Expanded(
+                    child: Divider(
+                      color: Colors.grey,
+                      thickness: 1,
+                      indent: 10, // space after "OR"
+                      endIndent: 25,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 30),
 
+              Container(
+                margin: EdgeInsets.only(left: 25, right: 25),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white, // Button color
+                    foregroundColor: Colors.black, // Text color
+                    minimumSize: const Size(400, 60), // Width x Height
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 12,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6), // Rounded corners
+                      side: BorderSide(
+                        color: Colors.grey, // Border color
+                        width: 1, // Border width
+                      ),
+                    ),
+                    //elevation: 5,                           // Shadow depth
+                  ),
+                  onPressed: () {
+                    print('Login button pressed!');
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        "assets/images/google1.png",
+                        height: 35,
+                        width: 35,
+                      ),
+                      SizedBox(width: 10),
+                      Text(
+                        'Continue with Google',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: 30),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Dont't have an account?",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 15,
+                      decoration: TextDecoration.none,
+                    ),
+                  ),
+                  Text(
+                    " Sign up",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.blue,
+                      fontSize: 15,
+                      decoration: TextDecoration.none,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 40),
             ],
-            
           ),
         ),
       ),
     );
   }
+
+  Column buildInput({required String label, required String hint}) {
+    return Column(
+      children: [
+        Container(
+          margin: EdgeInsets.only(left: 25),
+          child: Text(
+            label,
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 15,
+              color: const Color.fromARGB(255, 60, 59, 59),
+            ),
+          ),
+        ),
+        Container(
+          margin: EdgeInsets.only(left: 25, right: 25, top: 7),
+          child: TextField(
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: Colors.white,
+              border: OutlineInputBorder(),
+              hintText: hint,
+              hintStyle: TextStyle(
+                color: Color.fromARGB(255, 124, 124, 157),
+                fontSize: 15,
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.grey),
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
