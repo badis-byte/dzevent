@@ -1,4 +1,5 @@
 import 'package:dzevent/screens/event_feed.dart';
+import 'package:dzevent/screens/welcome.dart';
 import 'package:flutter/material.dart';
 
 /// # New Screen Setup
@@ -19,6 +20,7 @@ class Link {
 
 final _links = [
   Link(icon: Icons.event, label: "event_feed", page: EventFeed()),
+  Link(icon: Icons.handshake, label: "welcome", page: ImageCarousel()),
 ];
 
 class NavScreen extends StatelessWidget {
