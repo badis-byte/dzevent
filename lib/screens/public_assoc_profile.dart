@@ -4,38 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:dzevent/lib/data.dart' as DATA;
 
-class _EventItem extends StatelessWidget {
-  final Event _event;
-  const _EventItem({super.key, required Event event}) : _event = event;
-  final imageSize = const Size(150, 150);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        SizedBox(
-          width: imageSize.width,
-          height: imageSize.height,
-          child: Image.asset(_event.imageUrl),
-        ),
-        SizedBox(width: 20),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(DateFormat("E, MMMd.").add_j().format(_event.datetime)),
-            Text(_event.title, style: subtitleStyle),
-            Text(_event.location, style: bodyTextStyle),
-          ],
-        ),
-      ],
-    );
-  }
-}
-
 class PublicAssocProfile extends StatefulWidget {
   const PublicAssocProfile({super.key});
   static const contactIcon = {
-    ContactInfoType.email: Icons.email,
+    ContactInfoType.email: Icons.email_outlined,
     ContactInfoType.phone: Icons.phone,
     ContactInfoType.web: Icons.web,
   };
@@ -78,36 +50,8 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
           child: Column(
             children: [
               buildInfo(context),
-              DefaultTabController(
-                initialIndex: 0,
-                length: 2,
-                child: Container(
-                  color: Colors.grey,
-                  child: Column(
-                    children: [
-                      TabBar(
-                        tabs: [
-                          Tab(text: "Upcoming events"),
-                          Tab(text: "Past events"),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 100,
-                        child: TabBarView(
-                          children: [
-                            ListView.builder(
-                              itemCount: DATA.events.length,
-                              itemBuilder: (context, index) =>
-                                  _EventItem(event: DATA.events[index]),
-                            ),
-                            Text("Past events content"),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+              SizedBox(height: 16),
+              buildEventTabBar(context),
             ],
           ),
         ),
@@ -141,19 +85,98 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
           ),
         ),
         SizedBox(height: 16),
-        Text("About us", style: headingStyle, textAlign: TextAlign.start),
+        SizedBox(
+          width: double.infinity,
+          child: Text(
+            "About us",
+            style: headingStyle,
+            textAlign: TextAlign.left,
+          ),
+        ),
         Text(association.aboutUs, style: bodyTextStyle),
-        Text(
-          "Contact Information",
-          style: headingStyle,
-          textAlign: TextAlign.start,
+        SizedBox(height: 16),
+        SizedBox(
+          width: double.infinity,
+          child: Text(
+            "Contact Information",
+            style: headingStyle,
+            textAlign: TextAlign.left,
+          ),
         ),
         for (final contact in association.contactInfo)
           ListTile(
-            leading: Icon(PublicAssocProfile.contactIcon[contact.type]),
+            contentPadding: EdgeInsets.all(0),
+            leading: Container(
+              padding: EdgeInsets.all(8.0),
+              color: Theme.of(context).colorScheme.primaryContainer,
+              child: Icon(PublicAssocProfile.contactIcon[contact.type]),
+            ),
             title: Text(contact.address),
           ),
       ],
+    );
+  }
+
+  Widget buildEventTabBar(BuildContext context) {
+    return DefaultTabController(
+      initialIndex: 0,
+      length: 2,
+      child: Container(
+        color: Theme.of(context).colorScheme.surfaceContainer,
+        child: Column(
+          children: [
+            TabBar(
+              tabs: [
+                Tab(text: "Upcoming events"),
+                Tab(text: "Past events"),
+              ],
+            ),
+            SizedBox(
+              height: 300,
+              child: TabBarView(
+                children: [
+                  ListView.builder(
+                    itemCount: DATA.events.length,
+                    itemBuilder: (context, index) =>
+                        buildEventItem(context, event: DATA.events[index]),
+                  ),
+                  ListView.builder(
+                    itemCount: DATA.events.length,
+                    itemBuilder: (context, index) =>
+                        buildEventItem(context, event: DATA.events[index]),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildEventItem(context, {required Event event}) {
+    final imageSize = const Size(150, 150);
+
+    return Container(
+      color: Theme.of(context).colorScheme.surface,
+      child: Row(
+        children: [
+          SizedBox(
+            width: imageSize.width,
+            height: imageSize.height,
+            child: Image.asset(event.imageUrl),
+          ),
+          SizedBox(width: 20),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(DateFormat("E, MMMd.").add_j().format(event.datetime)),
+              Text(event.title, style: subtitleStyle),
+              Text(event.location, style: bodyTextStyle),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
