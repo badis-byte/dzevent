@@ -1,6 +1,36 @@
 import 'package:dzevent/lib/defs.dart';
 import 'package:dzevent/lib/styles.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:dzevent/lib/data.dart' as DATA;
+
+class _EventItem extends StatelessWidget {
+  final Event _event;
+  const _EventItem({super.key, required Event event}) : _event = event;
+  final imageSize = const Size(150, 150);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        SizedBox(
+          width: imageSize.width,
+          height: imageSize.height,
+          child: Image.asset(_event.imageUrl),
+        ),
+        SizedBox(width: 20),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(DateFormat("E, MMMd.").add_j().format(_event.datetime)),
+            Text(_event.title, style: subtitleStyle),
+            Text(_event.location, style: bodyTextStyle),
+          ],
+        ),
+      ],
+    );
+  }
+}
 
 class PublicAssocProfile extends StatefulWidget {
   const PublicAssocProfile({super.key});
@@ -65,7 +95,11 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
                         height: 100,
                         child: TabBarView(
                           children: [
-                            Text("Upcoming events content"),
+                            ListView.builder(
+                              itemCount: DATA.events.length,
+                              itemBuilder: (context, index) =>
+                                  _EventItem(event: DATA.events[index]),
+                            ),
                             Text("Past events content"),
                           ],
                         ),

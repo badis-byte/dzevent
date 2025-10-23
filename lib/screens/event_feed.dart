@@ -1,3 +1,4 @@
+import 'package:dzevent/lib/data.dart' as DATA;
 import 'package:dzevent/lib/defs.dart';
 import 'package:dzevent/lib/styles.dart';
 import 'package:dzevent/screens/home.dart';
@@ -6,24 +7,8 @@ import 'package:intl/intl.dart';
 
 class EventFeed extends StatelessWidget {
   static const String pageRoute = "event-feed";
-  final events = [
-    Event(
-      imageUrl: "assets/images/event_feed/image1.png",
-      title: "Indie Music Festival",
-      datetime: DateTime(2025, 07, 26, 19),
-      location: "New York",
-      association: Association(name: "", imageUrl: ""),
-      description: "NA",
-    ),
-    Event(
-      imageUrl: "assets/images/event_feed/image2.png",
-      title: "City Marathon 2024",
-      datetime: DateTime(2025, 07, 27, 9),
-      location: "Chicago",
-      association: Association(name: "", imageUrl: ""),
-      description: "NA",
-    ),
-  ];
+  final events = DATA.events;
+
   final filters = ["All", "Music", "Sports", "Arts", "Tech"];
   EventFeed({super.key});
 
