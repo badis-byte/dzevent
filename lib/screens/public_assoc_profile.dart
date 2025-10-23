@@ -2,8 +2,20 @@ import 'package:dzevent/lib/defs.dart';
 import 'package:dzevent/lib/styles.dart';
 import 'package:flutter/material.dart';
 
-class PublicAssocProfile extends StatelessWidget {
-  PublicAssocProfile({super.key});
+class PublicAssocProfile extends StatefulWidget {
+  const PublicAssocProfile({super.key});
+  static const contactIcon = {
+    ContactInfoType.email: Icons.email,
+    ContactInfoType.phone: Icons.phone,
+    ContactInfoType.web: Icons.web,
+  };
+
+  @override
+  State<PublicAssocProfile> createState() => _PublicAssocProfileState();
+}
+
+class _PublicAssocProfileState extends State<PublicAssocProfile>
+    with TickerProviderStateMixin {
   final Association association = Association(
     name: "Tech Innovators Alliance",
     imageUrl: "assets/images/public_assoc_profile.png",
@@ -22,13 +34,8 @@ class PublicAssocProfile extends StatelessWidget {
     ],
   );
 
-  static const contactIcon = {
-    ContactInfoType.email: Icons.email,
-    ContactInfoType.phone: Icons.phone,
-    ContactInfoType.web: Icons.web,
-  };
-
   final imageSize = Size(150, 150);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,45 +47,79 @@ class PublicAssocProfile extends StatelessWidget {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Container(
-                decoration: BoxDecoration(shape: BoxShape.circle),
-                clipBehavior: Clip.antiAlias,
-                width: imageSize.width,
-                height: imageSize.height,
-                child: Image.asset(association.imageUrl, fit: BoxFit.fill),
-              ),
-              Text(association.name, style: headingStyle),
-              Text(
-                association.brief,
-                style: subtitleStyle,
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 16),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {},
-                  style: getPrimaryBtnStyle(context: context),
-                  child: Text("Follow Association"),
+              buildInfo(context),
+              DefaultTabController(
+                initialIndex: 0,
+                length: 2,
+                child: Container(
+                  color: Colors.grey,
+                  child: Column(
+                    children: [
+                      TabBar(
+                        tabs: [
+                          Tab(text: "Upcoming events"),
+                          Tab(text: "Past events"),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 100,
+                        child: TabBarView(
+                          children: [
+                            Text("Upcoming events content"),
+                            Text("Past events content"),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              SizedBox(height: 16),
-              Text("About us", style: headingStyle, textAlign: TextAlign.start),
-              Text(association.aboutUs, style: bodyTextStyle),
-              Text(
-                "Contact Information",
-                style: headingStyle,
-                textAlign: TextAlign.start,
-              ),
-              for (final contact in association.contactInfo)
-                ListTile(
-                  leading: Icon(contactIcon[contact.type]),
-                  title: Text(contact.address),
-                ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Column buildInfo(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          decoration: BoxDecoration(shape: BoxShape.circle),
+          clipBehavior: Clip.antiAlias,
+          width: imageSize.width,
+          height: imageSize.height,
+          child: Image.asset(association.imageUrl, fit: BoxFit.fill),
+        ),
+        Text(association.name, style: headingStyle),
+        Text(
+          association.brief,
+          style: subtitleStyle,
+          textAlign: TextAlign.center,
+        ),
+        SizedBox(height: 16),
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            onPressed: () {},
+            style: getPrimaryBtnStyle(context: context),
+            child: Text("Follow Association"),
+          ),
+        ),
+        SizedBox(height: 16),
+        Text("About us", style: headingStyle, textAlign: TextAlign.start),
+        Text(association.aboutUs, style: bodyTextStyle),
+        Text(
+          "Contact Information",
+          style: headingStyle,
+          textAlign: TextAlign.start,
+        ),
+        for (final contact in association.contactInfo)
+          ListTile(
+            leading: Icon(PublicAssocProfile.contactIcon[contact.type]),
+            title: Text(contact.address),
+          ),
+      ],
     );
   }
 }
