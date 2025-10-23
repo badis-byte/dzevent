@@ -1,6 +1,7 @@
 import 'package:dzevent/screens/event_feed.dart';
 import 'package:dzevent/screens/welcome.dart';
 import 'package:flutter/material.dart';
+import 'package:dzevent/screens/login.dart';
 
 /// # New Screen Setup
 /// - Add screen entry to _links
