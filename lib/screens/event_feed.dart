@@ -1,35 +1,27 @@
+import 'package:dzevent/lib/common.dart';
 import 'package:dzevent/lib/styles.dart';
 import 'package:dzevent/screens/home.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class Event {
-  final String image_url;
-  final String title;
-  final DateTime datetime;
-  final String location;
-  const Event({
-    required this.image_url,
-    required this.title,
-    required this.datetime,
-    required this.location,
-  });
-}
-
 class EventFeed extends StatelessWidget {
   static const String pageRoute = "event-feed";
   final events = [
     Event(
-      image_url: "assets/images/event_feed/image1.png",
+      imageUrl: "assets/images/event_feed/image1.png",
       title: "Indie Music Festival",
       datetime: DateTime(2025, 07, 26, 19),
       location: "New York",
+      association: Association(name: "", imageUrl: ""),
+      description: "NA",
     ),
     Event(
-      image_url: "assets/images/event_feed/image2.png",
+      imageUrl: "assets/images/event_feed/image2.png",
       title: "City Marathon 2024",
       datetime: DateTime(2025, 07, 27, 9),
       location: "Chicago",
+      association: Association(name: "", imageUrl: ""),
+      description: "NA",
     ),
   ];
   final filters = ["All", "Music", "Sports", "Arts", "Tech"];
@@ -107,7 +99,7 @@ class EventCard extends StatelessWidget {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          Image.asset(event.image_url, fit: BoxFit.cover),
+          Image.asset(event.imageUrl, fit: BoxFit.cover),
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(

@@ -19,6 +19,6 @@ dev_dependencies:
 flutter:
   assets:
     - assets/images/
-    - assets/icons/
     - assets/images/event_feed/
+    - assets/images/event_details/
   uses-material-design: true
