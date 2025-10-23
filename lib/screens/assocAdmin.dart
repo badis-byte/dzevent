@@ -1,6 +1,6 @@
 //this is association admin screen
 
-import 'package:dzevent/screens/addEvent.dart';
+import 'package:dzevent/screens/associationProfileTwo.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -125,7 +125,7 @@ class _AssocadminState extends State<Assocadmin> {
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute<void>(
-                                    builder: (context) => const Addevent(),
+                                    builder: (context) => const AssocProfTwo(),
                                   ),
                                 );
                               },
