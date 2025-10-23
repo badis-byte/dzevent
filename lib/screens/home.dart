@@ -1,3 +1,4 @@
+import 'package:dzevent/screens/event_details.dart';
 import 'package:dzevent/screens/event_feed.dart';
 import 'package:dzevent/screens/welcome.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,11 @@ class Link {
 final _links = [
   Link(icon: Icons.event, label: "event_feed", page: EventFeed()),
   Link(icon: Icons.handshake, label: "welcome", page: ImageCarousel()),
+  Link(
+    icon: Icons.details_outlined,
+    label: "event_details",
+    page: EventDetails(),
+  ),
 ];
 
 class NavScreen extends StatelessWidget {
