@@ -1,5 +1,6 @@
 //this is association admin screen
 
+import 'package:dzevent/screens/associationProfileTwo.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -116,12 +117,22 @@ class _AssocadminState extends State<Assocadmin> {
                     width: double.infinity,
                     child: Row(
                       children: [
-                        IconButton(
-                          icon: Icon(Icons.arrow_back),
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
+                        Builder(
+                          builder: (context) {
+                            return IconButton(
+                              icon: Icon(Icons.arrow_back),
+                              onPressed: () {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute<void>(
+                                    builder: (context) => const AssocProfTwo(),
+                                  ),
+                                );
+                              },
+                            );
+                          }
                         ),
+
                         Expanded(
                           child: Center(
                             child: Text(
@@ -212,8 +223,7 @@ class _AssocadminState extends State<Assocadmin> {
                   ),
                   SizedBox(height: 8),
                   Expanded(
-                    child: 
-                    ListView(
+                    child: ListView(
                       children: [
                         cardAssoc(
                           "Tech Innovators Society",
