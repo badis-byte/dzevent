@@ -52,7 +52,8 @@ ButtonStyle getPrimaryBtnStyle({
   double? raduis,
 }) {
   return ElevatedButton.styleFrom(
-    backgroundColor: Theme.of(context).primaryColorLight,
+    backgroundColor: Theme.of(context).colorScheme.primary,
+    foregroundColor: Theme.of(context).colorScheme.onPrimary,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(raduis ?? 10.0),
     ),
