@@ -1,5 +1,6 @@
 import 'package:dzevent/screens/home.dart';
 import 'package:dzevent/screens/login.dart';
+import 'package:dzevent/screens/signup.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -13,6 +14,6 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Login());
+      home: Signup());
   }
 }
