@@ -15,7 +15,7 @@ class AssocProfTwo extends StatefulWidget {
 class _AssocProfTwoState extends State<AssocProfTwo> {
   var logo =
       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0NfsQx_-GICZJcadqDeNBMvwzq-RInkcOzg&s";
-  Widget insightButton(String title, String subTitle) {
+  Widget getStatCard(String title, String subTitle) {
     return Container(
       width: 120,
       decoration: BoxDecoration(
@@ -61,11 +61,11 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            insightButton('1.2K', "Subscribers"),
+            getStatCard('1.2K', "Subscribers"),
             SizedBox(width: 8),
-            insightButton('24', "Events"),
+            getStatCard('24', "Events"),
             SizedBox(width: 8),
-            insightButton('5.8K', "Interested"),
+            getStatCard('5.8K', "Interested"),
           ],
         ),
       ],
@@ -189,7 +189,13 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
                         "10:00 AM",
                         120,
                       ),
-                      eventCard(logo, "Jazz Night", "2025-12-02", "7:30 PM", 85),
+                      eventCard(
+                        logo,
+                        "Jazz Night",
+                        "2025-12-02",
+                        "7:30 PM",
+                        85,
+                      ),
                       eventCard(
                         logo,
                         "Modern Art Expo",
