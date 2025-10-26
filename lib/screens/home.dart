@@ -1,6 +1,10 @@
+import 'package:dzevent/screens/addEvent.dart';
+import 'package:dzevent/screens/assocAdmin.dart';
+import 'package:dzevent/screens/associationProfileTwo.dart';
 import 'package:dzevent/screens/event_details.dart';
 import 'package:dzevent/screens/event_feed.dart';
 import 'package:dzevent/screens/public_assoc_profile.dart';
+import 'package:dzevent/screens/signup.dart';
 import 'package:dzevent/screens/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:dzevent/screens/login.dart';
@@ -22,19 +26,30 @@ class Link {
 }
 
 final _links = [
-  Link(icon: Icons.event, label: "event_feed", page: EventFeed()),
-  Link(icon: Icons.handshake, label: "welcome", page: ImageCarousel()),
+  Link(icon: Icons.add, label: "add event", page: Addevent()),
+  Link(icon: Icons.person, label: "assocAdmin", page: Assocadmin()),
+  Link(icon: Icons.person, label: "assocProfileTwo", page: AssocProfTwo()),
+
   Link(
     icon: Icons.details_outlined,
     label: "event_details",
     page: EventDetails(),
   ),
+  Link(icon: Icons.event, label: "event_feed", page: EventFeed()),
+  Link(icon: Icons.login, label: "Login", page: Login()),
+  Link(
+    icon: Icons.person,
+    label: "public_assoc_profile",
+    page: PublicAssocProfile(),
+  ),
+  Link(icon: Icons.add, label: "signup", page: Signup()),
+  Link(icon: Icons.handshake, label: "welcome", page: ImageCarousel()),
+
   Link(
     icon: Icons.person,
     label: "public association profile",
     page: PublicAssocProfile(),
   ),
-  Link(icon: Icons.login, label: "Login", page: Login()),
 ];
 
 class NavScreen extends StatelessWidget {
