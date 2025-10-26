@@ -1,8 +1,7 @@
-import 'dart:io';
-
 import 'package:dzevent/screens/assocAdmin.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 void main(List<String> args) {
   runApp(const Addevent());
@@ -16,9 +15,65 @@ class Addevent extends StatefulWidget {
 }
 
 class _AddeventState extends State<Addevent> {
-  String desc = "";
   final ImagePicker _picker = ImagePicker();
   File? _image;
+  Widget inputTextField(String title, String lable, IconData iconLable) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(title),
+        TextField(
+          decoration: InputDecoration(
+            hintText: lable,
+            border: OutlineInputBorder(),
+            suffixIcon: Icon(iconLable, color: Colors.grey),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.black, width: 2),
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget submitButton(String title, Color bgColor, Color textColor) {
+    return SizedBox(
+      height: 48,
+      width: double.infinity,
+      child: ElevatedButton(
+        onPressed: () {},
+        style: ElevatedButton.styleFrom(
+          backgroundColor: bgColor,
+          textStyle: TextStyle(fontWeight: FontWeight.bold, color: textColor),
+        ),
+        child: Text(
+          title,
+          style: TextStyle(color: textColor, fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
+  }
+
+  Widget textField(int maximumLength, String label, bool expand) {
+    return TextField(
+      cursorColor: Colors.black,
+      maxLength: maximumLength,
+      maxLines: null,
+      expands: expand,
+      textAlignVertical: TextAlignVertical.top, //text starts from top
+      decoration: InputDecoration(
+        label: Text(label, style: TextStyle(color: Colors.grey)),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+        alignLabelWithHint: true,
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.black, width: 2),
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -34,14 +89,13 @@ class _AddeventState extends State<Addevent> {
                 icon: Icon(Icons.arrow_back),
                 onPressed: () {
                   Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Assocadmin()),
-                );
+                    context,
+                    MaterialPageRoute(builder: (context) => Assocadmin()),
+                  );
                 },
               );
-            }
+            },
           ),
-
           shape: Border(
             bottom: BorderSide(
               color: Colors.grey, // border color
@@ -68,23 +122,7 @@ class _AddeventState extends State<Addevent> {
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                 ),
                 SizedBox(height: 8),
-                TextField(
-                  cursorColor: Colors.black,
-                  maxLength: 100,
-                  decoration: InputDecoration(
-                    label: Text(
-                      "Annual Tech conference",
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black, width: 2),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                ),
+                textField(100, "Annual Tech Conference", false),
                 SizedBox(height: 16),
                 Text(
                   'Description',
@@ -93,113 +131,38 @@ class _AddeventState extends State<Addevent> {
                 SizedBox(height: 8),
                 SizedBox(
                   height: 200,
-                  child: TextField(
-                    cursorColor: Colors.black,
-                    maxLength: 500,
-                    maxLines: null,
-                    expands: true,
-                    onChanged: (value) {
-                      setState(() {
-                        desc = value;
-                      });
-                    },
-                    textAlignVertical:
-                        TextAlignVertical.top, //text starts from top
-                    decoration: InputDecoration(
-                      label: Text(
-                        "Join us for a day of insightful talks...",
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      alignLabelWithHint: true,
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black, width: 2),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
+                  child: textField(
+                    500,
+                    "Join us for a day of insightful talks...",
+                    true,
                   ),
                 ),
                 Row(
                   children: [
                     // Date Column
                     Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("Date"),
-                          SizedBox(height: 8),
-                          TextField(
-                            decoration: InputDecoration(
-                              hintText: "Select date",
-                              border: OutlineInputBorder(),
-                              suffixIcon: Icon(
-                                Icons.calendar_month,
-                                color: Colors.grey,
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.black,
-                                  width: 2,
-                                ),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            ),
-                          ),
-                        ],
+                      child: inputTextField(
+                        "Date",
+                        "Select Date",
+                        Icons.calendar_month,
                       ),
                     ),
                     SizedBox(width: 16),
                     // Time Column
                     Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("Time"),
-                          SizedBox(height: 8),
-                          TextField(
-                            decoration: InputDecoration(
-                              hintText: "Select time",
-                              border: OutlineInputBorder(),
-                              suffixIcon: Icon(
-                                Icons.access_time,
-                                color: Colors.grey,
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.black,
-                                  width: 2,
-                                ),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            ),
-                          ),
-                        ],
+                      child: inputTextField(
+                        "Time",
+                        "Select Time",
+                        Icons.access_time,
                       ),
                     ),
                   ],
                 ),
                 SizedBox(height: 8),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("Location"),
-                    TextField(
-                      decoration: InputDecoration(
-                        hintText: "123Main Street,Anytown",
-                        border: OutlineInputBorder(),
-                        suffixIcon: Icon(
-                          Icons.location_on_outlined,
-                          color: Colors.grey,
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black, width: 2),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                    ),
-                  ],
+                inputTextField(
+                  "Location",
+                  "123Main Street,Anytown",
+                  Icons.location_on_outlined,
                 ),
                 SizedBox(height: 8),
                 Column(
@@ -208,23 +171,6 @@ class _AddeventState extends State<Addevent> {
                     Text("Event Category"),
                     SizedBox(height: 8),
                     DropdownButtonFormField<String>(
-                      initialValue: null, // init value
-                      items:
-                          [
-                                "Tech",
-                                "AI and Data Science",
-                                "Business",
-                                "Agriculture",
-                                "Sociology",
-                              ]
-                              .map(
-                                (fruit) => DropdownMenuItem(
-                                  value: fruit,
-                                  child: Text(fruit),
-                                ),
-                              )
-                              .toList(),
-                      onChanged: (value) {},
                       decoration: InputDecoration(
                         labelText: "Select a category",
                         border: OutlineInputBorder(
@@ -235,6 +181,20 @@ class _AddeventState extends State<Addevent> {
                           borderRadius: BorderRadius.circular(6),
                         ),
                       ),
+                      items:
+                          [
+                                "Tech",
+                                "AI and Data Science",
+                                "Business",
+                                "Agriculture",
+                                "Sociology",
+                              ]
+                              .map(
+                                (e) =>
+                                    DropdownMenuItem(value: e, child: Text(e)),
+                              )
+                              .toList(),
+                      onChanged: (_) {},
                     ),
                     SizedBox(height: 8),
                     SizedBox(
@@ -253,7 +213,6 @@ class _AddeventState extends State<Addevent> {
                           backgroundColor: Colors.white,
                           textStyle: TextStyle(color: Colors.grey),
                         ),
-
                         child: const Text("Choose Image"),
                       ),
                     ),
@@ -262,45 +221,13 @@ class _AddeventState extends State<Addevent> {
                         : const Icon(Icons.image, size: 150.0),
                     Column(
                       children: [
-                        SizedBox(
-                          height: 48,
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: () {},
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.grey[400],
-                              textStyle: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
-                            ),
-                            child: Text(
-                              "Preview Event",
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
+                        submitButton(
+                          "Preview Event",
+                          Colors.grey[100]!,
+                          Colors.black,
                         ),
                         SizedBox(height: 8),
-                        SizedBox(
-                          height: 48,
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: () {},
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blue,
-                            ),
-                            child: Text(
-                              "Post Event",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ),
+                        submitButton("Post Event", Colors.blue, Colors.white),
                       ],
                     ),
                   ],
@@ -308,9 +235,6 @@ class _AddeventState extends State<Addevent> {
               ],
             ),
           ),
-          // Column(
-
-          // ),
         ),
       ),
     );

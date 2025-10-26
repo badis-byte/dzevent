@@ -1,5 +1,9 @@
+import 'package:dzevent/screens/event_details.dart';
 import 'package:dzevent/screens/event_feed.dart';
+import 'package:dzevent/screens/public_assoc_profile.dart';
+import 'package:dzevent/screens/welcome.dart';
 import 'package:flutter/material.dart';
+import 'package:dzevent/screens/login.dart';
 
 /// # New Screen Setup
 /// - Add screen entry to _links
@@ -19,6 +23,17 @@ class Link {
 
 final _links = [
   Link(icon: Icons.event, label: "event_feed", page: EventFeed()),
+  Link(icon: Icons.handshake, label: "welcome", page: ImageCarousel()),
+  Link(
+    icon: Icons.details_outlined,
+    label: "event_details",
+    page: EventDetails(),
+  ),
+  Link(
+    icon: Icons.person,
+    label: "public association profile",
+    page: PublicAssocProfile(),
+  ),
 ];
 
 class NavScreen extends StatelessWidget {
