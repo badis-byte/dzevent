@@ -1,4 +1,6 @@
 import 'package:dzevent/screens/home.dart';
+import 'package:dzevent/screens/login.dart';
+import 'package:dzevent/screens/signup.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -10,6 +12,8 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: NavScreen());
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Signup());
   }
 }
