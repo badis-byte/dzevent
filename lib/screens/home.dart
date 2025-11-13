@@ -8,6 +8,8 @@ import 'package:dzevent/screens/signup.dart';
 import 'package:dzevent/screens/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:dzevent/screens/login.dart';
+import 'package:dzevent/myAccountCredentials.dart';
+import 'package:dzevent/regUserProfile.dart';
 
 /// # New Screen Setup
 /// - Add screen entry to _links
@@ -50,6 +52,8 @@ final _links = [
     label: "public association profile",
     page: PublicAssocProfile(),
   ),
+  Link(icon: Icons.add, label: "creds", page: Myaccountcredentials()),
+  Link(icon: Icons.add, label: "user regs", page: ProfileScreen()),
 ];
 
 class NavScreen extends StatelessWidget {
