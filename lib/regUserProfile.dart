@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 // TODO: add flutter_svg to pubspec.yaml
 import 'package:flutter_svg/flutter_svg.dart';
 
-void main() {
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home:ProfileScreen()));
-}
+// void main() {
+//   runApp(MaterialApp(
+//     debugShowCheckedModeBanner: false,
+//     home:ProfileScreen()));
+// }
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});

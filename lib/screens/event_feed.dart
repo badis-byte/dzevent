@@ -99,7 +99,7 @@ class EventCard extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Row(
+            child: Row( 
               children: [
                 Flexible(
                   child: Column(
@@ -120,7 +120,7 @@ class EventCard extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        event.location,
+                        event.location , 
                         style: subtitleStyle.copyWith(
                           color: Colors.grey.shade400,
                         ),
