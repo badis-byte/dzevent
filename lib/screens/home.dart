@@ -8,8 +8,8 @@ import 'package:dzevent/screens/signup.dart';
 import 'package:dzevent/screens/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:dzevent/screens/login.dart';
-import 'package:dzevent/myAccountCredentials.dart';
-import 'package:dzevent/regUserProfile.dart';
+import 'package:dzevent/screens/my_account_credentials.dart';
+import 'package:dzevent/screens/reg_user_profile.dart';
 
 /// # New Screen Setup
 /// - Add screen entry to _links
