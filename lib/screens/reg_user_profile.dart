@@ -1,4 +1,4 @@
-import 'package:dzevent/myAccountCredentials.dart';
+import 'package:dzevent/screens/my_account_credentials.dart';
 import 'package:flutter/material.dart';
 // TODO: add flutter_svg to pubspec.yaml
 import 'package:flutter_svg/flutter_svg.dart';
@@ -35,12 +35,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
               text: "My Account",
               icon: "assets/icons/User Icon.svg",
               press: () => {
-                            Navigator.push(
-              context,
-              MaterialPageRoute<void>(
-                builder: (context) => Myaccountcredentials(),
-              ),
-            )
+                Navigator.push(
+                  context,
+                  MaterialPageRoute<void>(
+                    builder: (context) => Myaccountcredentials(),
+                  ),
+                ),
               },
             ),
             ProfileMenu(
