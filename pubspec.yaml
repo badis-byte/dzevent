@@ -1,6 +1,6 @@
 name: dzevent
 description: "A new Flutter project."
-publish_to: 'none'
+publish_to: "none"
 version: 0.1.0
 
 environment:
@@ -12,6 +12,7 @@ dependencies:
   intl: ^0.20.2
   image_picker: ^1.2.0
   flutter_svg: ^2.2.3
+  supabase_flutter: ^2.10.3
 
 dev_dependencies:
   flutter_test:

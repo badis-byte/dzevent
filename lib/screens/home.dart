@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:dzevent/screens/login.dart';
 import 'package:dzevent/screens/my_account_credentials.dart';
 import 'package:dzevent/screens/reg_user_profile.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// # New Screen Setup
 /// - Add screen entry to _links
@@ -61,6 +62,8 @@ class NavScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final postFuture = Supabase.instance.client.from('Post').select();
+
     return Scaffold(
       body: Row(
         children: [
@@ -82,7 +85,21 @@ class NavScreen extends StatelessWidget {
               );
             },
           ),
-          Expanded(child: Center(child: Text("This is a temporary page"))),
+          Expanded(
+            child: FutureBuilder(
+              future: postFuture,
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                final posts = snapshot.data!;
+                return ListView.builder(
+                  itemCount: posts.length,
+                  itemBuilder: (context, index) => Text(posts[index]['name']),
+                );
+              },
+            ),
+          ),
         ],
       ),
     );
