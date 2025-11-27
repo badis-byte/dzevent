@@ -1,15 +1,15 @@
-import 'package:dzevent/screens/addEvent.dart';
-import 'package:dzevent/screens/assocAdmin.dart';
-import 'package:dzevent/screens/associationProfileTwo.dart';
-import 'package:dzevent/screens/event_details.dart';
-import 'package:dzevent/screens/event_feed.dart';
-import 'package:dzevent/screens/public_assoc_profile.dart';
-import 'package:dzevent/screens/signup.dart';
-import 'package:dzevent/screens/welcome.dart';
+import 'package:dzevent/presentation/screens/addEvent.dart';
+import 'package:dzevent/presentation/screens/assocAdmin.dart';
+import 'package:dzevent/presentation/screens/associationProfileTwo.dart';
+import 'package:dzevent/presentation/screens/event_details.dart';
+import 'package:dzevent/presentation/screens/event_feed.dart';
+import 'package:dzevent/presentation/screens/public_assoc_profile.dart';
+import 'package:dzevent/presentation/screens/signup.dart';
+import 'package:dzevent/presentation/screens/welcome.dart';
 import 'package:flutter/material.dart';
-import 'package:dzevent/screens/login.dart';
-import 'package:dzevent/screens/my_account_credentials.dart';
-import 'package:dzevent/screens/reg_user_profile.dart';
+import 'package:dzevent/presentation/screens/login.dart';
+import 'package:dzevent/presentation/screens/my_account_credentials.dart';
+import 'package:dzevent/presentation/screens/reg_user_profile.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// # New Screen Setup

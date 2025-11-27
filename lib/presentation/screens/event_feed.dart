@@ -1,7 +1,7 @@
 import 'package:dzevent/lib/data.dart' as DATA;
 import 'package:dzevent/lib/defs.dart';
 import 'package:dzevent/lib/styles.dart';
-import 'package:dzevent/screens/home.dart';
+import 'package:dzevent/presentation/screens/home.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -99,7 +99,7 @@ class EventCard extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Row( 
+            child: Row(
               children: [
                 Flexible(
                   child: Column(
@@ -120,7 +120,7 @@ class EventCard extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        event.location , 
+                        event.location,
                         style: subtitleStyle.copyWith(
                           color: Colors.grey.shade400,
                         ),
