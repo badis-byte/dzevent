@@ -1,5 +1,7 @@
-import 'package:dzevent/screens/home.dart';
+import 'package:dzevent/logic/cubits/events/events_cubit.dart';
+import 'package:dzevent/presentation/screens/home.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 Future<void> main() async {
@@ -18,6 +20,9 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(debugShowCheckedModeBanner: false, home: NavScreen());
+    return MultiBlocProvider(
+      providers: [BlocProvider(create: (context) => EventsCubit())],
+      child: MaterialApp(debugShowCheckedModeBanner: false, home: NavScreen()),
+    );
   }
 }
