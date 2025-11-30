@@ -106,7 +106,7 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
                       ),
                       SizedBox(height: 8),
                       Text(
-                        "${eventDate}-${eventTime}",
+                        "$eventDate-$eventTime",
                         textAlign: TextAlign.start,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
