@@ -2,33 +2,11 @@ import 'package:dzevent/lib/defs.dart';
 import 'package:dzevent/lib/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:dzevent/data/fake_data.dart' as DATA;
 
 class EventDetails extends StatelessWidget {
   final double _imageHeight = 270;
-  final event = Event(
-    imageUrl: "assets/images/event_details/event_details.png",
-    title: "Annual Music Festival",
-    datetime: DateTime(2025, 07, 26, 19),
-    location: "Central Park, New York",
-    association: Association(
-      name: "Music Lover Association",
-      imageUrl: "assets/images/event_details/association.png",
-    ),
-    description:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
-        'Nulla eget lectus augue. Etiam semper nibh vel felis dignissim vehicula. '
-        'Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere '
-        'cubilia curae; Maecenas finibus venenatis aliquam. Vivamus sit amet '
-        'vulputate ipsum. Etiam scelerisque sem id ex mattis, eu sollicitudin '
-        'ipsum elementum. Nulla vel leo vel tellus tincidunt viverra et ut augue. '
-        'Quisque erat nibh, semper ac nisi sit amet, pharetra tempor libero. '
-        'Suspendisse viverra id nibh non finibus. Phasellus commodo elementum augue'
-        'et ullamcorper. Quisque mollis felis vitae sapien venenatis sagittis. '
-        'In hac habitasse platea dictumst. Donec finibus convallis pellentesque.'
-        'Morbi et ipsum eget nunc rutrum suscipit. Quisque bibendum consequat '
-        'arcu, at pellentesque est ullamcorper id.',
-  );
-
+  final event = DATA.event1;
   EventDetails({super.key});
 
   @override
@@ -71,7 +49,7 @@ class EventDetails extends StatelessWidget {
                       children: [
                         Icon(Icons.calendar_today),
                         Text(
-                          DateFormat.MMMEd().format(event.datetime),
+                          DateFormat.MMMEd().format(event.startDatetime),
                           style: subtitleStyle,
                         ),
                       ],
@@ -83,7 +61,7 @@ class EventDetails extends StatelessWidget {
                       ],
                     ),
                     Divider(),
-                    AssociatonLink(associaton: event.association),
+                    AssociatonLink(associatonId: event.associationId),
                     Divider(),
                     Text("About this event", style: subtitleStyle),
                     Text(event.description, textAlign: TextAlign.start),
@@ -107,10 +85,10 @@ class EventDetails extends StatelessWidget {
 }
 
 class AssociatonLink extends StatelessWidget {
-  final Association associaton;
+  final int associatonId;
   final double associationIconHeight = 70;
   final double associationIconWidth = 70;
-  const AssociatonLink({super.key, required this.associaton});
+  const AssociatonLink({super.key, required this.associatonId});
 
   @override
   Widget build(BuildContext context) {
@@ -122,12 +100,12 @@ class AssociatonLink extends StatelessWidget {
           decoration: BoxDecoration(shape: BoxShape.circle),
           width: associationIconWidth,
           height: associationIconHeight,
-          child: Image.asset(associaton.imageUrl, fit: BoxFit.fill),
+          // child: Image.asset(associaton.imageUrl, fit: BoxFit.fill),
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(associaton.name, style: subtitleStyle),
+            Text(associatonId.toString(), style: subtitleStyle),
             Text("View profile", textAlign: TextAlign.start),
           ],
         ),

@@ -1,4 +1,4 @@
-import 'package:dzevent/lib/defs.dart';
+import 'package:dzevent/data/models/event_model.dart';
 import 'package:dzevent/lib/styles.dart';
 import 'package:dzevent/logic/cubits/events/events_cubit.dart';
 import 'package:dzevent/logic/cubits/events/events_state.dart';
@@ -6,12 +6,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
-class EventFeed extends StatelessWidget {
+class EventFeed extends StatefulWidget {
   static const String pageRoute = "event-feed";
-  // final events = DATA.events;
 
-  final filters = ["All", "Music", "Sports", "Arts", "Tech"];
   EventFeed({super.key});
+
+  @override
+  State<EventFeed> createState() => _EventFeedState();
+}
+
+class _EventFeedState extends State<EventFeed> {
+  final filters = ["All", "Music", "Sports", "Arts", "Tech"];
+
+  @override
+  void initState() {
+    context.read<EventsCubit>().getUserData();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,11 +62,15 @@ class EventFeed extends StatelessWidget {
                   return Center(child: Text("Error: ${state.error}"));
                 }
                 if (state is EventsFetched) {
-                  final posts = state.posts;
+                  final events = state.events;
+                  if (events.isEmpty) {
+                    return Text("No events found");
+                  }
                   return Expanded(
                     child: ListView.builder(
-                      itemCount: posts.length,
-                      itemBuilder: (context, index) => Text("+1 event"),
+                      itemCount: events.length,
+                      itemBuilder: (context, index) =>
+                          EventCard(event: events[index]),
                     ),
                   );
                 }
@@ -87,7 +102,7 @@ class Filters extends StatelessWidget {
 
 class EventCard extends StatelessWidget {
   static const double _height = 400;
-  final Event event;
+  final EventModel event;
   const EventCard({super.key, required this.event});
 
   @override
@@ -98,7 +113,7 @@ class EventCard extends StatelessWidget {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          Image.asset(event.imageUrl, fit: BoxFit.cover),
+          // Image.asset(event.imageUrl, fit: BoxFit.cover),
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -128,7 +143,7 @@ class EventCard extends StatelessWidget {
                       Text(
                         DateFormat(
                           "E, MMM d\n",
-                        ).add_jm().format(event.datetime),
+                        ).add_jm().format(event.startDatetime),
                         style: subtitleStyle.copyWith(
                           color: Colors.grey.shade400,
                         ),
