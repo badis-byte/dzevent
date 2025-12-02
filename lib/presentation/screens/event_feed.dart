@@ -113,7 +113,7 @@ class EventCard extends StatelessWidget {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          // Image.asset(event.imageUrl, fit: BoxFit.cover),
+          Image.asset(event.imageUrl, fit: BoxFit.cover),
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
