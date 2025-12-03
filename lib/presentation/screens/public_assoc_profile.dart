@@ -1,3 +1,4 @@
+import 'package:dzevent/l10n/app_localizations.dart';
 import 'package:dzevent/data/models/event_model.dart';
 import 'package:dzevent/lib/defs.dart';
 import 'package:dzevent/lib/styles.dart';
@@ -41,6 +42,8 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+
     return Scaffold(
       appBar: AppBar(
         actions: [IconButton(onPressed: () {}, icon: Icon(Icons.share))],
@@ -50,9 +53,9 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
         child: SingleChildScrollView(
           child: Column(
             children: [
-              buildInfo(context),
+              buildInfo(context, loc),
               SizedBox(height: 16),
-              buildEventTabBar(context),
+              buildEventTabBar(context, loc),
             ],
           ),
         ),
@@ -60,7 +63,7 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
     );
   }
 
-  Column buildInfo(BuildContext context) {
+  Column buildInfo(BuildContext context, AppLocalizations loc) {
     return Column(
       children: [
         Container(
@@ -82,14 +85,14 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
           child: ElevatedButton(
             onPressed: () {},
             style: getPrimaryBtnStyle(context: context),
-            child: Text("Follow Association"),
+            child: Text(loc.followAssociation),
           ),
         ),
         SizedBox(height: 16),
         SizedBox(
           width: double.infinity,
           child: Text(
-            "About us",
+            loc.aboutUs,
             style: headingStyle,
             textAlign: TextAlign.left,
           ),
@@ -99,7 +102,7 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
         SizedBox(
           width: double.infinity,
           child: Text(
-            "Contact Information",
+            loc.contactInformation,
             style: headingStyle,
             textAlign: TextAlign.left,
           ),
@@ -118,7 +121,7 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
     );
   }
 
-  Widget buildEventTabBar(BuildContext context) {
+  Widget buildEventTabBar(BuildContext context, AppLocalizations loc) {
     return DefaultTabController(
       initialIndex: 0,
       length: 2,
@@ -128,8 +131,8 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
           children: [
             TabBar(
               tabs: [
-                Tab(text: "Upcoming events"),
-                Tab(text: "Past events"),
+                Tab(text: loc.upcomingEvents),
+                Tab(text: loc.pastEvents),
               ],
             ),
             SizedBox(

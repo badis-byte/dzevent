@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:dzevent/l10n/app_localizations.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -10,46 +11,47 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+
     return Scaffold(
       body: Container(
-        color: Color.fromARGB(255, 240, 242, 245),
-        //margin: EdgeInsets.all(10),
-        padding: EdgeInsets.all(10),
+        color: const Color.fromARGB(255, 240, 242, 245),
+        padding: const EdgeInsets.all(10),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(height: 40),
+              const SizedBox(height: 40),
               logoGetter(),
               Text(
-                "Welcome Back",
+                loc.welcomeBack,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.black,
                   fontSize: 35,
                   decoration: TextDecoration.none,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               buildInput(
-                label: "Email or username",
-                hint: "Enter email or username",
+                label: loc.emailOrUsername,
+                hint: loc.enterEmailOrUsername,
               ),
-              SizedBox(height: 20),
-              buildInput(label: "Password", hint: "Enter your password"),
-              SizedBox(height: 10),
-              forgotPassword(),
-              SizedBox(height: 30),
-              loginButton(),
-              SizedBox(height: 30),
-              orDevider(),
-              SizedBox(height: 30),
-              googleButton(),
-              SizedBox(height: 30),
-              noAccount(),
-              SizedBox(height: 40),
+              const SizedBox(height: 20),
+              buildInput(label: loc.password, hint: loc.enterYourPassword),
+              const SizedBox(height: 10),
+              forgotPassword(loc),
+              const SizedBox(height: 30),
+              loginButton(loc),
+              const SizedBox(height: 30),
+              orDevider(loc),
+              const SizedBox(height: 30),
+              googleButton(loc),
+              const SizedBox(height: 30),
+              noAccount(loc),
+              const SizedBox(height: 40),
             ],
           ),
         ),
@@ -57,23 +59,23 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Row noAccount() {
+  Row noAccount(AppLocalizations loc) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          "Dont't have an account?",
+          loc.dontHaveAccount,
           textAlign: TextAlign.center,
-          style: TextStyle(
+          style: const TextStyle(
             color: Colors.black,
             fontSize: 15,
             decoration: TextDecoration.none,
           ),
         ),
         Text(
-          " Sign up",
+          " ${loc.signUp}",
           textAlign: TextAlign.center,
-          style: TextStyle(
+          style: const TextStyle(
             color: Colors.blue,
             fontSize: 15,
             decoration: TextDecoration.none,
@@ -83,62 +85,58 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Container googleButton() {
+  Container googleButton(AppLocalizations loc) {
     return Container(
-      margin: EdgeInsets.only(left: 25, right: 25),
+      margin: const EdgeInsets.symmetric(horizontal: 25),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.white, // Button color
-          foregroundColor: Colors.black, // Text color
-          minimumSize: const Size(400, 60), // Width x Height
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+          minimumSize: const Size(400, 60),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(6), // Rounded corners
-            side: BorderSide(
-              color: Colors.grey, // Border color
-              width: 1, // Border width
-            ),
+            borderRadius: BorderRadius.circular(6),
+            side: const BorderSide(color: Colors.grey, width: 1),
           ),
-          //elevation: 5,                           // Shadow depth
         ),
         onPressed: () {
-          print('google button pressed!');
+          print('Google button pressed!');
         },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset("assets/images/google1.png", height: 35, width: 35),
-            SizedBox(width: 10),
-            Text('Continue with Google', style: TextStyle(fontSize: 16)),
+            const SizedBox(width: 10),
+            Text(loc.continueWithGoogle, style: const TextStyle(fontSize: 16)),
           ],
         ),
       ),
     );
   }
 
-  Row orDevider() {
+  Row orDevider(AppLocalizations loc) {
     return Row(
-      children: const [
-        Expanded(
+      children: [
+        const Expanded(
           child: Divider(
             color: Colors.grey,
             thickness: 1,
-            indent: 25, // left spacing
-            endIndent: 10, // space before "OR"
+            indent: 25,
+            endIndent: 10,
           ),
         ),
         Text(
-          "or",
-          style: TextStyle(
+          loc.or,
+          style: const TextStyle(
             color: Color.fromARGB(255, 109, 107, 107),
             fontWeight: FontWeight.normal,
           ),
         ),
-        Expanded(
+        const Expanded(
           child: Divider(
             color: Colors.grey,
             thickness: 1,
-            indent: 10, // space after "OR"
+            indent: 10,
             endIndent: 25,
           ),
         ),
@@ -146,49 +144,42 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Container loginButton() {
+  Container loginButton(AppLocalizations loc) {
     return Container(
-      margin: EdgeInsets.only(left: 25, right: 25),
+      margin: const EdgeInsets.symmetric(horizontal: 25),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color.fromARGB(
-            255,
-            0,
-            51,
-            102,
-          ), // Button color
-          foregroundColor: Colors.white, // Text color
-          minimumSize: const Size(400, 60), // Width x Height
+          backgroundColor: const Color.fromARGB(255, 0, 51, 102),
+          foregroundColor: Colors.white,
+          minimumSize: const Size(400, 60),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(6), // Rounded corners
-          ),
-          elevation: 5, // Shadow depth
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+          elevation: 5,
         ),
         onPressed: () {
           print('Login button pressed!');
         },
-        child: const Text('Login', style: TextStyle(fontSize: 16)),
+        child: Text(loc.login, style: const TextStyle(fontSize: 16)),
       ),
     );
   }
 
   Container logoGetter() {
-    return Container(
+    return SizedBox(
       height: 125,
       width: 125,
       child: Image.asset('assets/images/logo.png'),
     );
   }
 
-  Container forgotPassword() {
+  Container forgotPassword(AppLocalizations loc) {
     return Container(
-      margin: EdgeInsets.only(right: 25),
+      margin: const EdgeInsets.only(right: 25),
       child: Text(
-        "Forgot Password?",
+        loc.forgotPassword,
         textAlign: TextAlign.right,
-        style: TextStyle(
-          color: const Color.fromARGB(255, 37, 153, 237),
+        style: const TextStyle(
+          color: Color.fromARGB(255, 37, 153, 237),
           fontSize: 15,
           decoration: TextDecoration.none,
           fontWeight: FontWeight.w400,
@@ -202,30 +193,30 @@ class _LoginState extends State<Login> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          margin: EdgeInsets.only(left: 25),
+          margin: const EdgeInsets.only(left: 25),
           child: Text(
             label,
-            style: TextStyle(
+            style: const TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: 15,
-              color: const Color.fromARGB(255, 60, 59, 59),
+              color: Color.fromARGB(255, 60, 59, 59),
             ),
           ),
         ),
         Container(
-          margin: EdgeInsets.only(left: 25, right: 25, top: 7),
+          margin: const EdgeInsets.only(left: 25, right: 25, top: 7),
           child: TextField(
             decoration: InputDecoration(
               filled: true,
               fillColor: Colors.white,
-              border: OutlineInputBorder(),
+              border: const OutlineInputBorder(),
               hintText: hint,
-              hintStyle: TextStyle(
+              hintStyle: const TextStyle(
                 color: Color.fromARGB(255, 124, 124, 157),
                 fontSize: 15,
               ),
               enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.grey),
+                borderSide: const BorderSide(color: Colors.grey),
                 borderRadius: BorderRadius.circular(8),
               ),
             ),

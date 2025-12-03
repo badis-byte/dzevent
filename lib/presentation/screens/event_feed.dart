@@ -5,6 +5,7 @@ import 'package:dzevent/logic/cubits/events/events_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:dzevent/l10n/app_localizations.dart';
 
 class EventFeed extends StatefulWidget {
   static const String pageRoute = "event-feed";
@@ -26,6 +27,8 @@ class _EventFeedState extends State<EventFeed> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -37,7 +40,7 @@ class _EventFeedState extends State<EventFeed> {
                 IconButton(onPressed: () {}, icon: Icon(Icons.list)),
                 Expanded(
                   child: Text(
-                    "Upcoming events",
+                    loc.upcomingEvents,
                     textAlign: TextAlign.center,
                     style: headingStyle,
                   ),
@@ -50,16 +53,24 @@ class _EventFeedState extends State<EventFeed> {
             ),
             SearchAnchor.bar(
               suggestionsBuilder: (context, controller) => [],
-              barHintText: "Search for events ...",
+              barHintText: loc.searchBarHint,
             ),
-            Filters(filters: filters),
+            Filters(
+              filters: [
+                loc.filterAll,
+                loc.filterMusic,
+                loc.filterSports,
+                loc.filterArts,
+                loc.filterTech,
+              ],
+            ),
             BlocBuilder<EventsCubit, EventsState>(
               builder: (context, state) {
                 if (state is EventsLoading) {
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 }
                 if (state is EventsError) {
-                  return Center(child: Text("Error: ${state.error}"));
+                  return Center(child: Text(loc.errorOccurred(state.error)));
                 }
                 if (state is EventsFetched) {
                   final events = state.events;
@@ -107,6 +118,8 @@ class EventCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+
     return SizedBox(
       width: double.infinity,
       height: _height,
@@ -117,10 +130,7 @@ class EventCard extends StatelessWidget {
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [
-                  Colors.black.withValues(alpha: .6),
-                  Colors.transparent,
-                ],
+                colors: [Colors.black.withOpacity(0.6), Colors.transparent],
                 begin: Alignment.bottomCenter,
                 end: Alignment.topCenter,
               ),
@@ -139,7 +149,7 @@ class EventCard extends StatelessWidget {
                         event.title,
                         style: headingStyle.copyWith(color: Colors.white),
                       ),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       Text(
                         DateFormat(
                           "E, MMM d\n",
@@ -165,8 +175,8 @@ class EventCard extends StatelessWidget {
                         alignment: Alignment.bottomRight,
                         child: ElevatedButton.icon(
                           onPressed: () {},
-                          label: Text("Show Interest"),
-                          icon: Icon(Icons.favorite_border),
+                          label: Text(loc.showInterest),
+                          icon: const Icon(Icons.favorite_border),
                           iconAlignment: IconAlignment.end,
                           style: getPrimaryBtnStyle(
                             context: context,
