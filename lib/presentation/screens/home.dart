@@ -1,7 +1,6 @@
 import 'package:dzevent/presentation/screens/add_event.dart';
 import 'package:dzevent/presentation/screens/assocAdmin.dart';
 import 'package:dzevent/presentation/screens/associationProfileTwo.dart';
-import 'package:dzevent/presentation/screens/event_details.dart';
 import 'package:dzevent/presentation/screens/event_feed.dart';
 import 'package:dzevent/presentation/screens/public_assoc_profile.dart';
 import 'package:dzevent/presentation/screens/signup.dart';
@@ -10,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:dzevent/presentation/screens/login.dart';
 import 'package:dzevent/presentation/screens/my_account_credentials.dart';
 import 'package:dzevent/presentation/screens/reg_user_profile.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// # New Screen Setup
 /// - Add screen entry to _links
