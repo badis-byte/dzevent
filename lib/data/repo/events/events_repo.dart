@@ -18,8 +18,8 @@ class EventsRepo extends PostRepoBase {
 
   @override
   Future<bool> insertData(EventModel post) async {
-    postTable.insertRecord(post.toMap());
-    return true;
+    final isInserted = postTable.insertRecord(post.toMap());
+    return isInserted;
   }
 
   @override

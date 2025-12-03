@@ -6,7 +6,6 @@ class DBBaseTable {
   var db_table = 'TABLE_NAME_MUST_OVERRIDE';
 
   Future<bool> insertRecord(Map<String, dynamic> data) async {
-    data.remove("id");
     try {
       final database = await DBHelper.getDatabase();
       database.insert(
