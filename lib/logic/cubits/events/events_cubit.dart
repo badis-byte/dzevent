@@ -9,17 +9,7 @@ class EventsCubit extends Cubit<EventsState> {
   Future<bool> getUserData() async {
     emit(EventsLoading());
     final response = await localRepo.getData();
-    emit(EventsFetched(posts: response));
+    emit(EventsFetched(events: response));
     return true;
   }
 }
-
-
-
-
-
-
-
-
-
-

@@ -1,6 +1,6 @@
 import 'db_base.dart';
 
-class PostsTable extends DBBaseTable {
+class EventsTable extends DBBaseTable {
   var db_table = 'history';
   static String sql_code = '''
           CREATE TABLE  Events (
@@ -10,5 +10,3 @@ class PostsTable extends DBBaseTable {
             )
         ''';
 }
-
-

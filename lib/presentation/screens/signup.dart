@@ -47,7 +47,7 @@ class _SignupState extends State<Signup> {
                   hint: "Enter your full name",
                   pass: false,
                   textcontroller: nameController,
-                  validate: _nameValidate
+                  validate: _nameValidate,
                 ),
                 SizedBox(height: 20),
                 buildInput(
@@ -76,18 +76,19 @@ class _SignupState extends State<Signup> {
                 SizedBox(height: 30),
                 createButton(),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center, // centers the whole row
+                  mainAxisAlignment:
+                      MainAxisAlignment.center, // centers the whole row
                   children: [
                     Text("Are you an Association?"),
                     const SizedBox(width: 8), // small spacing
                     Checkbox(
-            value: association,
-            onChanged: (value) {
-              setState(() {
-                print(value);
-                association = value!;
-              });
-            },
+                      value: association,
+                      onChanged: (value) {
+                        setState(() {
+                          print(value);
+                          association = value!;
+                        });
+                      },
                     ),
                   ],
                 ),
@@ -198,28 +199,32 @@ class _SignupState extends State<Signup> {
           _process();
         },
         child: BlocConsumer<AccountCubit, AccountState>(
-          builder: (context, state){
-            if(state is AccountLoading){
+          builder: (context, state) {
+            if (state is AccountLoading) {
               return Center(child: CircularProgressIndicator());
             }
-            
+
             return Text('Create Account', style: TextStyle(fontSize: 16));
           },
-          listener: (context, state){
-            if(state is AccountError){
-              ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.error)),);
+          listener: (context, state) {
+            if (state is AccountError) {
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(state.error)));
             }
-            if(state is AccountExists){
-              ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Email already exists")),);
+            if (state is AccountExists) {
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text("Email already exists")));
             }
-            if(state is UserFetched || state is AssociationFetched){
-                Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (_) => EventFeed()),);
+            if (state is UserFetched || state is AssociationFetched) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (_) => EventFeed()),
+              );
             }
-          }
-          )
+          },
+        ),
       ),
     );
   }
@@ -334,86 +339,88 @@ class _SignupState extends State<Signup> {
     );
   }
 
-  String? _nameValidate(String? text){
+  String? _nameValidate(String? text) {
     if (text == null || text.trim().isEmpty) {
-    return "Name is required";
+      return "Name is required";
+    }
+
+    // Remove extra spaces
+    final parts = text.trim().split(RegExp(r'\s+'));
+
+    if (parts.length < 2) {
+      return "Please enter your full name (first and last)";
+    }
+
+    if (parts.any((part) => part.length < 2)) {
+      return "Each name must be at least 2 characters";
+    }
+
+    return null;
   }
 
-  // Remove extra spaces
-  final parts = text.trim().split(RegExp(r'\s+'));
-
-  if (parts.length < 2) {
-    return "Please enter your full name (first and last)";
-  }
-
-  if (parts.any((part) => part.length < 2)) {
-    return "Each name must be at least 2 characters";
-  }
-
-  return null;
-  }
-
-  String? _emailValidate(String? text ){
+  String? _emailValidate(String? text) {
     if (text == null || text.isEmpty) {
-    return "Email is required";
+      return "Email is required";
+    }
+
+    // Simple and effective regex
+    final regex = RegExp(r'^[^@]+@[^@]+\.[^@]+$');
+
+    if (!regex.hasMatch(text)) {
+      return "Enter a valid email";
+    }
+
+    return null;
   }
 
-  // Simple and effective regex
-  final regex = RegExp(r'^[^@]+@[^@]+\.[^@]+$');
-
-  if (!regex.hasMatch(text)) {
-    return "Enter a valid email";
-  }
-
-  return null;
-  }
-
-  String? _passOneValidate(String? text){
+  String? _passOneValidate(String? text) {
     if (text == null || text.isEmpty) {
-    return "Password is required";
+      return "Password is required";
+    }
+
+    if (text.length < 8) {
+      return "Password must be at least 8 characters long";
+    }
+
+    if (!RegExp(r'[A-Z]').hasMatch(text)) {
+      return "Password must contain at least one uppercase letter";
+    }
+
+    if (!RegExp(r'[a-z]').hasMatch(text)) {
+      return "Password must contain at least one lowercase letter";
+    }
+
+    if (!RegExp(r'[0-9]').hasMatch(text)) {
+      return "Password must contain at least one number";
+    }
+
+    return null;
   }
 
-  if (text.length < 8) {
-    return "Password must be at least 8 characters long";
-  }
-
-  if (!RegExp(r'[A-Z]').hasMatch(text)) {
-    return "Password must contain at least one uppercase letter";
-  }
-
-  if (!RegExp(r'[a-z]').hasMatch(text)) {
-    return "Password must contain at least one lowercase letter";
-  }
-
-  if (!RegExp(r'[0-9]').hasMatch(text)) {
-    return "Password must contain at least one number";
-  }
-
-  return null;
-  }
-
-  String? _passTwoValidate(String? text){
+  String? _passTwoValidate(String? text) {
     if (text == null || text.isEmpty) {
-    return "Please confirm your password";
+      return "Please confirm your password";
+    }
+
+    if (text != passOneController.text) {
+      return "Passwords do not match";
+    }
+
+    return null;
   }
 
-  if (text != passOneController.text) {
-    return "Passwords do not match";
+  void _process() {
+    if (formkey.currentState!.validate()) {
+      context.read<AccountCubit>().register(
+        nameController.text,
+        emailController.text,
+        passOneController.text,
+        association,
+      );
+    } else {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Please try again.')));
+    }
   }
-
-  return null;
-  }
-
-
-void _process(){
-  if(formkey.currentState!.validate()){
-    context.read<AccountCubit>().register( nameController.text, emailController.text, passOneController.text, association);
-  }else{
-    ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please try again.')),);
-  }
-}
-
-
-
 }

@@ -52,7 +52,7 @@ class EventFeed extends StatelessWidget {
                   return Center(child: Text("Error: ${state.error}"));
                 }
                 if (state is EventsFetched) {
-                  final posts = state.posts;
+                  final posts = state.events;
                   return Expanded(
                     child: ListView.builder(
                       itemCount: posts.length,
@@ -171,4 +171,3 @@ class Filters extends StatelessWidget {
 //     );
 //   }
 // }
-

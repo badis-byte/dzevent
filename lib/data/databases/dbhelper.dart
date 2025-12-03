@@ -12,7 +12,11 @@ class DBHelper {
   static const _database_version = 1;
   static var database;
 
-  static List<String> sql_codes = [PostsTable.sql_code, UserTable.sql_code, AssociationTable.sql_code];
+  static List<String> sql_codes = [
+    EventsTable.sql_code,
+    UserTable.sql_code,
+    AssociationTable.sql_code,
+  ];
   static Future<Database> getDatabase() async {
     if (database != null) {
       return database;

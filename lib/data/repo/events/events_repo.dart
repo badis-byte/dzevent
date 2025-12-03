@@ -1,23 +1,23 @@
-import 'package:dzevent/data/models/events_model.dart';
+import 'package:dzevent/data/models/event_model.dart';
+import 'package:dzevent/data/repo/events/event_repo_base.dart';
 
 import '../../databases/db_events.dart';
-import 'post_repo_base.dart';
 
-class PostRepoLocal extends PostRepoBase {
+class EventsRepo extends PostRepoBase {
   final postTable = EventsTable(); // Badly Coupled..
 
   @override
-  Future<List<UserModel>> getData() async {
+  Future<List<EventModel>> getData() async {
     final obj = await postTable.getRecords();
-    List<UserModel> result = [];
+    List<EventModel> result = [];
     obj.forEach((item) {
-      result.add(UserModel.fromMap(item));
+      result.add(EventModel.fromMap(item));
     });
     return result;
   }
 
   @override
-  Future<bool> insertData(UserModel post) async {
+  Future<bool> insertData(EventModel post) async {
     postTable.insertRecord(post.toMap());
     return true;
   }
