@@ -37,9 +37,6 @@ enum _FormField {
 }
 
 class _AddeventState extends State<Addevent> {
-  final ImagePicker _picker = ImagePicker();
-  File? _image;
-
   late final Map<_FormField, TextEditingController> controllers;
   late final GlobalKey<FormState> _formKey;
 
@@ -86,18 +83,17 @@ class _AddeventState extends State<Addevent> {
         startTime.minute,
       );
 
-      // final endDate = DateTime.parse(controllers[_FormField.endDate]!.text);
-      // final endTime = parseTimeOfDay(
-      //   str: controllers[_FormField.endTime]!.text,
-      // );
-      // final endDatetime = DateTime(
-      //   endDate.year,
-      //   endDate.month,
-      //   endDate.day,
-      //   endTime.hour,
-      //   endTime.minute,
-      // );
-      final endDatetime = DateTime.now();
+      final endDate = DateTime.parse(controllers[_FormField.endDate]!.text);
+      final endTime = parseTimeOfDay(
+        str: controllers[_FormField.endTime]!.text,
+      );
+      final endDatetime = DateTime(
+        endDate.year,
+        endDate.month,
+        endDate.day,
+        endTime.hour,
+        endTime.minute,
+      );
 
       final imageUrl = controllers[_FormField.imageUrl]!.text;
       final location = controllers[_FormField.location]!.text;
@@ -172,6 +168,11 @@ class _AddeventState extends State<Addevent> {
                   ),
                 );
               }
+              if (state is AddNewEventSuccess) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Event Added Succeffully.")),
+                );
+              }
             },
             child: SingleChildScrollView(
               scrollDirection: Axis.vertical,
@@ -187,10 +188,10 @@ class _AddeventState extends State<Addevent> {
                       maximumLength: 100,
                       label: "Annual Tech Conference",
                       expand: false,
+                      controller: controllers[_FormField.title]!,
                     ),
 
                     SizedBox(height: 16),
-
                     SizedBox(
                       height: 200,
                       child: TextInput(
@@ -198,23 +199,33 @@ class _AddeventState extends State<Addevent> {
                         maximumLength: 500,
                         label: "Join us for a day of insightful talks...",
                         expand: true,
+                        controller: controllers[_FormField.description]!,
                       ),
                     ),
 
+                    SizedBox(height: 16),
                     DatetimeInput(
                       label: "Start Datetime",
                       timeController: controllers[_FormField.startTime]!,
                       dateController: controllers[_FormField.startDate]!,
                     ),
-                    SizedBox(height: 8),
+
+                    SizedBox(height: 16),
+                    DatetimeInput(
+                      label: " End Datetime",
+                      timeController: controllers[_FormField.endTime]!,
+                      dateController: controllers[_FormField.endDate]!,
+                    ),
+
+                    SizedBox(height: 16),
                     Input(
                       controller: controllers[_FormField.location]!,
-                      title: "Location",
-                      label: "123Main Street,Anytown",
+                      label: "Location",
+                      hint: "123Main Street,Anytown",
                       icon: Icons.location_on_outlined,
                     ),
 
-                    SizedBox(height: 8),
+                    SizedBox(height: 16),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -250,33 +261,20 @@ class _AddeventState extends State<Addevent> {
                                     ),
                                   )
                                   .toList(),
-                          onChanged: (_) {},
+                          onChanged: (value) {
+                            controllers[_FormField.category]!.text = value!;
+                          },
                         ),
 
                         SizedBox(height: 8),
+                        ImageInput(
+                          label: "image",
+                          hint: "",
+                          icon: null,
+                          controller: controllers[_FormField.imageUrl]!,
+                        ),
 
-                        // SizedBox(
-                        //   width: double.infinity,
-                        //   child: ElevatedButton(
-                        //     onPressed: () async {
-                        //       final XFile? image = await _picker.pickImage(
-                        //         source: ImageSource.gallery,
-                        //       );
-                        //       if (image != null) {
-                        //         setState(() => _image = File(image.path));
-                        //       }
-                        //     },
-                        //     style: ElevatedButton.styleFrom(
-                        //       elevation: 2,
-                        //       backgroundColor: Colors.white,
-                        //       textStyle: TextStyle(color: Colors.grey),
-                        //     ),
-                        //     child: const Text("Choose Image"),
-                        //   ),
-                        // ),
-                        // _image != null
-                        //     ? Image.file(_image!)
-                        //     : const Icon(Icons.image, size: 150.0),
+                        SizedBox(height: 8),
                         Column(
                           children: [
                             Button(

@@ -5,6 +5,7 @@ class TextInput extends StatelessWidget {
   final int maximumLength;
   final String label;
   final bool expand;
+  final TextEditingController controller;
 
   const TextInput({
     super.key,
@@ -12,6 +13,7 @@ class TextInput extends StatelessWidget {
     required this.maximumLength,
     required this.label,
     required this.expand,
+    required this.controller,
   });
 
   @override
@@ -30,6 +32,7 @@ class TextInput extends StatelessWidget {
 
           Expanded(
             child: TextField(
+              controller: controller,
               cursorColor: Colors.black,
               maxLength: maximumLength,
               maxLines: null,

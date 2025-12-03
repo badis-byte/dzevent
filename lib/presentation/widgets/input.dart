@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
 class Input extends StatelessWidget {
-  final String title;
   final String label;
-  final IconData icon;
+  final String hint;
+  final IconData? icon;
   final TextEditingController controller;
 
   const Input({
     super.key,
-    required this.title,
     required this.label,
+    required this.hint,
     required this.icon,
     required this.controller,
   });
@@ -19,13 +19,13 @@ class Input extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title),
+        Text(label),
         TextField(
           controller: controller,
           decoration: InputDecoration(
-            hintText: label,
+            hintText: hint,
             border: OutlineInputBorder(),
-            suffixIcon: Icon(icon, color: Colors.grey),
+            suffixIcon: icon == null ? Icon(icon, color: Colors.grey) : null,
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(color: Colors.black, width: 2),
               borderRadius: BorderRadius.circular(8),
@@ -187,6 +187,70 @@ class DatetimeInput extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Display image if possible
+class ImageInput extends StatefulWidget {
+  final String label;
+  final String hint;
+  final IconData? icon;
+  final TextEditingController controller;
+
+  const ImageInput({
+    super.key,
+    required this.label,
+    required this.hint,
+    required this.icon,
+    required this.controller,
+  });
+
+  @override
+  State<ImageInput> createState() => _ImageInputState();
+}
+
+class _ImageInputState extends State<ImageInput> {
+  @override
+  void initState() {
+    super.initState();
+    widget.controller.addListener(() => setState(() {}));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(widget.label),
+        TextField(
+          controller: widget.controller,
+          decoration: InputDecoration(
+            hintText: widget.hint,
+            border: OutlineInputBorder(),
+            suffixIcon: widget.icon == null
+                ? Icon(widget.icon, color: Colors.grey)
+                : null,
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.black, width: 2),
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+        ),
+        Builder(
+          builder: (context) {
+            final imageUrl = widget.controller.text;
+            if (imageUrl.isNotEmpty) {
+              return Image.network(
+                imageUrl,
+                errorBuilder: (context, error, stackTrace) =>
+                    Text("Invalid url"),
+              );
+            }
+            return SizedBox();
+          },
+        ),
+      ],
     );
   }
 }
