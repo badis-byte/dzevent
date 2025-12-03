@@ -174,7 +174,7 @@ class _LoginState extends State<Login> {
   }
 
   Container logoGetter() {
-    return Container(
+    return SizedBox(
       height: 125,
       width: 125,
       child: Image.asset('assets/images/logo.png'),
