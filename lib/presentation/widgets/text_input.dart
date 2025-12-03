@@ -1,3 +1,4 @@
+import 'package:dzevent/lib/utils.dart';
 import 'package:flutter/material.dart';
 
 class TextInput extends StatelessWidget {
@@ -6,6 +7,7 @@ class TextInput extends StatelessWidget {
   final String label;
   final bool expand;
   final TextEditingController controller;
+  final bool isRequired;
 
   const TextInput({
     super.key,
@@ -14,6 +16,7 @@ class TextInput extends StatelessWidget {
     required this.label,
     required this.expand,
     required this.controller,
+    this.isRequired = true,
   });
 
   @override
@@ -31,8 +34,9 @@ class TextInput extends StatelessWidget {
           SizedBox(height: 8),
 
           Expanded(
-            child: TextField(
+            child: TextFormField(
               controller: controller,
+              validator: getIsRequiredValidator(isRequired: isRequired),
               cursorColor: Colors.black,
               maxLength: maximumLength,
               maxLines: null,

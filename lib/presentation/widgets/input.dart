@@ -1,3 +1,4 @@
+import 'package:dzevent/lib/utils.dart';
 import 'package:flutter/material.dart';
 
 class Input extends StatelessWidget {
@@ -5,6 +6,7 @@ class Input extends StatelessWidget {
   final String hint;
   final IconData? icon;
   final TextEditingController controller;
+  final bool isRequired;
 
   const Input({
     super.key,
@@ -12,6 +14,7 @@ class Input extends StatelessWidget {
     required this.hint,
     required this.icon,
     required this.controller,
+    this.isRequired = true,
   });
 
   @override
@@ -20,7 +23,8 @@ class Input extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(label),
-        TextField(
+        TextFormField(
+          validator: getIsRequiredValidator(isRequired: isRequired),
           controller: controller,
           decoration: InputDecoration(
             hintText: hint,
@@ -42,6 +46,7 @@ class DateInput extends StatelessWidget {
   final String label;
   final IconData icon;
   final TextEditingController controller;
+  final bool isRequired;
 
   const DateInput({
     super.key,
@@ -49,6 +54,7 @@ class DateInput extends StatelessWidget {
     required this.label,
     required this.icon,
     required this.controller,
+    this.isRequired = true,
   });
 
   @override
@@ -57,9 +63,10 @@ class DateInput extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(title),
-        TextField(
+        TextFormField(
           readOnly: true, // +1
           controller: controller,
+          validator: getIsRequiredValidator(isRequired: isRequired),
 
           decoration: InputDecoration(
             hintText: label,
@@ -92,6 +99,7 @@ class TimeInput extends StatelessWidget {
   final String label;
   final IconData icon;
   final TextEditingController controller;
+  final bool isRequired;
 
   const TimeInput({
     super.key,
@@ -99,6 +107,7 @@ class TimeInput extends StatelessWidget {
     required this.label,
     required this.icon,
     required this.controller,
+    this.isRequired = true,
   });
 
   @override
@@ -107,9 +116,10 @@ class TimeInput extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(title),
-        TextField(
+        TextFormField(
           readOnly: true, // +1
           controller: controller,
+          validator: getIsRequiredValidator(isRequired: isRequired),
 
           decoration: InputDecoration(
             hintText: label,
@@ -141,11 +151,14 @@ class DatetimeInput extends StatelessWidget {
   final String label;
   final TextEditingController dateController;
   final TextEditingController timeController;
+  final bool isRequired;
+
   const DatetimeInput({
     super.key,
     required this.label,
     required this.dateController,
     required this.timeController,
+    this.isRequired = true,
   });
 
   @override
@@ -170,6 +183,7 @@ class DatetimeInput extends StatelessWidget {
                     label: "Select Date",
                     icon: Icons.calendar_month,
                     controller: dateController,
+                    isRequired: isRequired,
                   ),
                 ),
                 SizedBox(width: 16),
@@ -180,6 +194,7 @@ class DatetimeInput extends StatelessWidget {
                     label: "Select Time",
                     icon: Icons.access_time,
                     controller: timeController,
+                    isRequired: isRequired,
                   ),
                 ),
               ],
@@ -197,6 +212,7 @@ class ImageInput extends StatefulWidget {
   final String hint;
   final IconData? icon;
   final TextEditingController controller;
+  final bool isRequired;
 
   const ImageInput({
     super.key,
@@ -204,6 +220,7 @@ class ImageInput extends StatefulWidget {
     required this.hint,
     required this.icon,
     required this.controller,
+    this.isRequired = true,
   });
 
   @override
@@ -223,8 +240,10 @@ class _ImageInputState extends State<ImageInput> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(widget.label),
-        TextField(
+        TextFormField(
           controller: widget.controller,
+          validator: getIsRequiredValidator(isRequired: widget.isRequired),
+
           decoration: InputDecoration(
             hintText: widget.hint,
             border: OutlineInputBorder(),

@@ -10,11 +10,11 @@ class EventsTable extends DBBaseTable {
       description TEXT NOT NULL,
       startDatetime TEXT NOT NULL,
       endDatetime TEXT NOT NULL,
-      imageUrl TEXT NOT NUUL,
+      imageUrl TEXT NOT NULL,
       location TEXT NOT NULL,
       createdAt TEXT NOT NULL,
-      associationId INTEGER,
-      category TEXT NOT NULL<
+      associationId INTEGER NOT NULL,
+      category TEXT NOT NULL
     );
   ''';
 }
