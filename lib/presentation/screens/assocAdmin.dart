@@ -1,6 +1,5 @@
-//this is association admin screen
-
 import 'package:dzevent/presentation/screens/associationProfileTwo.dart';
+import 'package:dzevent/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -17,7 +16,7 @@ class Assocadmin extends StatefulWidget {
 class _AssocadminState extends State<Assocadmin> {
   Widget textButton(String text, bool isSelected) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
         color: isSelected ? Colors.blue : Colors.white,
         borderRadius: BorderRadius.circular(8),
@@ -38,23 +37,23 @@ class _AssocadminState extends State<Assocadmin> {
       height: 40,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          backgroundColor: colorr, // Button color
+          backgroundColor: colorr,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12), // Rounded corners
+            borderRadius: BorderRadius.circular(12),
           ),
-          elevation: 4, // Shadow depth
+          elevation: 4,
         ),
         onPressed: () {},
-        //style
         child: Text(
           text,
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
     );
   }
 
   Widget cardAssoc(String title, String description, String date) {
+    final loc = AppLocalizations.of(context)!;
     return Card(
       elevation: 4,
       color: Colors.white,
@@ -67,26 +66,24 @@ class _AssocadminState extends State<Assocadmin> {
             children: [
               Text(
                 title,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Text(
                 description,
-                style: TextStyle(
-                  color: const Color.fromARGB(255, 107, 107, 107),
-                ),
+                style: const TextStyle(color: Color.fromARGB(255, 107, 107, 107)),
               ),
               Text(
-                "Requested on: $date",
-                style: TextStyle(color: Color.fromARGB(255, 107, 107, 107)),
+                loc.requestedOn(date),
+                style: const TextStyle(color: Color.fromARGB(255, 107, 107, 107)),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  btn("Reject", Colors.red),
-                  SizedBox(width: 8),
-                  btn("Accept", Colors.green),
+                  btn(loc.reject, Colors.red),
+                  const SizedBox(width: 8),
+                  btn(loc.accept, Colors.green),
                 ],
               ),
             ],
@@ -100,19 +97,22 @@ class _AssocadminState extends State<Assocadmin> {
   var Selected2 = false;
   var Selected3 = false;
   var Selected4 = false;
+
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: Container(
-          decoration: BoxDecoration(color: Colors.white),
+          decoration: const BoxDecoration(color: Colors.white),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: SizedBox(
               child: Column(
                 children: [
-                  SizedBox(height: 50),
+                  const SizedBox(height: 50),
                   SizedBox(
                     width: double.infinity,
                     child: Row(
@@ -120,7 +120,7 @@ class _AssocadminState extends State<Assocadmin> {
                         Builder(
                           builder: (context) {
                             return IconButton(
-                              icon: Icon(Icons.arrow_back),
+                              icon: const Icon(Icons.arrow_back),
                               onPressed: () {
                                 Navigator.pushReplacement(
                                   context,
@@ -132,12 +132,11 @@ class _AssocadminState extends State<Assocadmin> {
                             );
                           },
                         ),
-
                         Expanded(
                           child: Center(
                             child: Text(
-                              "Account Requests",
-                              style: TextStyle(
+                              loc.accountRequests,
+                              style: const TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -147,14 +146,12 @@ class _AssocadminState extends State<Assocadmin> {
                       ],
                     ),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   TextField(
-                    onChanged: (value) {
-                      // search logic
-                    },
+                    onChanged: (value) {},
                     decoration: InputDecoration(
-                      hintText: "Search by association name...",
-                      prefixIcon: Icon(Icons.search),
+                      hintText: loc.searchHint,
+                      prefixIcon: const Icon(Icons.search),
                       filled: true,
                       fillColor: const Color.fromARGB(17, 158, 158, 158),
                       border: OutlineInputBorder(
@@ -163,7 +160,7 @@ class _AssocadminState extends State<Assocadmin> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 24),
+                  const SizedBox(height: 24),
                   SizedBox(
                     width: double.infinity,
                     child: SingleChildScrollView(
@@ -179,9 +176,9 @@ class _AssocadminState extends State<Assocadmin> {
                                 Selected4 = false;
                               });
                             },
-                            child: textButton('All', Selected1),
+                            child: textButton(loc.all, Selected1),
                           ),
-                          SizedBox(width: 20),
+                          const SizedBox(width: 20),
                           GestureDetector(
                             onTap: () {
                               setState(() {
@@ -191,9 +188,9 @@ class _AssocadminState extends State<Assocadmin> {
                                 Selected4 = false;
                               });
                             },
-                            child: textButton('Pending', Selected2),
+                            child: textButton(loc.pending, Selected2),
                           ),
-                          SizedBox(width: 20),
+                          const SizedBox(width: 20),
                           GestureDetector(
                             onTap: () {
                               setState(() {
@@ -203,9 +200,9 @@ class _AssocadminState extends State<Assocadmin> {
                                 Selected4 = false;
                               });
                             },
-                            child: textButton('Accepted', Selected3),
+                            child: textButton(loc.accepted, Selected3),
                           ),
-                          SizedBox(width: 20),
+                          const SizedBox(width: 20),
                           GestureDetector(
                             onTap: () {
                               setState(() {
@@ -215,16 +212,17 @@ class _AssocadminState extends State<Assocadmin> {
                                 Selected4 = true;
                               });
                             },
-                            child: textButton('Rejected', Selected4),
+                            child: textButton(loc.rejected, Selected4),
                           ),
                         ],
                       ),
                     ),
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   Expanded(
                     child: ListView(
                       children: [
+                        // Dynamic association data — keep as is, don't translate
                         cardAssoc(
                           "Tech Innovators Society",
                           "A community for tech enthusiasts and professionals",
@@ -235,32 +233,27 @@ class _AssocadminState extends State<Assocadmin> {
                           "Empowering the next generation of innovators and leaders",
                           "2024-10-25",
                         ),
-
                         cardAssoc(
                           "AI Enthusiasts Club",
                           "Learn, share, and explore AI technologies together",
                           "2024-11-01",
                         ),
-
                         cardAssoc(
                           "Open Source Developers",
                           "Collaborate on open source projects and improve your skills",
                           "2024-11-05",
                         ),
-
                         cardAssoc(
                           "Cybersecurity Network",
                           "Stay updated with the latest in cybersecurity and ethical hacking",
                           "2024-11-10",
                         ),
-
-                        SizedBox(height: 16),
+                        const SizedBox(height: 16),
                       ],
                     ),
                   ),
                 ],
               ),
-              // ),
             ),
           ),
         ),
@@ -268,3 +261,4 @@ class _AssocadminState extends State<Assocadmin> {
     );
   }
 }
+

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:dzevent/l10n/app_localizations.dart';
 
 class Myaccountcredentials extends StatelessWidget {
   const Myaccountcredentials({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -12,7 +15,7 @@ class Myaccountcredentials extends StatelessWidget {
         elevation: 0,
         backgroundColor: Colors.lightBlue,
         foregroundColor: Colors.white,
-        title: const Text("Edit Profile"),
+        title: Text(loc.editProfile),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -27,14 +30,14 @@ class Myaccountcredentials extends StatelessWidget {
               child: Column(
                 children: [
                   UserInfoEditField(
-                    text: "Name",
+                    text: loc.name,
                     child: TextFormField(
                       initialValue: "Annette Black",
                       decoration: InputDecoration(
                         filled: true,
                         fillColor: const Color(0xFF00BF6D).withOpacity(0.05),
                         contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16.0 * 1.5, vertical: 16.0),
+                            horizontal: 24.0, vertical: 16.0),
                         border: const OutlineInputBorder(
                           borderSide: BorderSide.none,
                           borderRadius: BorderRadius.all(Radius.circular(50)),
@@ -43,14 +46,14 @@ class Myaccountcredentials extends StatelessWidget {
                     ),
                   ),
                   UserInfoEditField(
-                    text: "Email",
+                    text: loc.email,
                     child: TextFormField(
                       initialValue: "annette@gmail.com",
                       decoration: InputDecoration(
                         filled: true,
                         fillColor: const Color(0xFF00BF6D).withOpacity(0.05),
                         contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16.0 * 1.5, vertical: 16.0),
+                            horizontal: 24.0, vertical: 16.0),
                         border: const OutlineInputBorder(
                           borderSide: BorderSide.none,
                           borderRadius: BorderRadius.all(Radius.circular(50)),
@@ -59,14 +62,14 @@ class Myaccountcredentials extends StatelessWidget {
                     ),
                   ),
                   UserInfoEditField(
-                    text: "Phone",
+                    text: loc.phone,
                     child: TextFormField(
                       initialValue: "(316) 555-0116",
                       decoration: InputDecoration(
                         filled: true,
                         fillColor: const Color(0xFF00BF6D).withOpacity(0.05),
                         contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16.0 * 1.5, vertical: 16.0),
+                            horizontal: 24.0, vertical: 16.0),
                         border: const OutlineInputBorder(
                           borderSide: BorderSide.none,
                           borderRadius: BorderRadius.all(Radius.circular(50)),
@@ -75,14 +78,14 @@ class Myaccountcredentials extends StatelessWidget {
                     ),
                   ),
                   UserInfoEditField(
-                    text: "Address",
+                    text: loc.address,
                     child: TextFormField(
                       initialValue: "New York, NVC",
                       decoration: InputDecoration(
                         filled: true,
                         fillColor: const Color(0xFF00BF6D).withOpacity(0.05),
                         contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16.0 * 1.5, vertical: 16.0),
+                            horizontal: 24.0, vertical: 16.0),
                         border: const OutlineInputBorder(
                           borderSide: BorderSide.none,
                           borderRadius: BorderRadius.all(Radius.circular(50)),
@@ -91,7 +94,7 @@ class Myaccountcredentials extends StatelessWidget {
                     ),
                   ),
                   UserInfoEditField(
-                    text: "Old Password",
+                    text: loc.oldPassword,
                     child: TextFormField(
                       obscureText: true,
                       initialValue: "demopass",
@@ -103,7 +106,7 @@ class Myaccountcredentials extends StatelessWidget {
                         filled: true,
                         fillColor: const Color(0xFF00BF6D).withOpacity(0.05),
                         contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16.0 * 1.5, vertical: 16.0),
+                            horizontal: 24.0, vertical: 16.0),
                         border: const OutlineInputBorder(
                           borderSide: BorderSide.none,
                           borderRadius: BorderRadius.all(Radius.circular(50)),
@@ -112,14 +115,14 @@ class Myaccountcredentials extends StatelessWidget {
                     ),
                   ),
                   UserInfoEditField(
-                    text: "New Password",
+                    text: loc.newPassword,
                     child: TextFormField(
                       decoration: InputDecoration(
-                        hintText: "New Password",
+                        hintText: loc.newPasswordHint,
                         filled: true,
                         fillColor: const Color(0xFF00BF6D).withOpacity(0.05),
                         contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16.0 * 1.5, vertical: 16.0),
+                            horizontal: 24.0, vertical: 16.0),
                         border: const OutlineInputBorder(
                           borderSide: BorderSide.none,
                           borderRadius: BorderRadius.all(Radius.circular(50)),
@@ -148,7 +151,7 @@ class Myaccountcredentials extends StatelessWidget {
                       minimumSize: const Size(double.infinity, 48),
                       shape: const StadiumBorder(),
                     ),
-                    child: const Text("Cancel"),
+                    child: Text(loc.cancel),
                   ),
                 ),
                 const SizedBox(width: 16.0),
@@ -162,7 +165,7 @@ class Myaccountcredentials extends StatelessWidget {
                       shape: const StadiumBorder(),
                     ),
                     onPressed: () {},
-                    child: const Text("Save Update"),
+                    child: Text(loc.saveUpdate),
                   ),
                 ),
               ],
