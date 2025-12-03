@@ -15,3 +15,5 @@ class EventsFetched extends EventsState {
   final List<EventModel> events;
   EventsFetched({required this.events});
 }
+
+class AddNewEventSuccess extends EventsState {}

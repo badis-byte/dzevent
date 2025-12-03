@@ -20,7 +20,7 @@ class _EventFeedState extends State<EventFeed> {
 
   @override
   void initState() {
-    context.read<EventsCubit>().getUserData();
+    context.read<EventsCubit>().getAll();
     super.initState();
   }
 

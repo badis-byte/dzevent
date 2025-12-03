@@ -2,7 +2,7 @@
 import 'dart:convert';
 
 class EventModel {
-  final int id;
+  final String id;
   final String title;
   final String description;
   final DateTime startDatetime;
@@ -26,7 +26,7 @@ class EventModel {
   });
 
   EventModel copyWith({
-    int? id,
+    String? id,
     String? title,
     String? description,
     DateTime? startDatetime,
@@ -68,7 +68,7 @@ class EventModel {
 
   factory EventModel.fromMap(Map<String, dynamic> map) {
     return EventModel(
-      id: map['id'] as int,
+      id: map['id'] as String,
       title: map['title'] as String,
       description: map['description'] as String,
       startDatetime: DateTime.parse(map['startDatetime']),
