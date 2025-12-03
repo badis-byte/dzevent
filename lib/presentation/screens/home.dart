@@ -1,4 +1,4 @@
-import 'package:dzevent/presentation/screens/addEvent.dart';
+import 'package:dzevent/presentation/screens/add_event.dart';
 import 'package:dzevent/presentation/screens/assocAdmin.dart';
 import 'package:dzevent/presentation/screens/associationProfileTwo.dart';
 import 'package:dzevent/presentation/screens/event_details.dart';
@@ -33,11 +33,6 @@ final _links = [
   Link(icon: Icons.person, label: "assocAdmin", page: Assocadmin()),
   Link(icon: Icons.person, label: "assocProfileTwo", page: AssocProfTwo()),
 
-  Link(
-    icon: Icons.details_outlined,
-    label: "event_details",
-    page: EventDetails(),
-  ),
   Link(icon: Icons.event, label: "event_feed", page: EventFeed()),
   Link(icon: Icons.login, label: "Login", page: Login()),
   Link(
@@ -62,8 +57,6 @@ class NavScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final postFuture = Supabase.instance.client.from('Post').select();
-
     return Scaffold(
       body: Row(
         children: [
@@ -85,21 +78,7 @@ class NavScreen extends StatelessWidget {
               );
             },
           ),
-          Expanded(
-            child: FutureBuilder(
-              future: postFuture,
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                final posts = snapshot.data!;
-                return ListView.builder(
-                  itemCount: posts.length,
-                  itemBuilder: (context, index) => Text(posts[index]['name']),
-                );
-              },
-            ),
-          ),
+          Center(child: Text("EMPTY")),
         ],
       ),
     );

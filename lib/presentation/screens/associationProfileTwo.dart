@@ -1,4 +1,4 @@
-import 'package:dzevent/presentation/screens/addEvent.dart';
+import 'package:dzevent/presentation/screens/add_event.dart';
 import 'package:flutter/material.dart';
 
 void main(List<String> args) {

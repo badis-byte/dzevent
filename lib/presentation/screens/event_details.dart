@@ -1,13 +1,12 @@
-import 'package:dzevent/lib/defs.dart';
+import 'package:dzevent/data/models/event_model.dart';
 import 'package:dzevent/lib/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:dzevent/data/fake_data.dart' as DATA;
 
 class EventDetails extends StatelessWidget {
   final double _imageHeight = 270;
-  final event = DATA.event1;
-  EventDetails({super.key});
+  final EventModel event;
+  const EventDetails({super.key, required this.event});
 
   @override
   Widget build(BuildContext context) {
