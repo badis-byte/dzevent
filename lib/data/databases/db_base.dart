@@ -19,7 +19,20 @@ class DBBaseTable {
     }
     return false;
   }
-
+  Future<bool> deleteRecord(String id) async {
+    try {
+      final db = await DBHelper.getDatabase();
+      await db.delete(
+        db_table,
+        where: 'id = ?',
+        whereArgs: [id],
+      );
+      return true;
+    } on Exception catch (e, stacktrace) {
+      print('$e --> $stacktrace');
+    }
+    return false;
+  }
   Future<List<Map<String, dynamic>>> getRecords() async {
     try {
       final database = await DBHelper.getDatabase();

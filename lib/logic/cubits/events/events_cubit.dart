@@ -42,4 +42,16 @@ class EventsCubit extends Cubit<EventsState> {
       return false;
     }
   }
+
+  Future<bool> deleteInstace(String id) async {
+    try {
+      emit(EventsLoading());
+      final response = await localRepo.deleteRecord(id);
+      // emit(DeleteEventSuccess());
+      return true;
+    } catch (e) {
+      emit(EventsError(error: e.toString()));
+      return false;
+    }
+  }
 }

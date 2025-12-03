@@ -1,7 +1,9 @@
 import 'package:dzevent/data/models/event_model.dart';
+import 'package:dzevent/logic/cubits/events/events_cubit.dart';
 import 'package:dzevent/presentation/screens/add_event.dart';
 import 'package:dzevent/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main(List<String> args) {
   runApp(const AssocProfTwo());
@@ -165,9 +167,19 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
                           );
                         },
                       ),
-                      const PopupMenuItem(
+                      PopupMenuItem(
                         value: 'delete',
                         child: Text('Delete'),
+                        onTap: ()async{
+                            final cubit = context.read<EventsCubit>();
+                            try {
+                              if (await cubit.deleteInstace(event.id)) {
+                                print("Event deleted successfully");
+                              }
+                            } catch (e) {
+                              print("Error deleting event: $e");
+                            }
+                        },
                       ),
                     ],
                     icon: const Icon(Icons.more_vert),
@@ -188,6 +200,7 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
     EventModel event2 = EventModel(id: "2", title: "AI Conference", description: "Explore the latest advancements in AI.", startDatetime: DateTime(2025, 12, 10, 9, 0), endDatetime: DateTime(2025, 12, 10, 18, 0), imageUrl: logo, location: "Innovation Center", createdAt: DateTime.now(), associationId: 1, category: "Conference");
     EventModel event3 = EventModel(id: "3", title: "Blockchain Workshop", description: "Learn about the future of blockchain technology.", startDatetime: DateTime(2025, 12, 15, 10, 0), endDatetime: DateTime(2025, 12, 15, 17, 0), imageUrl: logo, location: "Tech Hub", createdAt: DateTime.now(), associationId: 1, category: "Workshop");
     EventModel event4 = EventModel(id: "4", title: "Cybersecurity Summit", description: "Discuss the latest trends in cybersecurity.", startDatetime: DateTime(2025, 12, 20, 9, 0), endDatetime: DateTime(2025, 12, 20, 18, 0), imageUrl: logo, location: "Innovation Center", createdAt: DateTime.now(), associationId: 1, category: "Conference");
+    // late final Map<_FormField, TextEditingController> controllers;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
