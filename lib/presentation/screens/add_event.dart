@@ -163,12 +163,16 @@ class _AddeventState extends State<Addevent> {
                     content: Text(
                       "Failed to add the event. Error: \n ${state.error}",
                     ),
+                    duration: Duration(seconds: 3),
                   ),
                 );
               }
               if (state is AddNewEventSuccess) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text("Event Added Succeffully.")),
+                  SnackBar(
+                    content: Text("Event Added Succeffully."),
+                    duration: Duration(seconds: 3),
+                  ),
                 );
               }
             },

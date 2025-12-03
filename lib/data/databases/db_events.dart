@@ -6,15 +6,16 @@ class EventsTable extends DBBaseTable {
   static String sql_code = '''
     CREATE TABLE events (
       id TEXT PRIMARY KEY,
-      title TEXT NOT NULL,
-      description TEXT NOT NULL,
-      startDatetime TEXT NOT NULL,
-      endDatetime TEXT NOT NULL,
-      imageUrl TEXT NOT NULL,
-      location TEXT NOT NULL,
-      createdAt TEXT NOT NULL,
-      associationId INTEGER NOT NULL,
-      category TEXT NOT NULL
-    );
+      title TEXT NOT NULL UNIQUE CHECK (title <> ''),
+      description TEXT NOT NULL CHECK (description <> ''),
+      startDatetime TEXT NOT NULL CHECK (startDatetime <> ''),
+      endDatetime TEXT NOT NULL CHECK (endDatetime <> ''),
+      imageUrl TEXT NOT NULL CHECK (imageUrl <> ''),
+      location TEXT NOT NULL CHECK (location <> ''),
+      createdAt TEXT NOT NULL CHECK (createdAt <> ''),
+      associationId INTEGER,
+      category TEXT NOT NULL CHECK (category <> '')
+);
+
   ''';
 }
