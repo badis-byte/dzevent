@@ -40,10 +40,7 @@ class _LoginState extends State<Login> {
                 hint: loc.enterEmailOrUsername,
               ),
               const SizedBox(height: 20),
-              buildInput(
-                label: loc.password,
-                hint: loc.enterYourPassword,
-              ),
+              buildInput(label: loc.password, hint: loc.enterYourPassword),
               const SizedBox(height: 10),
               forgotPassword(loc),
               const SizedBox(height: 30),
@@ -167,7 +164,7 @@ class _LoginState extends State<Login> {
     );
   }
 
-  SizedBox logoGetter() {
+  Container logoGetter() {
     return SizedBox(
       height: 125,
       width: 125,

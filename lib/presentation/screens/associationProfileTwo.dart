@@ -32,8 +32,10 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
               title,
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
-            Text(subTitle,
-                style: const TextStyle(fontSize: 16, color: Colors.grey)),
+            Text(
+              subTitle,
+              style: const TextStyle(fontSize: 16, color: Colors.grey),
+            ),
           ],
         ),
       ),
@@ -98,7 +100,11 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
               elevation: 1,
               child: Row(
                 children: [
-                  Image(image: NetworkImage(eventImage), width: 120, height: 120),
+                  Image(
+                    image: NetworkImage(eventImage),
+                    width: 120,
+                    height: 120,
+                  ),
                   const SizedBox(width: 8),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -129,8 +135,10 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
                           Text(
                             loc.interestedCount(numOfMembers),
                             textAlign: TextAlign.start,
-                            style:
-                                const TextStyle(fontSize: 16, color: Colors.grey),
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: Colors.grey,
+                            ),
                           ),
                         ],
                       ),
@@ -185,7 +193,9 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
                   loc.eventsTitle,
                   textAlign: TextAlign.start,
                   style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 24),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 24,
+                  ),
                 ),
               ),
               Expanded(
