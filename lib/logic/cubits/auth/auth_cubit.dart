@@ -36,11 +36,11 @@ class AccountCubit extends Cubit<AccountState>{
           emit(AccountNotVerified());
         }
         else{
-          emit(AccountError(error: "An error occured"));
+          emit(AccountError(error: "An error occured1"));
         }
         }
       }else{
-        emit(AccountError(error: "An error occured"));
+        emit(AccountError(error: "An error occured2"));
       }
     }
     return true;
@@ -52,8 +52,13 @@ class AccountCubit extends Cubit<AccountState>{
     try{
       await authTable.checkUnique(email);
     }catch(e){
-      emit(AccountExists());
-      return true;
+      if(e is ExistingCredException ){
+        emit(AccountExists());
+        return true;
+      }else{
+        emit(AccountError(error: "cant connect to DB"));
+      }
+      
     }
     try{
       emit(AccountLoading());

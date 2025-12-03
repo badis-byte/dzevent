@@ -177,8 +177,13 @@ class _SignupState extends State<Signup> {
   Container createButton() {
     return Container(
       margin: EdgeInsets.only(left: 25, right: 25),
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
+      child: BlocConsumer<AccountCubit, AccountState>(
+          builder: (context, state){
+            if(state is AccountLoading){
+              return SizedBox(child: CircularProgressIndicator());
+            }
+            return ElevatedButton(
+          style: ElevatedButton.styleFrom(
           backgroundColor: const Color.fromARGB(
             255,
             0,
@@ -197,30 +202,25 @@ class _SignupState extends State<Signup> {
           print('create account button pressed!');
           _process();
         },
-        child: BlocConsumer<AccountCubit, AccountState>(
-          builder: (context, state){
-            if(state is AccountLoading){
-              return Center(child: CircularProgressIndicator());
-            }
-            
-            return Text('Create Account', style: TextStyle(fontSize: 16));
+        child: Text('Create Account', style: TextStyle(fontSize: 16))
+            );
+
           },
           listener: (context, state){
             if(state is AccountError){
               ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(state.error)),);
             }
-            if(state is AccountExists){
+            else if(state is AccountExists){
               ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text("Email already exists")),);
             }
-            if(state is UserFetched || state is AssociationFetched){
+            else if(state is UserFetched || state is AssociationFetched){
                 Navigator.pushReplacement(context,
                 MaterialPageRoute(builder: (_) => EventFeed()),);
             }
           }
           )
-      ),
     );
   }
 
