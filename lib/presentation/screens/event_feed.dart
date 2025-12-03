@@ -1,4 +1,4 @@
-import 'package:dzevent/lib/defs.dart';
+import 'package:dzevent/data/models/event_model.dart';
 import 'package:dzevent/lib/styles.dart';
 import 'package:dzevent/logic/cubits/events/events_cubit.dart';
 import 'package:dzevent/logic/cubits/events/events_state.dart';
@@ -7,11 +7,23 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:dzevent/l10n/app_localizations.dart';
 
-class EventFeed extends StatelessWidget {
+class EventFeed extends StatefulWidget {
   static const String pageRoute = "event-feed";
-  final filters = ["All", "Music", "Sports", "Arts", "Tech"];
 
   EventFeed({super.key});
+
+  @override
+  State<EventFeed> createState() => _EventFeedState();
+}
+
+class _EventFeedState extends State<EventFeed> {
+  final filters = ["All", "Music", "Sports", "Arts", "Tech"];
+
+  @override
+  void initState() {
+    context.read<EventsCubit>().getAll();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,13 +55,15 @@ class EventFeed extends StatelessWidget {
               suggestionsBuilder: (context, controller) => [],
               barHintText: loc.searchBarHint,
             ),
-            Filters(filters: [
-              loc.filterAll,
-              loc.filterMusic,
-              loc.filterSports,
-              loc.filterArts,
-              loc.filterTech,
-            ]),
+            Filters(
+              filters: [
+                loc.filterAll,
+                loc.filterMusic,
+                loc.filterSports,
+                loc.filterArts,
+                loc.filterTech,
+              ],
+            ),
             BlocBuilder<EventsCubit, EventsState>(
               builder: (context, state) {
                 if (state is EventsLoading) {
@@ -59,12 +73,15 @@ class EventFeed extends StatelessWidget {
                   return Center(child: Text(loc.errorOccurred(state.error)));
                 }
                 if (state is EventsFetched) {
-                  final posts = state.posts;
+                  final events = state.events;
+                  if (events.isEmpty) {
+                    return Text("No events found");
+                  }
                   return Expanded(
                     child: ListView.builder(
-                      itemCount: posts.length,
+                      itemCount: events.length,
                       itemBuilder: (context, index) =>
-                          Text(loc.oneEvent), // Using localized string
+                          EventCard(event: events[index]),
                     ),
                   );
                 }
@@ -96,7 +113,7 @@ class Filters extends StatelessWidget {
 
 class EventCard extends StatelessWidget {
   static const double _height = 400;
-  final Event event;
+  final EventModel event;
   const EventCard({super.key, required this.event});
 
   @override
@@ -113,10 +130,7 @@ class EventCard extends StatelessWidget {
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [
-                  Colors.black.withOpacity(0.6),
-                  Colors.transparent,
-                ],
+                colors: [Colors.black.withOpacity(0.6), Colors.transparent],
                 begin: Alignment.bottomCenter,
                 end: Alignment.topCenter,
               ),
@@ -137,12 +151,18 @@ class EventCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        DateFormat("E, MMM d").add_jm().format(event.datetime),
-                        style: subtitleStyle.copyWith(color: Colors.grey.shade400),
+                        DateFormat(
+                          "E, MMM d\n",
+                        ).add_jm().format(event.startDatetime),
+                        style: subtitleStyle.copyWith(
+                          color: Colors.grey.shade400,
+                        ),
                       ),
                       Text(
                         event.location,
-                        style: subtitleStyle.copyWith(color: Colors.grey.shade400),
+                        style: subtitleStyle.copyWith(
+                          color: Colors.grey.shade400,
+                        ),
                       ),
                     ],
                   ),

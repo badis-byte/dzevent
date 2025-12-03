@@ -1,9 +1,10 @@
 import 'package:dzevent/l10n/app_localizations.dart';
+import 'package:dzevent/data/models/event_model.dart';
 import 'package:dzevent/lib/defs.dart';
 import 'package:dzevent/lib/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:dzevent/lib/data.dart' as DATA;
+import 'package:dzevent/data/fake_data.dart' as DATA;
 
 class PublicAssocProfile extends StatefulWidget {
   const PublicAssocProfile({super.key});
@@ -157,7 +158,7 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
     );
   }
 
-  Widget buildEventItem(context, {required Event event}) {
+  Widget buildEventItem(BuildContext context, {required EventModel event}) {
     final imageSize = const Size(150, 150);
 
     return Container(
@@ -173,7 +174,7 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(DateFormat("E, MMMd.").add_j().format(event.datetime)),
+              Text(DateFormat("E, MMMd.").add_j().format(event.startDatetime)),
               Text(event.title, style: subtitleStyle),
               Text(event.location, style: bodyTextStyle),
             ],

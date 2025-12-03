@@ -1,0 +1,3 @@
+id,title,description,startDatetime,endDatetime,imageUrl,location,createdAt,associationId,category
+"1f9c4312-4abd-65e7-b3c2-d4f082a5110a","event 1","this is the first event","2025-12-02 15:00:00","2025-12-02 15:00:00",assets/images/event_feed/image1.png,algiers,"2025-12-02 15:00:00",0,party
+"2a7b8d74-9f0c-6b15-a2f4-ff7e34d82745","event 2","this is the second event","2025-12-02 15:00:00","2025-12-02 15:00:00",assets/event_feed/image2.png,algiers,"2025-12-02 15:00:00",0,workshop

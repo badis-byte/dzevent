@@ -6,11 +6,11 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'db_events.dart';
 
 class DBHelper {
-  static const _database_name = "IncrementHistoryV1.db";
+  static const _database_name = "dzevent_db.db";
   static const _database_version = 1;
   static var database;
 
-  static List<String> sql_codes = [PostsTable.sql_code];
+  static List<String> sql_codes = [EventsTable.sql_code];
   static Future<Database> getDatabase() async {
     if (database != null) {
       return database;

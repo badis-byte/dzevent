@@ -1,12 +1,10 @@
-import 'package:dzevent/myAccountCredentials.dart';
+import 'package:dzevent/presentation/screens/my_account_credentials.dart';
 import 'package:flutter/material.dart';
 // TODO: add flutter_svg to pubspec.yaml
 import 'package:flutter_svg/flutter_svg.dart';
 
 void main() {
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home:ProfileScreen()));
+  runApp(MaterialApp(debugShowCheckedModeBanner: false, home: ProfileScreen()));
 }
 
 class ProfileScreen extends StatefulWidget {
@@ -35,12 +33,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
               text: "My Account",
               icon: "assets/icons/User Icon.svg",
               press: () => {
-                            Navigator.push(
-              context,
-              MaterialPageRoute<void>(
-                builder: (context) => Myaccountcredentials(),
-              ),
-            )
+                Navigator.push(
+                  context,
+                  MaterialPageRoute<void>(
+                    builder: (context) => Myaccountcredentials(),
+                  ),
+                ),
               },
             ),
             ProfileMenu(

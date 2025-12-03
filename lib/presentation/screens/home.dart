@@ -1,7 +1,6 @@
-import 'package:dzevent/presentation/screens/addEvent.dart';
+import 'package:dzevent/presentation/screens/add_event.dart';
 import 'package:dzevent/presentation/screens/assocAdmin.dart';
 import 'package:dzevent/presentation/screens/associationProfileTwo.dart';
-import 'package:dzevent/presentation/screens/event_details.dart';
 import 'package:dzevent/presentation/screens/event_feed.dart';
 import 'package:dzevent/presentation/screens/public_assoc_profile.dart';
 import 'package:dzevent/presentation/screens/signup.dart';
@@ -10,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:dzevent/presentation/screens/login.dart';
 import 'package:dzevent/presentation/screens/my_account_credentials.dart';
 import 'package:dzevent/presentation/screens/reg_user_profile.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:dzevent/l10n/app_localizations.dart';
 
 /// # New Screen Setup
@@ -38,11 +36,10 @@ class NavScreen extends StatelessWidget {
     final _links = [
       Link(icon: Icons.add, label: loc.addEvent, page: Addevent()),
       Link(icon: Icons.person, label: loc.assocAdmin, page: Assocadmin()),
-      Link(icon: Icons.person, label: loc.assocProfileTwo, page: AssocProfTwo()),
       Link(
-        icon: Icons.details_outlined,
-        label: loc.eventDetails,
-        page: EventDetails(),
+        icon: Icons.person,
+        label: loc.assocProfileTwo,
+        page: AssocProfTwo(),
       ),
       Link(icon: Icons.event, label: loc.eventFeed, page: EventFeed()),
       Link(icon: Icons.login, label: loc.login, page: Login()),
@@ -61,8 +58,6 @@ class NavScreen extends StatelessWidget {
       Link(icon: Icons.add, label: loc.creds, page: Myaccountcredentials()),
       Link(icon: Icons.add, label: loc.userRegs, page: ProfileScreen()),
     ];
-
-    final postFuture = Supabase.instance.client.from('Post').select();
 
     return Scaffold(
       body: Row(
@@ -85,22 +80,7 @@ class NavScreen extends StatelessWidget {
               );
             },
           ),
-          Expanded(
-            child: FutureBuilder(
-              future: postFuture,
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                final posts = snapshot.data!;
-                return ListView.builder(
-                  itemCount: posts.length,
-                  itemBuilder: (context, index) =>
-                      Text(posts[index]['name']), // dynamic, untouched
-                );
-              },
-            ),
-          ),
+          Center(child: Text("EMPTY")),
         ],
       ),
     );
