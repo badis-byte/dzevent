@@ -1,9 +1,10 @@
+import 'package:dzevent/l10n/app_localizations.dart';
 import 'package:dzevent/logic/cubits/events/events_cubit.dart';
 import 'package:dzevent/presentation/screens/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -22,7 +23,21 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [BlocProvider(create: (context) => EventsCubit())],
-      child: MaterialApp(debugShowCheckedModeBanner: false, home: NavScreen()),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+
+        //localization
+        locale: Locale('ar'),
+        localizationsDelegates: [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: [Locale('en'), Locale('ar'), Locale('fr')],
+
+        home: NavScreen(),
+      ),
     );
   }
 }

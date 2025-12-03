@@ -1,0 +1,270 @@
+{
+  "@@locale": "fr",
+  "appTitle": "dzevent",
+  "@appTitle": {},
+
+  "createNewEvent": "Créer un nouvel événement",
+  "@createNewEvent": {},
+
+  "eventName": "Nom de l'événement",
+  "@eventName": {},
+  "eventNameHint": "Conférence technologique annuelle",
+  "@eventNameHint": {},
+
+  "description": "Description",
+  "@description": {},
+  "descriptionHint": "Rejoignez-nous pour une journée riche en séminaires...",
+  "@descriptionHint": {},
+
+  "date": "Date",
+  "@date": {},
+  "selectDate": "Sélectionner une date",
+  "@selectDate": {},
+
+  "time": "Heure",
+  "@time": {},
+  "selectTime": "Sélectionner une heure",
+  "@selectTime": {},
+
+  "location": "Lieu",
+  "@location": {},
+  "locationHint": "123 Rue Principale, Toute Ville",
+  "@locationHint": {},
+
+  "eventCategory": "Catégorie de l'événement",
+  "@eventCategory": {},
+  "selectCategory": "Sélectionner une catégorie",
+  "@selectCategory": {},
+
+  "catTech": "Technologie",
+  "@catTech": {},
+  "catAIData": "IA & Science des données",
+  "@catAIData": {},
+  "catBusiness": "Business",
+  "@catBusiness": {},
+  "catAgriculture": "Agriculture",
+  "@catAgriculture": {},
+  "catSociology": "Sociologie",
+  "@catSociology": {},
+
+  "chooseImage": "Choisir une image",
+  "@chooseImage": {},
+  "previewEvent": "Aperçu de l'événement",
+  "@previewEvent": {},
+  "postEvent": "Publier l'événement",
+  "@postEvent": {},
+
+
+  
+  "accountRequests": "Demandes de compte",
+  "@accountRequests": {},
+
+  "searchHint": "Rechercher par nom de l'association...",
+  "@searchHint": {},
+
+  "all": "Tout",
+  "@all": {},
+
+  "pending": "En attente",
+  "@pending": {},
+
+  "accepted": "Accepté",
+  "@accepted": {},
+
+  "rejected": "Rejeté",
+  "@rejected": {},
+
+  "reject": "Refuser",
+  "@reject": {},
+
+  "accept": "Accepter",
+  "@accept": {},
+
+  "requestedOn": "Demandé le : {date}",
+  "@requestedOn": {
+    "placeholders": {
+      "date": {}
+    }
+  },
+
+  "subscribers": "Abonnés",
+  "@subscribers": {},
+  "eventsCount": "Événements",
+  "@eventsCount": {},
+  "interested": "Intéressés",
+  "@interested": {},
+  "eventsTitle": "Événements",
+  "@eventsTitle": {},
+  "interestedCount": "{num} intéressés",
+  "@interestedCount": {
+    "placeholders": {
+      "num": {}
+    }
+  },
+  "aboutThisEvent": "À propos de cet événement",
+  "@aboutThisEvent": {},
+  "showInterest": "Manifester de l'intérêt",
+  "@showInterest": {},
+  "viewProfile": "Voir le profil",
+  "@viewProfile": {},
+  "addEvent": "Ajouter un événement",
+  "@addEvent": {},
+  
+  "assocAdmin": "Admin de l'association",
+  "@assocAdmin": {},
+  
+  "assocProfileTwo": "Profil de l'association",
+  "@assocProfileTwo": {},
+  
+  "eventDetails": "Détails de l'événement",
+  "@eventDetails": {},
+  
+  "eventFeed": "Fil des événements",
+  "@eventFeed": {},
+  
+  "login": "Connexion",
+  "@login": {},
+  
+  "publicAssocProfile": "Profil public de l'association",
+  "@publicAssocProfile": {},
+  
+  "signup": "S'inscrire",
+  "@signup": {},
+  
+  "welcome": "Bienvenue",
+  "@welcome": {},
+  
+  "creds": "Identifiants",
+  "@creds": {},
+  
+  "userRegs": "Inscriptions des utilisateurs",
+  "@userRegs": {},
+  
+  "home": "Accueil",
+  "@home": {},
+  "welcomeBack": "Bon retour",
+  "@welcomeBack": {},
+  "emailOrUsername": "Email ou nom d'utilisateur",
+  "@emailOrUsername": {},
+  "enterEmailOrUsername": "Entrez l'email ou le nom d'utilisateur",
+  "@enterEmailOrUsername": {},
+  "password": "Mot de passe",
+  "@password": {},
+  "enterYourPassword": "Entrez votre mot de passe",
+  "@enterYourPassword": {},
+  "forgotPassword": "Mot de passe oublié?",
+  "@forgotPassword": {},
+  "dontHaveAccount": "Vous n'avez pas de compte?",
+  "@dontHaveAccount": {},
+  "signUp": "S'inscrire",
+  "@signUp": {},
+  "continueWithGoogle": "Continuer avec Google",
+  "@continueWithGoogle": {},
+  "or": "ou",
+  "@or": {},
+  "editProfile": "Modifier le profil",
+  "@editProfile": {},
+  "name": "Nom",
+  "@name": {},
+  "email": "Email",
+  "@email": {},
+  "phone": "Téléphone",
+  "@phone": {},
+  "address": "Adresse",
+  "@address": {},
+  "oldPassword": "Ancien mot de passe",
+  "@oldPassword": {},
+  "newPassword": "Nouveau mot de passe",
+  "@newPassword": {},
+  "newPasswordHint": "Nouveau mot de passe",
+  "@newPasswordHint": {},
+  "cancel": "Annuler",
+  "@cancel": {},
+  "saveUpdate": "Enregistrer la mise à jour",
+  "@saveUpdate": {},
+  "upcomingEvents": "Événements à venir",
+  "@upcomingEvents": {},
+
+  "searchBarHint": "Rechercher des événements ...",
+  "@searchBarHint": {},
+
+  "errorOccurred": "Erreur: {error}",
+  "@errorOccurred": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+
+  "filterAll": "Tous",
+  "@filterAll": {},
+  "filterMusic": "Musique",
+  "@filterMusic": {},
+  "filterSports": "Sports",
+  "@filterSports": {},
+  "filterArts": "Arts",
+  "@filterArts": {},
+  "filterTech": "Tech",
+  "@filterTech": {},
+
+  "oneEvent": "+1 événement",
+  "@oneEvent": {},
+  "followAssociation": "Suivre l'association",
+  "@followAssociation": {},
+  "aboutUs": "À propos de nous",
+  "@aboutUs": {},
+  "contactInformation": "Informations de contact",
+  "@contactInformation": {},
+  "pastEvents": "Événements passés",
+  "@pastEvents": {},
+  "profile": "Profil",
+  "@profile": {},
+  "myAccount": "Mon Compte",
+  "@myAccount": {},
+  "notifications": "Notifications",
+  "@notifications": {},
+  "settings": "Paramètres",
+  "@settings": {},
+  "helpCenter": "Centre d'aide",
+  "@helpCenter": {},
+  "logOut": "Se Déconnecter",
+  "@logOut": {},
+  "createNewAccount": "Créer un nouveau compte",
+  "@createNewAccount": {},
+
+  "fullName": "Nom complet",
+  "@fullName": {},
+  "fullNameHint": "Entrez votre nom complet",
+  "@fullNameHint": {},
+
+  "emailAddress": "Adresse e-mail",
+  "@emailAddress": {},
+  "emailAddressHint": "Entrez votre adresse e-mail",
+  "@emailAddressHint": {},
+
+  "passwordHint": "Entrez votre mot de passe",
+  "@passwordHint": {},
+
+  "confirmPassword": "Confirmer le mot de passe",
+  "@confirmPassword": {},
+  "confirmPasswordHint": "Confirmez votre mot de passe",
+  "@confirmPasswordHint": {},
+
+  "createAccount": "Créer un compte",
+  "@createAccount": {},
+
+  "alreadyHaveAccount": "Vous avez déjà un compte?",
+  "@alreadyHaveAccount": {},
+  "logIn": "Se connecter",
+  "@logIn": {},
+
+  "byCreatingAccount": "En créant un compte, vous acceptez nos",
+  "@byCreatingAccount": {},
+  "termsOfService": "Conditions d'utilisation",
+  "@termsOfService": {},
+  "and": "et",
+  "@and": {},
+  "privacyPolicy": "Politique de confidentialité",
+  "@privacyPolicy": {},
+  "continueAsGuest": "Continuer en tant qu'invité",
+  "@continueAsGuest": {}
+}

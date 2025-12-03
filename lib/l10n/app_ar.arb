@@ -1,0 +1,269 @@
+{
+  "@@locale": "ar",
+  "appTitle": "ديزيفينت",
+  "@appTitle": {},
+
+  "createNewEvent": "إنشاء حدث جديد",
+  "@createNewEvent": {},
+
+  "eventName": "اسم الحدث",
+  "@eventName": {},
+  "eventNameHint": "المؤتمر التقني السنوي",
+  "@eventNameHint": {},
+
+  "description": "الوصف",
+  "@description": {},
+  "descriptionHint": "انضم إلينا ليوم مليء بالندوات المفيدة...",
+  "@descriptionHint": {},
+
+  "date": "التاريخ",
+  "@date": {},
+  "selectDate": "اختر التاريخ",
+  "@selectDate": {},
+
+  "time": "الوقت",
+  "@time": {},
+  "selectTime": "اختر الوقت",
+  "@selectTime": {},
+
+  "location": "الموقع",
+  "@location": {},
+  "locationHint": "123 شارع الرئيسي، أي مدينة",
+  "@locationHint": {},
+
+  "eventCategory": "فئة الحدث",
+  "@eventCategory": {},
+  "selectCategory": "اختر الفئة",
+  "@selectCategory": {},
+
+  "catTech": "تكنولوجيا",
+  "@catTech": {},
+  "catAIData": "الذكاء الاصطناعي وعلوم البيانات",
+  "@catAIData": {},
+  "catBusiness": "أعمال",
+  "@catBusiness": {},
+  "catAgriculture": "فلاحة",
+  "@catAgriculture": {},
+  "catSociology": "علوم اجتماعية",
+  "@catSociology": {},
+
+  "chooseImage": "اختر صورة",
+  "@chooseImage": {},
+  "previewEvent": "معاينة الحدث",
+  "@previewEvent": {},
+  "postEvent": "نشر الحدث",
+  "@postEvent": {},
+
+
+
+  "accountRequests": "طلبات الحساب",
+  "@accountRequests": {},
+
+  "searchHint": "ابحث باسم الجمعية...",
+  "@searchHint": {},
+
+  "all": "الكل",
+  "@all": {},
+
+  "pending": "قيد الانتظار",
+  "@pending": {},
+
+  "accepted": "مقبول",
+  "@accepted": {},
+
+  "rejected": "مرفوض",
+  "@rejected": {},
+
+  "reject": "رفض",
+  "@reject": {},
+
+  "accept": "قبول",
+  "@accept": {},
+
+  "requestedOn": "تم الطلب في: {date}",
+  "@requestedOn": {
+    "placeholders": {
+      "date": {}
+    }
+  },
+  "subscribers": "المشتركين",
+  "@subscribers": {},
+  "eventsCount": "الأحداث",
+  "@eventsCount": {},
+  "interested": "مهتمون",
+  "@interested": {},
+  "eventsTitle": "الأحداث",
+  "@eventsTitle": {},
+  "interestedCount": "{num} مهتم",
+  "@interestedCount": {
+    "placeholders": {
+      "num": {}
+    }
+  },
+  "aboutThisEvent": "حول هذا الحدث",
+  "@aboutThisEvent": {},
+  "showInterest": "أبدِ اهتمامك",
+  "@showInterest": {},
+  "viewProfile": "عرض الملف الشخصي",
+  "@viewProfile": {},
+    "addEvent": "إضافة فعالية",
+  "@addEvent": {},
+  
+  "assocAdmin": "إدارة الجمعية",
+  "@assocAdmin": {},
+  
+  "assocProfileTwo": "ملف الجمعية",
+  "@assocProfileTwo": {},
+  
+  "eventDetails": "تفاصيل الفعالية",
+  "@eventDetails": {},
+  
+  "eventFeed": "تدفق الفعاليات",
+  "@eventFeed": {},
+  
+  "publicAssocProfile": "الملف العام للجمعية",
+  "@publicAssocProfile": {},
+  
+  "signup": "إنشاء حساب",
+  "@signup": {},
+  
+  "welcome": "مرحبا",
+  "@welcome": {},
+  
+  "creds": "بيانات الحساب",
+  "@creds": {},
+  
+  "userRegs": "تسجيل المستخدمين",
+  "@userRegs": {},
+  
+  "home": "الرئيسية",
+  "@home": {},
+  "welcomeBack": "مرحباً بعودتك",
+  "@welcomeBack": {},
+  "emailOrUsername": "البريد الإلكتروني أو اسم المستخدم",
+  "@emailOrUsername": {},
+  "enterEmailOrUsername": "أدخل البريد الإلكتروني أو اسم المستخدم",
+  "@enterEmailOrUsername": {},
+  "password": "كلمة المرور",
+  "@password": {},
+  "enterYourPassword": "أدخل كلمة المرور",
+  "@enterYourPassword": {},
+  "forgotPassword": "هل نسيت كلمة المرور؟",
+  "@forgotPassword": {},
+  "dontHaveAccount": "ليس لديك حساب؟",
+  "@dontHaveAccount": {},
+  "signUp": "سجل الآن",
+  "@signUp": {},
+  "continueWithGoogle": "المتابعة مع جوجل",
+  "@continueWithGoogle": {},
+  "or": "أو",
+  "@or": {},
+  "login": "تسجيل الدخول",
+  "@login": {},
+  "editProfile": "تعديل الملف الشخصي",
+  "@editProfile": {},
+  "name": "الاسم",
+  "@name": {},
+  "email": "البريد الإلكتروني",
+  "@email": {},
+  "phone": "الهاتف",
+  "@phone": {},
+  "address": "العنوان",
+  "@address": {},
+  "oldPassword": "كلمة المرور القديمة",
+  "@oldPassword": {},
+  "newPassword": "كلمة المرور الجديدة",
+  "@newPassword": {},
+  "newPasswordHint": "كلمة المرور الجديدة",
+  "@newPasswordHint": {},
+  "cancel": "إلغاء",
+  "@cancel": {},
+  "saveUpdate": "حفظ التحديث",
+  "@saveUpdate": {},
+
+  "upcomingEvents": "الفعاليات القادمة",
+  "@upcomingEvents": {},
+
+  "searchBarHint": "ابحث عن الفعاليات ...",
+  "@searchBarHint": {},
+
+  "errorOccurred": "خطأ: {error}",
+  "@errorOccurred": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+
+  "filterAll": "الكل",
+  "@filterAll": {},
+  "filterMusic": "الموسيقى",
+  "@filterMusic": {},
+  "filterSports": "الرياضة",
+  "@filterSports": {},
+  "filterArts": "الفنون",
+  "@filterArts": {},
+  "filterTech": "التقنية",
+  "@filterTech": {},
+
+  "oneEvent": "+1 فعالية",
+  "@oneEvent": {},
+  "followAssociation": "متابعة الجمعية",
+  "@followAssociation": {},
+  "aboutUs": "معلومات عنا",
+  "@aboutUs": {},
+  "contactInformation": "معلومات الاتصال",
+  "@contactInformation": {},
+  "pastEvents": "الأحداث السابقة",
+  "@pastEvents": {},
+  "profile": "الملف الشخصي",
+  "@profile": {},
+  "myAccount": "حسابي",
+  "@myAccount": {},
+  "notifications": "الإشعارات",
+  "@notifications": {},
+  "settings": "الإعدادات",
+  "@settings": {},
+  "helpCenter": "مركز المساعدة",
+  "@helpCenter": {},
+  "logOut": "تسجيل الخروج",
+  "@logOut": {},
+  "createNewAccount": "إنشاء حساب جديد",
+  "@createNewAccount": {},
+
+  "fullName": "الاسم الكامل",
+  "@fullName": {},
+  "fullNameHint": "أدخل اسمك الكامل",
+  "@fullNameHint": {},
+
+  "emailAddress": "عنوان البريد الإلكتروني",
+  "@emailAddress": {},
+  "emailAddressHint": "أدخل عنوان بريدك الإلكتروني",
+  "@emailAddressHint": {},
+
+  "passwordHint": "أدخل كلمة المرور الخاصة بك",
+  "@passwordHint": {},
+
+  "confirmPassword": "تأكيد كلمة المرور",
+  "@confirmPassword": {},
+  "confirmPasswordHint": "أكد كلمة المرور الخاصة بك",
+  "@confirmPasswordHint": {},
+
+  "createAccount": "إنشاء الحساب",
+  "@createAccount": {},
+
+  "alreadyHaveAccount": "هل لديك حساب بالفعل؟",
+  "@alreadyHaveAccount": {},
+  "logIn": "تسجيل الدخول",
+  "@logIn": {},
+
+  "byCreatingAccount": "من خلال إنشاء حساب، فإنك توافق على",
+  "@byCreatingAccount": {},
+  "termsOfService": "شروط الخدمة",
+  "@termsOfService": {},
+  "and": "و",
+  "@and": {},
+  "privacyPolicy": "سياسة الخصوصية",
+  "@privacyPolicy": {},
+  "continueAsGuest": "المتابعة كضيف",
+  "@continueAsGuest": {}
+}

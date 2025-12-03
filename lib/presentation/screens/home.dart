@@ -11,16 +11,16 @@ import 'package:dzevent/presentation/screens/login.dart';
 import 'package:dzevent/presentation/screens/my_account_credentials.dart';
 import 'package:dzevent/presentation/screens/reg_user_profile.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:dzevent/l10n/app_localizations.dart';
 
 /// # New Screen Setup
 /// - Add screen entry to _links
 ///
-/// - ensure [page] is the screen compoenent
+/// - ensure [page] is the screen component
 ///
 /// **NOTE**
 ///
 /// NavScreenLink is provided for you. You can use it to return back
-/// to NavScreen
 class Link {
   final IconData icon;
   final String label;
@@ -28,40 +28,40 @@ class Link {
   const Link({required this.icon, required this.label, required this.page});
 }
 
-final _links = [
-  Link(icon: Icons.add, label: "add event", page: Addevent()),
-  Link(icon: Icons.person, label: "assocAdmin", page: Assocadmin()),
-  Link(icon: Icons.person, label: "assocProfileTwo", page: AssocProfTwo()),
-
-  Link(
-    icon: Icons.details_outlined,
-    label: "event_details",
-    page: EventDetails(),
-  ),
-  Link(icon: Icons.event, label: "event_feed", page: EventFeed()),
-  Link(icon: Icons.login, label: "Login", page: Login()),
-  Link(
-    icon: Icons.person,
-    label: "public_assoc_profile",
-    page: PublicAssocProfile(),
-  ),
-  Link(icon: Icons.add, label: "signup", page: Signup()),
-  Link(icon: Icons.handshake, label: "welcome", page: ImageCarousel()),
-
-  Link(
-    icon: Icons.person,
-    label: "public association profile",
-    page: PublicAssocProfile(),
-  ),
-  Link(icon: Icons.add, label: "creds", page: Myaccountcredentials()),
-  Link(icon: Icons.add, label: "user regs", page: ProfileScreen()),
-];
-
 class NavScreen extends StatelessWidget {
   const NavScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+
+    final _links = [
+      Link(icon: Icons.add, label: loc.addEvent, page: Addevent()),
+      Link(icon: Icons.person, label: loc.assocAdmin, page: Assocadmin()),
+      Link(icon: Icons.person, label: loc.assocProfileTwo, page: AssocProfTwo()),
+      Link(
+        icon: Icons.details_outlined,
+        label: loc.eventDetails,
+        page: EventDetails(),
+      ),
+      Link(icon: Icons.event, label: loc.eventFeed, page: EventFeed()),
+      Link(icon: Icons.login, label: loc.login, page: Login()),
+      Link(
+        icon: Icons.person,
+        label: loc.publicAssocProfile,
+        page: PublicAssocProfile(),
+      ),
+      Link(icon: Icons.add, label: loc.signup, page: Signup()),
+      Link(icon: Icons.handshake, label: loc.welcome, page: ImageCarousel()),
+      Link(
+        icon: Icons.person,
+        label: loc.publicAssocProfile,
+        page: PublicAssocProfile(),
+      ),
+      Link(icon: Icons.add, label: loc.creds, page: Myaccountcredentials()),
+      Link(icon: Icons.add, label: loc.userRegs, page: ProfileScreen()),
+    ];
+
     final postFuture = Supabase.instance.client.from('Post').select();
 
     return Scaffold(
@@ -95,7 +95,8 @@ class NavScreen extends StatelessWidget {
                 final posts = snapshot.data!;
                 return ListView.builder(
                   itemCount: posts.length,
-                  itemBuilder: (context, index) => Text(posts[index]['name']),
+                  itemBuilder: (context, index) =>
+                      Text(posts[index]['name']), // dynamic, untouched
                 );
               },
             ),
@@ -111,6 +112,8 @@ class NavScreenLink extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+
     return Center(
       child: SizedBox(
         width: double.infinity,
@@ -122,10 +125,10 @@ class NavScreenLink extends StatelessWidget {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => NavScreen()),
+              MaterialPageRoute(builder: (context) => const NavScreen()),
             );
           },
-          child: const Text("Home"),
+          child: Text(loc.home),
         ),
       ),
     );
