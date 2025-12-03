@@ -1,4 +1,7 @@
 import 'package:dzevent/presentation/screens/assocAdmin.dart';
+import 'package:dzevent/presentation/widgets/input.dart';
+import 'package:dzevent/presentation/widgets/submit_button.dart';
+import 'package:dzevent/presentation/widgets/text_input.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -17,62 +20,6 @@ class Addevent extends StatefulWidget {
 class _AddeventState extends State<Addevent> {
   final ImagePicker _picker = ImagePicker();
   File? _image;
-  Widget inputTextField(String title, String lable, IconData iconLable) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(title),
-        TextField(
-          decoration: InputDecoration(
-            hintText: lable,
-            border: OutlineInputBorder(),
-            suffixIcon: Icon(iconLable, color: Colors.grey),
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.black, width: 2),
-              borderRadius: BorderRadius.circular(8),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget submitButton(String title, Color bgColor, Color textColor) {
-    return SizedBox(
-      height: 48,
-      width: double.infinity,
-      child: ElevatedButton(
-        onPressed: () {},
-        style: ElevatedButton.styleFrom(
-          backgroundColor: bgColor,
-          textStyle: TextStyle(fontWeight: FontWeight.bold, color: textColor),
-        ),
-        child: Text(
-          title,
-          style: TextStyle(color: textColor, fontWeight: FontWeight.bold),
-        ),
-      ),
-    );
-  }
-
-  Widget textField(int maximumLength, String label, bool expand) {
-    return TextField(
-      cursorColor: Colors.black,
-      maxLength: maximumLength,
-      maxLines: null,
-      expands: expand,
-      textAlignVertical: TextAlignVertical.top, //text starts from top
-      decoration: InputDecoration(
-        label: Text(label, style: TextStyle(color: Colors.grey)),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-        alignLabelWithHint: true,
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.black, width: 2),
-          borderRadius: BorderRadius.circular(8),
-        ),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -109,6 +56,7 @@ class _AddeventState extends State<Addevent> {
             ),
           ),
         ),
+
         body: Padding(
           padding: const EdgeInsets.all(15.0),
           child: SingleChildScrollView(
@@ -122,8 +70,13 @@ class _AddeventState extends State<Addevent> {
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                 ),
                 SizedBox(height: 8),
-                textField(100, "Annual Tech Conference", false),
+                TextInput(
+                  maximumLength: 100,
+                  label: "Annual Tech Conference",
+                  expand: false,
+                ),
                 SizedBox(height: 16),
+
                 Text(
                   'Description',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
@@ -131,44 +84,46 @@ class _AddeventState extends State<Addevent> {
                 SizedBox(height: 8),
                 SizedBox(
                   height: 200,
-                  child: textField(
-                    500,
-                    "Join us for a day of insightful talks...",
-                    true,
+                  child: TextInput(
+                    maximumLength: 500,
+                    label: "Join us for a day of insightful talks...",
+                    expand: true,
                   ),
                 ),
+
                 Row(
                   children: [
                     // Date Column
                     Expanded(
-                      child: inputTextField(
-                        "Date",
-                        "Select Date",
-                        Icons.calendar_month,
+                      child: Input(
+                        title: "Date",
+                        label: "Select Date",
+                        icon: Icons.calendar_month,
                       ),
                     ),
                     SizedBox(width: 16),
                     // Time Column
                     Expanded(
-                      child: inputTextField(
-                        "Time",
-                        "Select Time",
-                        Icons.access_time,
+                      child: Input(
+                        title: "TIme",
+                        label: "Select Time",
+                        icon: Icons.access_time,
                       ),
                     ),
                   ],
                 ),
                 SizedBox(height: 8),
-                inputTextField(
-                  "Location",
-                  "123Main Street,Anytown",
-                  Icons.location_on_outlined,
+                Input(
+                  title: "Location",
+                  label: "123Main Street,Anytown",
+                  icon: Icons.location_on_outlined,
                 ),
                 SizedBox(height: 8),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text("Event Category"),
+
                     SizedBox(height: 8),
                     DropdownButtonFormField<String>(
                       decoration: InputDecoration(
@@ -196,6 +151,7 @@ class _AddeventState extends State<Addevent> {
                               .toList(),
                       onChanged: (_) {},
                     ),
+
                     SizedBox(height: 8),
                     SizedBox(
                       width: double.infinity,
@@ -219,15 +175,20 @@ class _AddeventState extends State<Addevent> {
                     _image != null
                         ? Image.file(_image!)
                         : const Icon(Icons.image, size: 150.0),
+
                     Column(
                       children: [
-                        submitButton(
-                          "Preview Event",
-                          Colors.grey[100]!,
-                          Colors.black,
+                        SubmitButton(
+                          title: "Preview Event",
+                          bgColor: Colors.grey.shade100,
+                          textColor: Colors.black,
                         ),
                         SizedBox(height: 8),
-                        submitButton("Post Event", Colors.blue, Colors.white),
+                        SubmitButton(
+                          title: "Post Event",
+                          bgColor: Colors.blue,
+                          textColor: Colors.white,
+                        ),
                       ],
                     ),
                   ],
