@@ -17,3 +17,5 @@ class EventsFetched extends EventsState {
 }
 
 class AddNewEventSuccess extends EventsState {}
+
+class AddNewEventFailure extends EventsState {}

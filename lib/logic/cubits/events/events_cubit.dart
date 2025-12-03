@@ -23,8 +23,13 @@ class EventsCubit extends Cubit<EventsState> {
     try {
       emit(EventsLoading());
       final response = await localRepo.insertData(event);
-      emit(AddNewEventSuccess());
-      return true;
+      if (!response) {
+        emit(AddNewEventFailure());
+        return false;
+      } else {
+        emit(AddNewEventSuccess());
+        return true;
+      }
     } catch (e) {
       emit(EventsError(error: e.toString()));
       return false;

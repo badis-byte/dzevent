@@ -5,7 +5,7 @@ class EventsTable extends DBBaseTable {
 
   static String sql_code = '''
     CREATE TABLE events (
-      id TEXT PRIMARY KEY,
+      id TEXT PRIMARY KEY CHECK (id <> ''),
       title TEXT NOT NULL UNIQUE CHECK (title <> ''),
       description TEXT NOT NULL CHECK (description <> ''),
       startDatetime TEXT NOT NULL CHECK (startDatetime <> ''),
