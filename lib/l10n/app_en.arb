@@ -1,0 +1,264 @@
+{
+    "@@locale":"en",
+    "appTitle": "dzevent",
+    "@appTitle": {},
+    "createNewEvent": "Create New Event",
+    "@createNewEvent": {},
+    "eventName": "Event Name",
+    "@eventName": {},
+    "eventNameHint": "Annual Tech Conference",
+    "@eventNameHint": {},
+
+    "description": "Description",
+    "@description": {},
+    "descriptionHint": "Join us for a day of insightful seminars...",
+    "@descriptionHint": {},
+
+    "date": "Date",
+    "@date": {},
+    "selectDate": "Select Date",
+    "@selectDate": {},
+
+    "time": "Time",
+    "@time": {},
+    "selectTime": "Select Time",
+    "@selectTime": {},
+
+    "location": "Location",
+    "@location": {},
+    "locationHint": "123 Main St, Any City",
+    "@locationHint": {},
+
+    "eventCategory": "Event Category",
+    "@eventCategory": {},
+    "selectCategory": "Select Category",
+    "@selectCategory": {},
+
+    "catTech": "Technology",
+    "@catTech": {},
+    "catAIData": "AI & Data Science",
+    "@catAIData": {},
+    "catBusiness": "Business",
+    "@catBusiness": {},
+    "catAgriculture": "Agriculture",
+    "@catAgriculture": {},
+    "catSociology": "Sociology",
+    "@catSociology": {},
+
+    "chooseImage": "Choose Image",
+    "@chooseImage": {},
+    "previewEvent": "Preview Event",
+    "@previewEvent": {},
+    "postEvent": "Post Event",
+    "@postEvent": {},
+    "accountRequests": "Account Requests",
+  "@accountRequests": {},
+
+  "searchHint": "Search by association name...",
+  "@searchHint": {},
+
+  "all": "All",
+  "@all": {},
+
+  "pending": "Pending",
+  "@pending": {},
+
+  "accepted": "Accepted",
+  "@accepted": {},
+
+  "rejected": "Rejected",
+  "@rejected": {},
+
+  "reject": "Reject",
+  "@reject": {},
+
+  "accept": "Accept",
+  "@accept": {},
+
+  "requestedOn": "Requested on: {date}",
+  "@requestedOn": {
+    "placeholders": {
+      "date": {}
+    }
+  },
+    "subscribers": "Subscribers",
+  "@subscribers": {},
+  "eventsCount": "Events",
+  "@eventsCount": {},
+  "interested": "Interested",
+  "@interested": {},
+  "eventsTitle": "Events",
+  "@eventsTitle": {},
+  "interestedCount": "{num} interested",
+  "@interestedCount": {
+    "placeholders": {
+      "num": {}
+    }
+  },
+    "aboutThisEvent": "About this event",
+  "@aboutThisEvent": {},
+  "showInterest": "Show interest",
+  "@showInterest": {},
+  "viewProfile": "View profile",
+  "@viewProfile": {},
+  "addEvent": "Add Event",
+  "@addEvent": {},
+  
+  "assocAdmin": "Association Admin",
+  "@assocAdmin": {},
+  
+  "assocProfileTwo": "Association Profile",
+  "@assocProfileTwo": {},
+  
+  "eventDetails": "Event Details",
+  "@eventDetails": {},
+  
+  "eventFeed": "Event Feed",
+  "@eventFeed": {},
+
+  
+  "publicAssocProfile": "Public Association Profile",
+  "@publicAssocProfile": {},
+  
+  "signup": "Sign Up",
+  "@signup": {},
+  
+  "welcome": "Welcome",
+  "@welcome": {},
+  
+  "creds": "Credentials",
+  "@creds": {},
+  
+  "userRegs": "User Registrations",
+  "@userRegs": {},
+  
+  "home": "Home",
+  "@home": {},
+  "welcomeBack": "Welcome Back",
+  "@welcomeBack": {},
+  "emailOrUsername": "Email or username",
+  "@emailOrUsername": {},
+  "enterEmailOrUsername": "Enter email or username",
+  "@enterEmailOrUsername": {},
+  "password": "Password",
+  "@password": {},
+  "enterYourPassword": "Enter your password",
+  "@enterYourPassword": {},
+  "forgotPassword": "Forgot Password?",
+  "@forgotPassword": {},
+  "dontHaveAccount": "Don't have an account?",
+  "@dontHaveAccount": {},
+  "signUp": "Sign up",
+  "@signUp": {},
+  "continueWithGoogle": "Continue with Google",
+  "@continueWithGoogle": {},
+  "or": "or",
+  "@or": {},
+  "login": "Login",
+  "@login": {},
+  "editProfile": "Edit Profile",
+  "@editProfile": {},
+  "name": "Name",
+  "@name": {},
+  "email": "Email",
+  "@email": {},
+  "phone": "Phone",
+  "@phone": {},
+  "address": "Address",
+  "@address": {},
+  "oldPassword": "Old Password",
+  "@oldPassword": {},
+  "newPassword": "New Password",
+  "@newPassword": {},
+  "newPasswordHint": "New Password",
+  "@newPasswordHint": {},
+  "cancel": "Cancel",
+  "@cancel": {},
+  "saveUpdate": "Save Update",
+  "@saveUpdate": {},
+  "upcomingEvents": "Upcoming events",
+  "@upcomingEvents": {},
+  
+  "searchBarHint": "Search for events ...",
+  "@searchBarHint": {},
+
+  "errorOccurred": "Error: {error}",
+  "@errorOccurred": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+
+  "filterAll": "All",
+  "@filterAll": {},
+  "filterMusic": "Music",
+  "@filterMusic": {},
+  "filterSports": "Sports",
+  "@filterSports": {},
+  "filterArts": "Arts",
+  "@filterArts": {},
+  "filterTech": "Tech",
+  "@filterTech": {},
+
+  "oneEvent": "+1 event",
+  "@oneEvent": {},
+  "followAssociation": "Follow Association",
+  "@followAssociation": {},
+  "aboutUs": "About us",
+  "@aboutUs": {},
+  "contactInformation": "Contact Information",
+  "@contactInformation": {},
+  "pastEvents": "Past events",
+  "@pastEvents": {},
+  "profile": "Profile",
+  "@profile": {},
+  "myAccount": "My Account",
+  "@myAccount": {},
+  "notifications": "Notifications",
+  "@notifications": {},
+  "settings": "Settings",
+  "@settings": {},
+  "helpCenter": "Help Center",
+  "@helpCenter": {},
+  "logOut": "Log Out",
+  "@logOut": {},
+  "createNewAccount": "Create New Account",
+  "@createNewAccount": {},
+
+  "fullName": "Full Name",
+  "@fullName": {},
+  "fullNameHint": "Enter your full name",
+  "@fullNameHint": {},
+
+  "emailAddress": "Email Address",
+  "@emailAddress": {},
+  "emailAddressHint": "Enter your email address",
+  "@emailAddressHint": {},
+
+  "passwordHint": "Enter your password",
+  "@passwordHint": {},
+
+  "confirmPassword": "Confirm Password",
+  "@confirmPassword": {},
+  "confirmPasswordHint": "Confirm your password",
+  "@confirmPasswordHint": {},
+
+  "createAccount": "Create Account",
+  "@createAccount": {},
+
+  "alreadyHaveAccount": "Already have an account?",
+  "@alreadyHaveAccount": {},
+  "logIn": "Log In",
+  "@logIn": {},
+
+  "byCreatingAccount": "By creating an account, you agree to our",
+  "@byCreatingAccount": {},
+  "termsOfService": "Terms of Service",
+  "@termsOfService": {},
+  "and": "and",
+  "@and": {},
+  "privacyPolicy": "Privacy Policy",
+  "@privacyPolicy": {},
+  "continueAsGuest": "Continue as Guest",
+  "@continueAsGuest": {}
+}

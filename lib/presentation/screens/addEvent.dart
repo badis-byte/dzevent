@@ -1,3 +1,4 @@
+import 'package:dzevent/l10n/app_localizations.dart';
 import 'package:dzevent/presentation/screens/assocAdmin.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -17,18 +18,20 @@ class Addevent extends StatefulWidget {
 class _AddeventState extends State<Addevent> {
   final ImagePicker _picker = ImagePicker();
   File? _image;
-  Widget inputTextField(String title, String lable, IconData iconLable) {
+
+  Widget inputTextField(String title, String hint, IconData iconLabel) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(title),
+        const SizedBox(height: 4),
         TextField(
           decoration: InputDecoration(
-            hintText: lable,
+            hintText: hint,
             border: OutlineInputBorder(),
-            suffixIcon: Icon(iconLable, color: Colors.grey),
+            suffixIcon: Icon(iconLabel, color: Colors.grey),
             focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.black, width: 2),
+              borderSide: const BorderSide(color: Colors.black, width: 2),
               borderRadius: BorderRadius.circular(8),
             ),
           ),
@@ -55,19 +58,19 @@ class _AddeventState extends State<Addevent> {
     );
   }
 
-  Widget textField(int maximumLength, String label, bool expand) {
+  Widget textField(int maxLength, String label, bool expand) {
     return TextField(
       cursorColor: Colors.black,
-      maxLength: maximumLength,
+      maxLength: maxLength,
       maxLines: null,
       expands: expand,
-      textAlignVertical: TextAlignVertical.top, //text starts from top
+      textAlignVertical: TextAlignVertical.top,
       decoration: InputDecoration(
-        label: Text(label, style: TextStyle(color: Colors.grey)),
+        label: Text(label, style: const TextStyle(color: Colors.grey)),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
         alignLabelWithHint: true,
         focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.black, width: 2),
+          borderSide: const BorderSide(color: Colors.black, width: 2),
           borderRadius: BorderRadius.circular(8),
         ),
       ),
@@ -76,6 +79,8 @@ class _AddeventState extends State<Addevent> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -86,117 +91,96 @@ class _AddeventState extends State<Addevent> {
           leading: Builder(
             builder: (context) {
               return IconButton(
-                icon: Icon(Icons.arrow_back),
+                icon: const Icon(Icons.arrow_back, color: Colors.black),
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Assocadmin()),
+                    MaterialPageRoute(builder: (context) => const Assocadmin()),
                   );
                 },
               );
             },
           ),
-          shape: Border(
-            bottom: BorderSide(
-              color: Colors.grey, // border color
-              width: 0.1, // border thickness
-            ),
+          shape: const Border(
+            bottom: BorderSide(color: Colors.grey, width: 0.1),
           ),
           title: Center(
             child: Text(
-              "Create New Event",
-              style: TextStyle(fontWeight: FontWeight.bold),
+              loc.createNewEvent,
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
         ),
         body: Padding(
           padding: const EdgeInsets.all(15.0),
           child: SingleChildScrollView(
-            scrollDirection: Axis.vertical,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(height: 8),
-                Text(
-                  'Event Name',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                ),
-                SizedBox(height: 8),
-                textField(100, "Annual Tech Conference", false),
-                SizedBox(height: 16),
-                Text(
-                  'Description',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                ),
-                SizedBox(height: 8),
+                Text(loc.eventName,
+                    style:
+                        const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                const SizedBox(height: 8),
+                textField(100, loc.eventNameHint, false),
+                const SizedBox(height: 16),
+                Text(loc.description,
+                    style:
+                        const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                const SizedBox(height: 8),
                 SizedBox(
                   height: 200,
-                  child: textField(
-                    500,
-                    "Join us for a day of insightful talks...",
-                    true,
-                  ),
+                  child: textField(500, loc.descriptionHint, true),
                 ),
+                const SizedBox(height: 16),
                 Row(
                   children: [
-                    // Date Column
                     Expanded(
-                      child: inputTextField(
-                        "Date",
-                        "Select Date",
-                        Icons.calendar_month,
-                      ),
+                      child: inputTextField(loc.date, loc.selectDate,
+                          Icons.calendar_month),
                     ),
-                    SizedBox(width: 16),
-                    // Time Column
+                    const SizedBox(width: 16),
                     Expanded(
                       child: inputTextField(
-                        "Time",
-                        "Select Time",
-                        Icons.access_time,
-                      ),
+                          loc.time, loc.selectTime, Icons.access_time),
                     ),
                   ],
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 inputTextField(
-                  "Location",
-                  "123Main Street,Anytown",
-                  Icons.location_on_outlined,
-                ),
-                SizedBox(height: 8),
+                    loc.location, loc.locationHint, Icons.location_on_outlined),
+                const SizedBox(height: 8),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Event Category"),
-                    SizedBox(height: 8),
+                    Text(loc.eventCategory,
+                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                    const SizedBox(height: 8),
                     DropdownButtonFormField<String>(
                       decoration: InputDecoration(
-                        labelText: "Select a category",
+                        labelText: loc.selectCategory,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black, width: 2),
+                          borderSide: const BorderSide(color: Colors.black, width: 2),
                           borderRadius: BorderRadius.circular(6),
                         ),
                       ),
-                      items:
-                          [
-                                "Tech",
-                                "AI and Data Science",
-                                "Business",
-                                "Agriculture",
-                                "Sociology",
-                              ]
-                              .map(
-                                (e) =>
-                                    DropdownMenuItem(value: e, child: Text(e)),
-                              )
-                              .toList(),
+                      items: [
+                        loc.catTech,
+                        loc.catAIData,
+                        loc.catBusiness,
+                        loc.catAgriculture,
+                        loc.catSociology
+                      ]
+                          .map(
+                            (e) => DropdownMenuItem(value: e, child: Text(e)),
+                          )
+                          .toList(),
                       onChanged: (_) {},
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
@@ -211,25 +195,19 @@ class _AddeventState extends State<Addevent> {
                         style: ElevatedButton.styleFrom(
                           elevation: 2,
                           backgroundColor: Colors.white,
-                          textStyle: TextStyle(color: Colors.grey),
+                          textStyle: const TextStyle(color: Colors.grey),
                         ),
-                        child: const Text("Choose Image"),
+                        child: Text(loc.chooseImage),
                       ),
                     ),
+                    const SizedBox(height: 8),
                     _image != null
                         ? Image.file(_image!)
                         : const Icon(Icons.image, size: 150.0),
-                    Column(
-                      children: [
-                        submitButton(
-                          "Preview Event",
-                          Colors.grey[100]!,
-                          Colors.black,
-                        ),
-                        SizedBox(height: 8),
-                        submitButton("Post Event", Colors.blue, Colors.white),
-                      ],
-                    ),
+                    const SizedBox(height: 16),
+                    submitButton(loc.previewEvent, Colors.grey[100]!, Colors.black),
+                    const SizedBox(height: 8),
+                    submitButton(loc.postEvent, Colors.blue, Colors.white),
                   ],
                 ),
               ],
