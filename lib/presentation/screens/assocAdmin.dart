@@ -101,7 +101,7 @@ class _AssocadminState extends State<Assocadmin> {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
-
+    
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -143,7 +143,7 @@ class _AssocadminState extends State<Assocadmin> {
                             ),
                           ),
                         ),
-                      ],
+                      ],  
                     ),
                   ),
                   const SizedBox(height: 16),

@@ -1,4 +1,4 @@
-import 'package:dzevent/myAccountCredentials.dart';
+import 'package:dzevent/presentation/screens/my_account_credentials.dart';
 import 'package:flutter/material.dart';
 // TODO: add flutter_svg to pubspec.yaml
 import 'package:flutter_svg/flutter_svg.dart';

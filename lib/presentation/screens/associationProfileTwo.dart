@@ -80,38 +80,39 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
   }
 
   Widget eventCard(
-    String eventImage,
-    String eventTitle,
-    String eventDate,
-    String eventTime,
-    int numOfMembers,
-  ) {
-    final loc = AppLocalizations.of(context)!;
+  String eventImage,
+  String eventTitle,
+  String eventDate,
+  String eventTime,
+  int numOfMembers,
+) {
+  final loc = AppLocalizations.of(context)!;
 
-    return SizedBox(
-      width: double.infinity,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
-            child: Card(
-              color: Colors.white,
-              elevation: 1,
-              child: Row(
-                children: [
-                  Image(
-                    image: NetworkImage(eventImage),
-                    width: 120,
-                    height: 120,
-                  ),
-                  const SizedBox(width: 8),
-                  Column(
+  return SizedBox(
+    width: double.infinity,
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
+          child: Card(
+            color: Colors.white,
+            elevation: 1,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Image(
+                  image: NetworkImage(eventImage),
+                  width: 120,
+                  height: 120,
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         eventTitle,
-                        textAlign: TextAlign.start,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
@@ -120,7 +121,6 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
                       const SizedBox(height: 8),
                       Text(
                         "$eventDate - $eventTime",
-                        textAlign: TextAlign.start,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
@@ -134,7 +134,6 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
                           const SizedBox(width: 2),
                           Text(
                             loc.interestedCount(numOfMembers),
-                            textAlign: TextAlign.start,
                             style: const TextStyle(
                               fontSize: 16,
                               color: Colors.grey,
@@ -144,19 +143,42 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
                       ),
                     ],
                   ),
-                ],
-              ),
+                ),
+                PopupMenuButton<String>(
+                  color: Colors.white,
+                  onSelected: (value) {
+                    // Handle option selected
+                    if (value == 'edit') {
+                      print("Edit clicked");
+                    } else if (value == 'delete') {
+                      print("Delete clicked");
+                    }
+                  },
+                  itemBuilder: (BuildContext context) => [
+                    const PopupMenuItem(
+                      value: 'edit',
+                      child: Text('Edit'),
+                    ),
+                    const PopupMenuItem(
+                      value: 'delete',
+                      child: Text('Delete'),
+                    ),
+                  ],
+                  icon: const Icon(Icons.more_vert),
+                ),
+              ],
             ),
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
+}
 
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
-
+    
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(

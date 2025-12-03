@@ -27,7 +27,7 @@ class MainApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
 
         //localization
-        locale: Locale('ar'),
+        locale: Locale('en'),
         localizationsDelegates: [
           AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,

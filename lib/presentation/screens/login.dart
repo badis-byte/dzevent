@@ -164,7 +164,7 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Container logoGetter() {
+  Widget logoGetter() {
     return SizedBox(
       height: 125,
       width: 125,
