@@ -30,4 +30,16 @@ class EventsCubit extends Cubit<EventsState> {
       return false;
     }
   }
+
+  Future<bool> update(EventModel event) async {
+    try {
+      emit(EventsLoading());
+      final response = await localRepo.updateRecord(event, event.id);
+      emit(AddNewEventSuccess());
+      return true;
+    } catch (e) {
+      emit(EventsError(error: e.toString()));
+      return false;
+    }
+  }
 }

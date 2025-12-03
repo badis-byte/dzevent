@@ -6,7 +6,7 @@ abstract class PostRepoBase {
   Future<List<EventModel>> getData();
   Future<bool> insertData(EventModel value);
   Future<bool> deleteAllData();
-
+  Future<bool> updateRecord(EventModel value, String id);
   static PostRepoBase? _historyInstance;
 
   static PostRepoBase getInstance() {

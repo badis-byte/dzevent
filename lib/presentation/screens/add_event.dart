@@ -56,7 +56,7 @@ class _AddeventState extends State<Addevent> {
           .toList(),
     );
     _formKey = GlobalKey<FormState>();
-    
+
     if (widget.event != null) {
       _populateFormFields(widget.event!);
     }
@@ -67,25 +67,27 @@ class _AddeventState extends State<Addevent> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controllers[_FormField.title]!.text = event.title;
       controllers[_FormField.description]!.text = event.description;
-      
+
       // Format dates - ISO8601 format (YYYY-MM-DD)
-      controllers[_FormField.startDate]!.text = 
-          event.startDatetime.toIso8601String().split('T')[0];
-      
+      controllers[_FormField.startDate]!.text = event.startDatetime
+          .toIso8601String()
+          .split('T')[0];
+
       // Format times - 24-hour format (HH:mm)
-      controllers[_FormField.startTime]!.text = 
+      controllers[_FormField.startTime]!.text =
           '${event.startDatetime.hour.toString().padLeft(2, '0')}:${event.startDatetime.minute.toString().padLeft(2, '0')}';
-      
-      controllers[_FormField.endDate]!.text = 
-          event.endDatetime.toIso8601String().split('T')[0];
-      
-      controllers[_FormField.endTime]!.text = 
+
+      controllers[_FormField.endDate]!.text = event.endDatetime
+          .toIso8601String()
+          .split('T')[0];
+
+      controllers[_FormField.endTime]!.text =
           '${event.endDatetime.hour.toString().padLeft(2, '0')}:${event.endDatetime.minute.toString().padLeft(2, '0')}';
-      
+
       controllers[_FormField.imageUrl]!.text = event.imageUrl;
       controllers[_FormField.location]!.text = event.location;
       controllers[_FormField.category]!.text = event.category;
-      
+
       // Validate category exists in dropdown options
       final validCategories = [
         "Tech",
@@ -94,7 +96,7 @@ class _AddeventState extends State<Addevent> {
         "Agriculture",
         "Sociology",
       ];
-      
+
       if (validCategories.contains(event.category)) {
         setState(() {
           _selectedCategory = event.category;
@@ -162,6 +164,10 @@ class _AddeventState extends State<Addevent> {
         associationId: associationId,
         category: category,
       );
+      if (widget.event != null) {
+        await cubit.update(event);
+        return;
+      }
       await cubit.insert(event);
     }
   }
@@ -275,7 +281,7 @@ class _AddeventState extends State<Addevent> {
                         Text("Event Category"),
                         SizedBox(height: 8),
                         DropdownButtonFormField<String>(
-                          value: _selectedCategory,
+                          initialValue: _selectedCategory,
                           validator: getIsRequiredValidator(isRequired: true),
                           decoration: InputDecoration(
                             labelText: "Select a category",

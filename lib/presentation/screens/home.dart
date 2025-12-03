@@ -33,7 +33,7 @@ class NavScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
 
-    final _links = [
+    final links = [
       Link(icon: Icons.add, label: loc.addEvent, page: Addevent()),
       Link(icon: Icons.person, label: loc.assocAdmin, page: Assocadmin()),
       Link(
@@ -66,7 +66,7 @@ class NavScreen extends StatelessWidget {
             extended: true,
             backgroundColor: Theme.of(context).colorScheme.primaryContainer,
             destinations: [
-              for (final link in _links)
+              for (final link in links)
                 NavigationRailDestination(
                   icon: Icon(link.icon),
                   label: Text(link.label),
@@ -76,7 +76,7 @@ class NavScreen extends StatelessWidget {
             onDestinationSelected: (value) {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => _links[value].page),
+                MaterialPageRoute(builder: (context) => links[value].page),
               );
             },
           ),

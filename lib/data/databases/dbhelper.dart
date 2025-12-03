@@ -19,9 +19,9 @@ class DBHelper {
     database = openDatabase(
       join(await getDatabasesPath(), _database_name),
       onCreate: (database, version) {
-        sql_codes.forEach((item) {
+        for (var item in sql_codes) {
           database.execute(item);
-        });
+        }
       },
       version: _database_version,
       onUpgrade: (db, oldVersion, newVersion) {
