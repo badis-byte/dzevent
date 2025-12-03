@@ -1,4 +1,8 @@
+import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
+import 'package:dzevent/logic/cubits/auth/auth_states.dart';
+import 'package:dzevent/presentation/screens/event_feed.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Signup extends StatefulWidget {
   const Signup({super.key});
@@ -8,6 +12,12 @@ class Signup extends StatefulWidget {
 }
 
 class _SignupState extends State<Signup> {
+  var formkey = GlobalKey<FormState>();
+  bool association = false;
+  var nameController = TextEditingController();
+  var emailController = TextEditingController();
+  var passOneController = TextEditingController();
+  var passTwoController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,51 +26,78 @@ class _SignupState extends State<Signup> {
         padding: EdgeInsets.all(10),
         color: Color.fromARGB(255, 240, 242, 245),
         child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            //mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(height: 15),
-              Text(
-                "Create New Account",
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 20),
-              googleButton(),
-              SizedBox(height: 20),
-              orDevider(),
-              SizedBox(height: 35),
-              buildInput(
-                label: "Full Name",
-                hint: "Enter your full name",
-                pass: false,
-              ),
-              SizedBox(height: 20),
-              buildInput(
-                label: "Email Address",
-                hint: "Enter your email address",
-                pass: false,
-              ),
-              SizedBox(height: 20),
-              buildInput(
-                label: "Password",
-                hint: "Enter your password",
-                pass: true,
-              ),
-              SizedBox(height: 20),
-              buildInput(
-                label: "Confirm Password",
-                hint: "Confirm your password",
-                pass: true,
-              ),
-              SizedBox(height: 30),
-              createButton(),
-              SizedBox(height: 30),
-              policy(),
-              SizedBox(height: 30),
-              yesAccount(),
-              SizedBox(height: 30),
-            ],
+          child: Form(
+            key: formkey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              //mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(height: 15),
+                Text(
+                  "Create New Account",
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 20),
+                googleButton(),
+                SizedBox(height: 20),
+                orDevider(),
+                SizedBox(height: 35),
+                buildInput(
+                  label: "Full Name",
+                  hint: "Enter your full name",
+                  pass: false,
+                  textcontroller: nameController,
+                  validate: _nameValidate
+                ),
+                SizedBox(height: 20),
+                buildInput(
+                  label: "Email Address",
+                  hint: "Enter your email address",
+                  pass: false,
+                  textcontroller: emailController,
+                  validate: _emailValidate,
+                ),
+                SizedBox(height: 20),
+                buildInput(
+                  label: "Password",
+                  hint: "Enter your password",
+                  pass: true,
+                  textcontroller: passOneController,
+                  validate: _passOneValidate,
+                ),
+                SizedBox(height: 20),
+                buildInput(
+                  label: "Confirm Password",
+                  hint: "Confirm your password",
+                  pass: true,
+                  textcontroller: passTwoController,
+                  validate: _passTwoValidate,
+                ),
+                SizedBox(height: 30),
+                createButton(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center, // centers the whole row
+                  children: [
+                    Text("Are you an Association?"),
+                    const SizedBox(width: 8), // small spacing
+                    Checkbox(
+            value: association,
+            onChanged: (value) {
+              setState(() {
+                print(value);
+                association = value!;
+              });
+            },
+                    ),
+                  ],
+                ),
+                SizedBox(height: 30),
+                policy(),
+                SizedBox(height: 30),
+                yesAccount(),
+                SizedBox(height: 30),
+              ],
+            ),
           ),
         ),
       ),
@@ -158,8 +195,31 @@ class _SignupState extends State<Signup> {
         ),
         onPressed: () {
           print('create account button pressed!');
+          _process();
         },
-        child: const Text('Create Account', style: TextStyle(fontSize: 16)),
+        child: BlocConsumer<AccountCubit, AccountState>(
+          builder: (context, state){
+            if(state is AccountLoading){
+              return Center(child: CircularProgressIndicator());
+            }
+            
+            return Text('Create Account', style: TextStyle(fontSize: 16));
+          },
+          listener: (context, state){
+            if(state is AccountError){
+              ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.error)),);
+            }
+            if(state is AccountExists){
+              ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("Email already exists")),);
+            }
+            if(state is UserFetched || state is AssociationFetched){
+                Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (_) => EventFeed()),);
+            }
+          }
+          )
       ),
     );
   }
@@ -168,6 +228,8 @@ class _SignupState extends State<Signup> {
     required String label,
     required String hint,
     required bool pass,
+    required TextEditingController textcontroller,
+    required String? Function(String?)? validate,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -185,7 +247,9 @@ class _SignupState extends State<Signup> {
         ),
         Container(
           margin: EdgeInsets.only(left: 25, right: 25, top: 7),
-          child: TextField(
+          child: TextFormField(
+            controller: textcontroller,
+            validator: validate,
             obscureText: pass,
             decoration: InputDecoration(
               filled: true,
@@ -269,4 +333,87 @@ class _SignupState extends State<Signup> {
       ),
     );
   }
+
+  String? _nameValidate(String? text){
+    if (text == null || text.trim().isEmpty) {
+    return "Name is required";
+  }
+
+  // Remove extra spaces
+  final parts = text.trim().split(RegExp(r'\s+'));
+
+  if (parts.length < 2) {
+    return "Please enter your full name (first and last)";
+  }
+
+  if (parts.any((part) => part.length < 2)) {
+    return "Each name must be at least 2 characters";
+  }
+
+  return null;
+  }
+
+  String? _emailValidate(String? text ){
+    if (text == null || text.isEmpty) {
+    return "Email is required";
+  }
+
+  // Simple and effective regex
+  final regex = RegExp(r'^[^@]+@[^@]+\.[^@]+$');
+
+  if (!regex.hasMatch(text)) {
+    return "Enter a valid email";
+  }
+
+  return null;
+  }
+
+  String? _passOneValidate(String? text){
+    if (text == null || text.isEmpty) {
+    return "Password is required";
+  }
+
+  if (text.length < 8) {
+    return "Password must be at least 8 characters long";
+  }
+
+  if (!RegExp(r'[A-Z]').hasMatch(text)) {
+    return "Password must contain at least one uppercase letter";
+  }
+
+  if (!RegExp(r'[a-z]').hasMatch(text)) {
+    return "Password must contain at least one lowercase letter";
+  }
+
+  if (!RegExp(r'[0-9]').hasMatch(text)) {
+    return "Password must contain at least one number";
+  }
+
+  return null;
+  }
+
+  String? _passTwoValidate(String? text){
+    if (text == null || text.isEmpty) {
+    return "Please confirm your password";
+  }
+
+  if (text != passOneController.text) {
+    return "Passwords do not match";
+  }
+
+  return null;
+  }
+
+
+void _process(){
+  if(formkey.currentState!.validate()){
+    context.read<AccountCubit>().register( nameController.text, emailController.text, passOneController.text, association);
+  }else{
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please try again.')),);
+  }
+}
+
+
+
 }

@@ -10,3 +10,5 @@ class PostsTable extends DBBaseTable {
             )
         ''';
 }
+
+

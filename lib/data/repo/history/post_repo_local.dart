@@ -7,17 +7,17 @@ class PostRepoLocal extends PostRepoBase {
   final postTable = PostsTable(); // Badly Coupled..
 
   @override
-  Future<List<EventsModel>> getData() async {
+  Future<List<UserModel>> getData() async {
     final obj = await postTable.getRecords();
-    List<EventsModel> result = [];
+    List<UserModel> result = [];
     obj.forEach((item) {
-      result.add(EventsModel.fromMap(item));
+      result.add(UserModel.fromMap(item));
     });
     return result;
   }
 
   @override
-  Future<bool> insertData(EventsModel post) async {
+  Future<bool> insertData(UserModel post) async {
     postTable.insertRecord(post.toMap());
     return true;
   }

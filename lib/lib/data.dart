@@ -7,7 +7,7 @@ final events = [
     datetime: DateTime(2025, 07, 26, 19),
     location: "New York",
     association: Association(name: "", imageUrl: ""),
-    description: "NA",
+    description: "dont miss  this fire indie festival",
   ),
   Event(
     imageUrl: "assets/images/event_feed/image2.png",
@@ -15,6 +15,6 @@ final events = [
     datetime: DateTime(2025, 07, 27, 9),
     location: "Chicago",
     association: Association(name: "", imageUrl: ""),
-    description: "NA",
+    description: "stfu",
   ),
 ];

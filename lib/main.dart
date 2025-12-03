@@ -1,3 +1,4 @@
+import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
 import 'package:dzevent/logic/cubits/events/events_cubit.dart';
 import 'package:dzevent/presentation/screens/home.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +22,9 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: [BlocProvider(create: (context) => EventsCubit())],
+      providers: [BlocProvider(create: (context) => EventsCubit()),
+                  BlocProvider(create: (context) => AccountCubit()),
+      ],
       child: MaterialApp(debugShowCheckedModeBanner: false, home: NavScreen()),
     );
   }

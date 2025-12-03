@@ -12,6 +12,8 @@ class EventsError extends EventsState {
 }
 
 class EventsFetched extends EventsState {
-  final List<EventsModel> posts;
+  final List<UserModel> posts;
   EventsFetched({required this.posts});
 }
+
+
