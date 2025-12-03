@@ -43,4 +43,22 @@ class DBBaseTable {
     }
     return false;
   }
+
+  Future<bool> updateRecord(Map<String, dynamic> data, String id) async {
+  try {
+    final db = await DBHelper.getDatabase();
+    await db.update(
+      db_table,
+      data,
+      where: 'id = ?',
+      whereArgs: [id],
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+    return true;
+  } catch (e, stacktrace) {
+    print('$e --> $stacktrace');
+    return false;
+  }
+}
+
 }

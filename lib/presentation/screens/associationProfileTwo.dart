@@ -1,3 +1,4 @@
+import 'package:dzevent/data/models/event_model.dart';
 import 'package:dzevent/presentation/screens/add_event.dart';
 import 'package:dzevent/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -80,11 +81,7 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
   }
 
   Widget eventCard(
-    String eventImage,
-    String eventTitle,
-    String eventDate,
-    String eventTime,
-    int numOfMembers,
+    EventModel event
   ) {
     final loc = AppLocalizations.of(context)!;
 
@@ -101,7 +98,7 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
               child: Row(
                 children: [
                   Image(
-                    image: NetworkImage(eventImage),
+                    image: NetworkImage(event.imageUrl),
                     width: 120,
                     height: 120,
                   ),
@@ -110,7 +107,7 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        eventTitle,
+                        event.title,
                         textAlign: TextAlign.start,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
@@ -119,7 +116,7 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        "$eventDate - $eventTime",
+                        event.startDatetime.toString(),
                         textAlign: TextAlign.start,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
@@ -133,16 +130,47 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
                           const Icon(Icons.people_outline, color: Colors.grey),
                           const SizedBox(width: 2),
                           Text(
-                            loc.interestedCount(numOfMembers),
+                            loc.interestedCount(100), //dynamic
                             textAlign: TextAlign.start,
                             style: const TextStyle(
                               fontSize: 16,
                               color: Colors.grey,
                             ),
                           ),
+                          
                         ],
+
+                      ),
+
+                    ],
+                  ),
+                  PopupMenuButton<String>(
+                    color: Colors.white,
+                    onSelected: (value) {
+                      // Handle option selected
+                      if (value == 'edit') {
+                        print("Edit clicked");
+                      } else if (value == 'delete') {
+                        print("Delete clicked");
+                      }
+                    },
+                    itemBuilder: (BuildContext context) => [
+                      PopupMenuItem(
+                        value: 'edit',
+                        child: const Text('Edit'),
+                        onTap: (){
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => Addevent(event: event,)),
+                          );
+                        },
+                      ),
+                      const PopupMenuItem(
+                        value: 'delete',
+                        child: Text('Delete'),
                       ),
                     ],
+                    icon: const Icon(Icons.more_vert),
                   ),
                 ],
               ),
@@ -156,7 +184,10 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
-
+    EventModel event1 = EventModel(id: "1", title: "Tech Innovators Meetup", description: "Join us for a day of tech talks and networking.", startDatetime: DateTime(2025, 11, 15, 10, 0), endDatetime: DateTime(2025, 11, 15, 17, 0), imageUrl: logo, location: "Tech Hub", createdAt: DateTime.now(), associationId: 1, category: "Meetup");
+    EventModel event2 = EventModel(id: "2", title: "AI Conference", description: "Explore the latest advancements in AI.", startDatetime: DateTime(2025, 12, 10, 9, 0), endDatetime: DateTime(2025, 12, 10, 18, 0), imageUrl: logo, location: "Innovation Center", createdAt: DateTime.now(), associationId: 1, category: "Conference");
+    EventModel event3 = EventModel(id: "3", title: "Blockchain Workshop", description: "Learn about the future of blockchain technology.", startDatetime: DateTime(2025, 12, 15, 10, 0), endDatetime: DateTime(2025, 12, 15, 17, 0), imageUrl: logo, location: "Tech Hub", createdAt: DateTime.now(), associationId: 1, category: "Workshop");
+    EventModel event4 = EventModel(id: "4", title: "Cybersecurity Summit", description: "Discuss the latest trends in cybersecurity.", startDatetime: DateTime(2025, 12, 20, 9, 0), endDatetime: DateTime(2025, 12, 20, 18, 0), imageUrl: logo, location: "Innovation Center", createdAt: DateTime.now(), associationId: 1, category: "Conference");
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -203,33 +234,16 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
                   scrollDirection: Axis.vertical,
                   child: Column(
                     children: [
-                      eventCard(
-                        logo,
-                        "Tech Innovators Meetup", // dynamic
-                        "2025-11-15",
-                        "10:00 AM",
-                        120,
+                      eventCard(event1
                       ),
                       eventCard(
-                        logo,
-                        "Jazz Night", // dynamic
-                        "2025-12-02",
-                        "7:30 PM",
-                        85,
+                        event2
                       ),
                       eventCard(
-                        logo,
-                        "Modern Art Expo", // dynamic
-                        "2026-01-10",
-                        "3:00 PM",
-                        45,
+                        event3
                       ),
                       eventCard(
-                        logo,
-                        "City Marathon", // dynamic
-                        "2025-11-25",
-                        "6:00 AM",
-                        300,
+                        event4
                       ),
                     ],
                   ),
