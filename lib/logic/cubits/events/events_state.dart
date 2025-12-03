@@ -1,4 +1,4 @@
-import 'package:dzevent/data/models/events_model.dart';
+import 'package:dzevent/data/models/event_model.dart';
 
 sealed class EventsState {}
 
@@ -12,6 +12,8 @@ class EventsError extends EventsState {
 }
 
 class EventsFetched extends EventsState {
-  final List<UserModel> events;
+  final List<EventModel> events;
   EventsFetched({required this.events});
 }
+
+class AddNewEventSuccess extends EventsState {}

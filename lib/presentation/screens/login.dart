@@ -2,6 +2,7 @@ import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
 import 'package:dzevent/logic/cubits/auth/auth_states.dart';
 import 'package:dzevent/presentation/screens/event_feed.dart';
 import 'package:flutter/material.dart';
+import 'package:dzevent/l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Login extends StatefulWidget {
@@ -17,6 +18,8 @@ class _LoginState extends State<Login> {
   var passController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+
     return Scaffold(
       body: Form(
         key: formkey,
@@ -47,24 +50,26 @@ class _LoginState extends State<Login> {
                   hint: "Enter email or username",
                   pass: false,
                   textcontroller: emailController,
-                  validate: _emailValidate
+                  validate: _emailValidate,
                 ),
                 SizedBox(height: 20),
-                buildInput(label: "Password",
-                    hint: "Enter your password",
-                    pass: true,
-                    textcontroller: passController,
-                    validate: _passValidate,),
+                buildInput(
+                  label: "Password",
+                  hint: "Enter your password",
+                  pass: true,
+                  textcontroller: passController,
+                  validate: _passValidate,
+                ),
                 SizedBox(height: 10),
-                forgotPassword(),
+                forgotPassword(loc),
                 SizedBox(height: 30),
-                loginButton(),
+                loginButton(loc),
                 SizedBox(height: 30),
-                orDevider(),
+                orDevider(loc),
                 SizedBox(height: 30),
-                googleButton(),
+                googleButton(loc),
                 SizedBox(height: 30),
-                noAccount(),
+                noAccount(loc),
                 SizedBox(height: 40),
               ],
             ),
@@ -74,23 +79,23 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Row noAccount() {
+  Row noAccount(AppLocalizations loc) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          "Dont't have an account?",
+          loc.dontHaveAccount,
           textAlign: TextAlign.center,
-          style: TextStyle(
+          style: const TextStyle(
             color: Colors.black,
             fontSize: 15,
             decoration: TextDecoration.none,
           ),
         ),
         Text(
-          " Sign up",
+          " ${loc.signUp}",
           textAlign: TextAlign.center,
-          style: TextStyle(
+          style: const TextStyle(
             color: Colors.blue,
             fontSize: 15,
             decoration: TextDecoration.none,
@@ -100,62 +105,58 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Container googleButton() {
+  Container googleButton(AppLocalizations loc) {
     return Container(
-      margin: EdgeInsets.only(left: 25, right: 25),
+      margin: const EdgeInsets.symmetric(horizontal: 25),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.white, // Button color
-          foregroundColor: Colors.black, // Text color
-          minimumSize: const Size(400, 60), // Width x Height
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+          minimumSize: const Size(400, 60),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(6), // Rounded corners
-            side: BorderSide(
-              color: Colors.grey, // Border color
-              width: 1, // Border width
-            ),
+            borderRadius: BorderRadius.circular(6),
+            side: const BorderSide(color: Colors.grey, width: 1),
           ),
-          //elevation: 5,                           // Shadow depth
         ),
         onPressed: () {
-          print('google button pressed!');
+          print('Google button pressed!');
         },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset("assets/images/google1.png", height: 35, width: 35),
-            SizedBox(width: 10),
-            Text('Continue with Google', style: TextStyle(fontSize: 16)),
+            const SizedBox(width: 10),
+            Text(loc.continueWithGoogle, style: const TextStyle(fontSize: 16)),
           ],
         ),
       ),
     );
   }
 
-  Row orDevider() {
+  Row orDevider(AppLocalizations loc) {
     return Row(
-      children: const [
-        Expanded(
+      children: [
+        const Expanded(
           child: Divider(
             color: Colors.grey,
             thickness: 1,
-            indent: 25, // left spacing
-            endIndent: 10, // space before "OR"
+            indent: 25,
+            endIndent: 10,
           ),
         ),
         Text(
-          "or",
-          style: TextStyle(
+          loc.or,
+          style: const TextStyle(
             color: Color.fromARGB(255, 109, 107, 107),
             fontWeight: FontWeight.normal,
           ),
         ),
-        Expanded(
+        const Expanded(
           child: Divider(
             color: Colors.grey,
             thickness: 1,
-            indent: 10, // space after "OR"
+            indent: 10,
             endIndent: 25,
           ),
         ),
@@ -163,71 +164,75 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Container loginButton() {
+  Container loginButton(AppLocalizations loc) {
     return Container(
       margin: EdgeInsets.only(left: 25, right: 25),
       child: BlocConsumer<AccountCubit, AccountState>(
         listener: (context, state) {
-          if(state is AccountError){
-              ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.error)),);
-            }
-            if(state is AccountExists){
-              ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Email already exists")),);
-            }
-            if(state is UserFetched || state is AssociationFetched){
-                Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (_) => EventFeed()),);
-            }
+          if (state is AccountError) {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.error)));
+          }
+          if (state is AccountExists) {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text("Email already exists")));
+          }
+          if (state is UserFetched || state is AssociationFetched) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => EventFeed()),
+            );
+          }
         },
-         builder: (context, state){ 
-          if( state is AccountLoading){
-            return SizedBox(child: CircularProgressIndicator(),);
+        builder: (context, state) {
+          if (state is AccountLoading) {
+            return SizedBox(child: CircularProgressIndicator());
           }
           return ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color.fromARGB(
-              255,
-              0,
-              51,
-              102,
-            ), // Button color
-            foregroundColor: Colors.white, // Text color
-            minimumSize: const Size(400, 60), // Width x Height
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(6), // Rounded corners
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color.fromARGB(
+                255,
+                0,
+                51,
+                102,
+              ), // Button color
+              foregroundColor: Colors.white, // Text color
+              minimumSize: const Size(400, 60), // Width x Height
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(6), // Rounded corners
+              ),
+              elevation: 5, // Shadow depth
             ),
-            elevation: 5, // Shadow depth
-          ),
-          onPressed: () {
-            print('Login button pressed!');
-            _process();
-          },
-          child: const Text('Login', style: TextStyle(fontSize: 16)),
-        );
-         }
+            onPressed: () {
+              print('Login button pressed!');
+              _process();
+            },
+            child: const Text('Login', style: TextStyle(fontSize: 16)),
+          );
+        },
       ),
     );
   }
 
-  Container logoGetter() {
-    return Container(
+  Widget logoGetter() {
+    return SizedBox(
       height: 125,
       width: 125,
       child: Image.asset('assets/images/logo.png'),
     );
   }
 
-  Container forgotPassword() {
+  Container forgotPassword(AppLocalizations loc) {
     return Container(
-      margin: EdgeInsets.only(right: 25),
+      margin: const EdgeInsets.only(right: 25),
       child: Text(
-        "Forgot Password?",
+        loc.forgotPassword,
         textAlign: TextAlign.right,
-        style: TextStyle(
-          color: const Color.fromARGB(255, 37, 153, 237),
+        style: const TextStyle(
+          color: Color.fromARGB(255, 37, 153, 237),
           fontSize: 15,
           decoration: TextDecoration.none,
           fontWeight: FontWeight.w400,
@@ -236,18 +241,24 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Column buildInput({required String label, required String hint, required bool pass, required TextEditingController textcontroller, required String? Function(String?)? validate}) {
+  Column buildInput({
+    required String label,
+    required String hint,
+    required bool pass,
+    required TextEditingController textcontroller,
+    required String? Function(String?)? validate,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          margin: EdgeInsets.only(left: 25),
+          margin: const EdgeInsets.only(left: 25),
           child: Text(
             label,
-            style: TextStyle(
+            style: const TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: 15,
-              color: const Color.fromARGB(255, 60, 59, 59),
+              color: Color.fromARGB(255, 60, 59, 59),
             ),
           ),
         ),
@@ -260,14 +271,14 @@ class _LoginState extends State<Login> {
             decoration: InputDecoration(
               filled: true,
               fillColor: Colors.white,
-              border: OutlineInputBorder(),
+              border: const OutlineInputBorder(),
               hintText: hint,
-              hintStyle: TextStyle(
+              hintStyle: const TextStyle(
                 color: Color.fromARGB(255, 124, 124, 157),
                 fontSize: 15,
               ),
               enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.grey),
+                borderSide: const BorderSide(color: Colors.grey),
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
@@ -277,53 +288,55 @@ class _LoginState extends State<Login> {
     );
   }
 
-  
-  String? _emailValidate(String? text ){
+  String? _emailValidate(String? text) {
     if (text == null || text.isEmpty) {
-    return "Email is required";
+      return "Email is required";
+    }
+
+    // Simple and effective regex
+    final regex = RegExp(r'^[^@]+@[^@]+\.[^@]+$');
+
+    if (!regex.hasMatch(text)) {
+      return "Enter a valid email";
+    }
+
+    return null;
   }
 
-  // Simple and effective regex
-  final regex = RegExp(r'^[^@]+@[^@]+\.[^@]+$');
-
-  if (!regex.hasMatch(text)) {
-    return "Enter a valid email";
-  }
-
-  return null;
-  }
-
-  String? _passValidate(String? text){
+  String? _passValidate(String? text) {
     if (text == null || text.isEmpty) {
-    return "Password is required";
+      return "Password is required";
+    }
+
+    if (text.length < 8) {
+      return "Password must be at least 8 characters long";
+    }
+
+    if (!RegExp(r'[A-Z]').hasMatch(text)) {
+      return "Password must contain at least one uppercase letter";
+    }
+
+    if (!RegExp(r'[a-z]').hasMatch(text)) {
+      return "Password must contain at least one lowercase letter";
+    }
+
+    if (!RegExp(r'[0-9]').hasMatch(text)) {
+      return "Password must contain at least one number";
+    }
+
+    return null;
   }
 
-  if (text.length < 8) {
-    return "Password must be at least 8 characters long";
+  void _process() {
+    if (formkey.currentState!.validate()) {
+      context.read<AccountCubit>().login(
+        emailController.text,
+        passController.text,
+      );
+    } else {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Please try again.')));
+    }
   }
-
-  if (!RegExp(r'[A-Z]').hasMatch(text)) {
-    return "Password must contain at least one uppercase letter";
-  }
-
-  if (!RegExp(r'[a-z]').hasMatch(text)) {
-    return "Password must contain at least one lowercase letter";
-  }
-
-  if (!RegExp(r'[0-9]').hasMatch(text)) {
-    return "Password must contain at least one number";
-  }
-
-  return null;
-  }
-
-void _process(){
-  if(formkey.currentState!.validate()){
-    context.read<AccountCubit>().login( emailController.text, passController.text);
-  }else{
-    ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please try again.')),);
-  }
-}
-
 }

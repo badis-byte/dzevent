@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:dzevent/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 class ImageCarousel extends StatefulWidget {
@@ -25,14 +26,10 @@ class _ImageCarouselState extends State<ImageCarousel> {
   void initState() {
     super.initState();
 
-    // Make initialPage a multiple of items.length so modulo = 0 (starts on first item).
-    final int initialPage = items.length * _loopBase; // e.g., 3 * 1000 = 3000
+    final int initialPage = items.length * _loopBase;
     _controller = PageController(initialPage: initialPage);
+    _currentIndex = initialPage % items.length;
 
-    // Keep dots in sync from the first frame.
-    _currentIndex = initialPage % items.length; // will be 0
-
-    // Start auto-scroll after first frame to avoid the initial jump.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _timer = Timer.periodic(const Duration(seconds: 5), (_) {
         if (_controller.hasClients) {
@@ -54,9 +51,10 @@ class _ImageCarouselState extends State<ImageCarousel> {
 
   @override
   Widget build(BuildContext context) {
+    final local = AppLocalizations.of(context)!;
+
     return Column(
       children: [
-        
         SizedBox(
           height: 381,
           child: PageView.builder(
@@ -72,7 +70,6 @@ class _ImageCarouselState extends State<ImageCarousel> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   color: Colors.white,
-                  
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -87,7 +84,11 @@ class _ImageCarouselState extends State<ImageCarousel> {
                       ),
                     ),
                     const SizedBox(height: 12),
-                    
+                    Text(
+                      item['text']!,
+                      style: const TextStyle(fontSize: 16),
+                      textAlign: TextAlign.center,
+                    ),
                   ],
                 ),
               );
@@ -111,63 +112,58 @@ class _ImageCarouselState extends State<ImageCarousel> {
             );
           }),
         ),
-        SizedBox(height: 65),
-
+        const SizedBox(height: 65),
         ElevatedButton(
-        onPressed: () {
-          print('Button 1 pressed!');
+          onPressed: () {
+            print('Sign Up button pressed!');
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: const Color.fromARGB(255, 3, 16, 202),           // Button color
-            foregroundColor: Colors.white,          // Text color
-            minimumSize: const Size(400, 60),       // Width x Height
-            padding: const EdgeInsets.symmetric(
-              horizontal: 24, 
-              vertical: 12
-            ),
+            backgroundColor: const Color.fromARGB(255, 3, 16, 202),
+            foregroundColor: Colors.white,
+            minimumSize: const Size(400, 60),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12), // Rounded corners
+              borderRadius: BorderRadius.circular(12),
             ),
-            elevation: 5,                           // Shadow depth
+            elevation: 5,
           ),
-          child: const Text(
-            'Sign Up',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          child: Text(
+            local.signUp,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
         ),
-
-        SizedBox(height: 17),
-
+        const SizedBox(height: 17),
         ElevatedButton(
-        onPressed: () {
-          print('Button 2 pressed!');
+          onPressed: () {
+            print('Login button pressed!');
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: const Color.fromARGB(255, 220, 216, 216) ,           // Button color
-            foregroundColor: Colors.black,          // Text color
-            minimumSize: const Size(400, 60),       // Width x Height
-            padding: const EdgeInsets.symmetric(
-              horizontal: 24, 
-              vertical: 12
-            ),
+            backgroundColor: const Color.fromARGB(255, 220, 216, 216),
+            foregroundColor: Colors.black,
+            minimumSize: const Size(400, 60),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12), // Rounded corners
+              borderRadius: BorderRadius.circular(12),
             ),
-            elevation: 5,                           // Shadow depth
+            elevation: 5,
           ),
-          child: const Text(
-            'Login',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          child: Text(
+            local.login,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
         ),
-
-        SizedBox(height: 15),
-
+        const SizedBox(height: 15),
         Container(
           margin: const EdgeInsets.only(top: 20),
-          child: Text("Continue as Guest", style: TextStyle(color: Colors.black, fontSize: 15,decoration: TextDecoration.none ),),
-        )
-        
+          child: Text(
+            local.continueAsGuest,
+            style: const TextStyle(
+              color: Colors.black,
+              fontSize: 15,
+              decoration: TextDecoration.none,
+            ),
+          ),
+        ),
       ],
     );
   }

@@ -1,12 +1,21 @@
 import 'db_base.dart';
 
 class EventsTable extends DBBaseTable {
-  var db_table = 'history';
+  var db_table = 'events';
+
   static String sql_code = '''
-          CREATE TABLE  Events (
-              id INTEGER PRIMARY KEY AUTOINCREMENT, 
-              name TEXT NOT NULL,
-              created_at timestamp NOT NULL
-            )
-        ''';
+    CREATE TABLE events (
+      id TEXT PRIMARY KEY,
+      title TEXT NOT NULL UNIQUE CHECK (title <> ''),
+      description TEXT NOT NULL CHECK (description <> ''),
+      startDatetime TEXT NOT NULL CHECK (startDatetime <> ''),
+      endDatetime TEXT NOT NULL CHECK (endDatetime <> ''),
+      imageUrl TEXT NOT NULL CHECK (imageUrl <> ''),
+      location TEXT NOT NULL CHECK (location <> ''),
+      createdAt TEXT NOT NULL CHECK (createdAt <> ''),
+      associationId INTEGER,
+      category TEXT NOT NULL CHECK (category <> '')
+);
+
+  ''';
 }
