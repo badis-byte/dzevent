@@ -1,4 +1,5 @@
 dzeventdb.txt
+lib/l10n/app_localizations_*
 # Miscellaneous
 *.class
 *.log
