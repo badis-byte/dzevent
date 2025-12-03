@@ -1,12 +1,14 @@
-import 'package:dzevent/lib/data.dart' as DATA;
 import 'package:dzevent/lib/defs.dart';
 import 'package:dzevent/lib/styles.dart';
+import 'package:dzevent/logic/cubits/events/events_cubit.dart';
+import 'package:dzevent/logic/cubits/events/events_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 class EventFeed extends StatelessWidget {
   static const String pageRoute = "event-feed";
-  final events = DATA.events;
+  // final events = DATA.events;
 
   final filters = ["All", "Music", "Sports", "Arts", "Tech"];
   EventFeed({super.key});
@@ -40,12 +42,25 @@ class EventFeed extends StatelessWidget {
               barHintText: "Search for events ...",
             ),
             Filters(filters: filters),
-            Expanded(
-              child: ListView.builder(
-                itemCount: events.length,
-                itemBuilder: (context, index) =>
-                    EventCard(event: events[index]),
-              ),
+            BlocBuilder<EventsCubit, EventsState>(
+              builder: (context, state) {
+                if (state is EventsLoading) {
+                  return Center(child: CircularProgressIndicator());
+                }
+                if (state is EventsError) {
+                  return Center(child: Text("Error: ${state.error}"));
+                }
+                if (state is EventsFetched) {
+                  final posts = state.posts;
+                  return Expanded(
+                    child: ListView.builder(
+                      itemCount: posts.length,
+                      itemBuilder: (context, index) => Text("+1 event"),
+                    ),
+                  );
+                }
+                return const SizedBox();
+              },
             ),
           ],
         ),
@@ -98,7 +113,7 @@ class EventCard extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Row( 
+            child: Row(
               children: [
                 Flexible(
                   child: Column(
@@ -119,7 +134,7 @@ class EventCard extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        event.location , 
+                        event.location,
                         style: subtitleStyle.copyWith(
                           color: Colors.grey.shade400,
                         ),

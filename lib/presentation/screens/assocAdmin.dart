@@ -1,6 +1,6 @@
 //this is association admin screen
 
-import 'package:dzevent/screens/associationProfileTwo.dart';
+import 'package:dzevent/presentation/screens/associationProfileTwo.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -130,7 +130,7 @@ class _AssocadminState extends State<Assocadmin> {
                                 );
                               },
                             );
-                          }
+                          },
                         ),
 
                         Expanded(
