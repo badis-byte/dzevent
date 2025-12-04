@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:dzevent/data/databases/db_user.dart';
+import 'package:dzevent/data/databases/db_association.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -10,7 +12,11 @@ class DBHelper {
   static const _database_version = 1;
   static var database;
 
-  static List<String> sql_codes = [EventsTable.sql_code];
+  static List<String> sql_codes = [
+    EventsTable.sql_code,
+    UserTable.sql_code,
+    AssociationTable.sql_code,
+  ];
   static Future<Database> getDatabase() async {
     if (database != null) {
       return database;
