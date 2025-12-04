@@ -15,7 +15,7 @@ class DBAuth {
 
   final result = await db.query(
     'association',
-    where: 'email = ? AND password = ?',
+    where: 'email = ? AND passwordHash = ?',
     whereArgs: [email, password],
   );
 
@@ -36,16 +36,22 @@ class DBAuth {
 
   final result = await db.query(
     'user',
-    where: 'email = ? AND password = ?',
+    where: 'email = ? AND passwordHash = ?',
     whereArgs: [email, password],
   );
 
   if (result.isNotEmpty) {
+    try{
     var user = UserModel.fromMap(result.first);
     return user;
+    }catch(e){
+      print(e);
+      rethrow;
+    }
+  }else{
+    throw InvalidCredException();
   }
 
-    throw InvalidCredException();
   }
 
 

@@ -58,7 +58,7 @@ class AssociationModel {
 
   factory AssociationModel.fromMap(Map<String, dynamic> map) {
     return AssociationModel(
-      id: map['id'] as int,
+      id: map['id'] is int ? map['id'] : int.parse(map['id'].toString()),
       name: map['name'] as String,
       email: map['email'] as String,
       passwordHash: map['passwordHash'] as String,

@@ -1,17 +1,18 @@
-import 'db_base.dart';
+import 'package:dzevent/data/databases/db_base_acc.dart';
 
-class UserTable extends DBBaseTable {
-  var db_table = 'association';
+
+class UserTable extends DBBaseTableex {
+  var db_table = 'user';
   static String sql_code = '''
-          CREATE TABLE  Events (
+          CREATE TABLE  user (
               id INTEGER PRIMARY KEY AUTOINCREMENT, 
               name TEXT NOT NULL,
-              email VARCHAR(255) UNIQUE NOT NULL,
-              password_hash TEXT NOT NULL,
-              profile_picture TEXT,
+              email TEXT UNIQUE NOT NULL,
+              passwordHash TEXT NOT NULL,
+              profilePicture TEXT,
               bio TEXT,
-              created_at TIMESTAMP NOT NULL,
-            )
+              createdAt TIMESTAMP NOT NULL
+            );
         ''';
 }
 

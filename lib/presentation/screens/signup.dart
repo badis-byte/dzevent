@@ -192,7 +192,12 @@ class _SignupState extends State<Signup> {
           );
         },
         listener: (context, state) {
-          if (state is AccountError) {
+          if( state is AccountGuest){
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => EventFeed()),
+            );
+          }else if (state is AccountError) {
             ScaffoldMessenger.of(
               context,
             ).showSnackBar(SnackBar(content: Text(state.error)));

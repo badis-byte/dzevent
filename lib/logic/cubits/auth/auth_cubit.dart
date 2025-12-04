@@ -28,8 +28,8 @@ class AccountCubit extends Cubit<AccountState>{
           _currentAssociation =  await localAssRepo.login(email, password);
           association = true;
           emit(AssociationFetched(association: _currentAssociation!));
-      }catch(e){
-        if(e is InvalidCredException){
+      }catch(a){
+        if(a is InvalidCredException){
           emit(AccountError(error: "Invalid Credentials"));
         }
         else if(e is NotVerifiedException){
@@ -40,6 +40,7 @@ class AccountCubit extends Cubit<AccountState>{
         }
         }
       }else{
+        print(e);
         emit(AccountError(error: "An error occured2"));
       }
     }
@@ -63,15 +64,20 @@ class AccountCubit extends Cubit<AccountState>{
     try{
       emit(AccountLoading());
       if(association){
-        AssociationModel assoc = AssociationModel(id: 1, name: name, email: email, passwordHash: password, profilePicture: "", bio: "we're a new Associatoin to DZevent!", createdAt: DateTime.now(), verified: false);
+        AssociationModel assoc = AssociationModel(id: 1, name: name, email: email, passwordHash: password, profilePicture: "/picAssociation", bio: "we're a new Associatoin to DZevent!", createdAt: DateTime.now(), verified: false);
         localAssRepo.insertData(assoc);
-        emit(AssociationFetched(association: assoc));
+        emit(AccountGuest());
         association=true;
+        print("registered: ");
+        print(_currentAssociation.toString());
       }else{
-        UserModel user = UserModel(id: 1, name: name, email: email, passwordHash: password, profilePicture: "", bio: "I'm a new user to DZevent!", createdAt: DateTime.now());
+        UserModel user = UserModel(id: 1, name: name, email: email, passwordHash: password, profilePicture: "/picUser", bio: "I'm a new user to DZevent!", createdAt: DateTime.now());
         localUserRepo.insertData(user);
         emit(UserFetched(user: user));
+        _currentUser=user;
         association= false;
+        print("registered: ");
+        print(_currentUser.toString());
       }
       return true;
     }catch(e){

@@ -52,16 +52,19 @@ class UserModel {
   }
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
-    return UserModel(
-      id: map['id'] as int,
-      name: map['name'] as String,
-      email: map['email'] as String,
-      passwordHash: map['passwordHash'] as String,
-      profilePicture: map['profilePicture'] as String,
-      bio: map['bio'] as String,
-      createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] ),
-    );
-  }
+  return UserModel(
+    id: map['id'] is int ? map['id'] : int.parse(map['id'].toString()),
+    name: map['name']?.toString() ?? '',
+    email: map['email']?.toString() ?? '',
+    passwordHash: map['passwordHash']?.toString() ?? '',
+    profilePicture: map['profilePicture']?.toString() ?? '',
+    bio: map['bio']?.toString() ?? '',
+    createdAt: map['createdAt'] is int
+        ? DateTime.fromMillisecondsSinceEpoch(map['createdAt'])
+        : DateTime.parse(map['createdAt'].toString()),
+  );
+}
+
 
   String toJson() => json.encode(toMap());
 
