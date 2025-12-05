@@ -1,4 +1,8 @@
+import 'package:dzevent/data/models/assoc_model.dart';
 import 'package:dzevent/data/models/event_model.dart';
+import 'package:dzevent/data/models/user_model.dart';
+import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
+import 'package:dzevent/logic/cubits/auth/auth_states.dart';
 import 'package:dzevent/logic/cubits/events/events_cubit.dart';
 import 'package:dzevent/logic/cubits/events/events_state.dart';
 import 'package:dzevent/presentation/screens/add_event.dart';
@@ -18,10 +22,31 @@ class AssocProfTwo extends StatefulWidget {
 }
 
 class _AssocProfTwoState extends State<AssocProfTwo> {
+  AssociationModel? _currentAssoc;
   @override
   void initState() {
     super.initState();
-    context.read<EventsCubit>().getAll();
+    //store current user
+    //fetch events
+    BlocListener<AccountCubit, AccountState>(
+      listener: (context, state) {
+        if (state is AssociationFetched) {
+          _currentAssoc = state.association;
+        } 
+      },
+    );
+    _currentAssoc ??= AssociationModel(
+        id: 2,
+        name: "Meta",
+        email: "Meta@gmail.com",
+        profilePicture:
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBzkx9EjnTvs28LpVsnDW72jM0jNN-D4wOvw&s",
+        bio: "meta",
+        createdAt: DateTime(2000),
+        verified: true,
+      );
+    debugPrint(_currentAssoc?.id.toString() ?? "no id");
+    context.read<EventsCubit>().getAllEventsByUser(_currentAssoc!.id);
   }
 
   var logo =
@@ -52,7 +77,7 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
     );
   }
 
-  Widget headerOfPage(String associationName, String desc) {
+  Widget headerOfPage(AssociationModel assos) {
     final loc = AppLocalizations.of(context)!;
 
     return Column(
@@ -62,11 +87,11 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
           child: CircleAvatar(backgroundImage: NetworkImage(logo), radius: 64),
         ),
         Text(
-          associationName,
+          assos.name,
           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
         ),
         Text(
-          desc,
+          assos.bio,
           textAlign: TextAlign.center,
           style: const TextStyle(
             fontWeight: FontWeight.bold,
@@ -74,15 +99,25 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
             color: Colors.grey,
           ),
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: 16),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             getStatCard("1.2K", loc.subscribers),
-            const SizedBox(width: 8),
-            getStatCard("24", loc.eventsCount),
-            const SizedBox(width: 8),
-            getStatCard("5.8K", loc.interested),
+            SizedBox(width: 8),
+            BlocBuilder<EventsCubit, EventsState>(
+              builder: (context, state) {
+                if (state is EventsFetched) {
+                  return getStatCard(
+                    state.events.length.toString(),
+                    loc.eventsCount,
+                  );
+                }
+                return Text("no data fetched");
+              },
+            ),
+            SizedBox(width: 8),
+            // getStatCard("5.8K", loc.interested),   //i dont think we need this with association
           ],
         ),
       ],
@@ -109,7 +144,7 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
                     width: 120,
                     height: 120,
                   ),
-                  const SizedBox(width: 8),
+                  SizedBox(width: 8),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -121,7 +156,7 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
                           fontSize: 16,
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      SizedBox(height: 8),
                       Text(
                         event.startDatetime.toString(),
                         textAlign: TextAlign.start,
@@ -131,11 +166,11 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
                           color: Colors.blueAccent,
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      SizedBox(height: 8),
                       Row(
                         children: [
                           const Icon(Icons.people_outline, color: Colors.grey),
-                          const SizedBox(width: 2),
+                          SizedBox(width: 2),
                           Text(
                             loc.interestedCount(100), //dynamic
                             textAlign: TextAlign.start,
@@ -225,11 +260,8 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              headerOfPage(
-                "Tech Innovators Alliance", // dynamic data
-                "Driving the future of technology through collaboration and innovation", // dynamic data
-              ),
-              const SizedBox(height: 32),
+              headerOfPage(_currentAssoc!),
+              SizedBox(height: 32),
               // title
               SizedBox(
                 width: double.infinity,
@@ -242,29 +274,59 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
                   ),
                 ),
               ),
-              BlocBuilder<EventsCubit, EventsState>(
-                builder: (context, state) {
-                  if (state is EventsLoading) {
-                    return Center(child: CircularProgressIndicator());
-                  }
-                  if (state is EventsError) {
-                    return Center(child: Text(state.error));
-                  }
-                  if (state is EventsFetched) {
-                    return Expanded(
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.vertical,
-                        child: Column(
-                          children: [
-                            for (final event in state.events) eventCard(event),
-                          ],
-                        ),
-                      ),
-                    );
-                  }
-                  return Text("Unexpected state: ${state.runtimeType}");
-                },
-              ),
+              _currentAssoc == null
+                  ? BlocBuilder<EventsCubit, EventsState>(
+                      builder: (context, state) {
+                        if (state is EventsLoading) {
+                          return Center(child: CircularProgressIndicator());
+                        }
+                        if (state is EventsError) {
+                          return Center(child: Text(state.error));
+                        }
+                        if (state is EventsFetched) {
+                          debugPrint(state.events.toString());
+                          return Expanded(
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.vertical,
+                              child: Column(
+                                children: [
+                                  for (final event in state.events)
+                                    eventCard(event),
+                                ],
+                              ),
+                            ),
+                          );
+                        }
+                        return Text("Unexpected state: ${state.runtimeType}");
+                      },
+                    )
+                  : BlocBuilder<EventsCubit, EventsState>(
+                      builder: (context, state) {
+                        if (state is EventsLoading) {
+                          return Center(child: CircularProgressIndicator());
+                        }
+                        if (state is EventsError) {
+                          return Center(child: Text(state.error));
+                        }
+                        if (state is EventsFetched) {
+                          debugPrint(state.events.toString());
+                          return Expanded(
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.vertical,
+                              child: Column(
+                                children: [
+                                  for (final event in state.events)
+                                    eventCard(event),
+                                ],
+                              ),
+                            ),
+                          );
+                        } else {
+                          debugPrint("no event fetched");
+                        }
+                        return Text("Unexpected state: ${state.runtimeType}");
+                      },
+                    ),
             ],
           ),
         ),
