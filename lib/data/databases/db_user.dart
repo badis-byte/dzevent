@@ -1,7 +1,6 @@
-import 'package:dzevent/data/databases/db_base_acc.dart';
+import 'package:dzevent/data/databases/db_base.dart';
 
-
-class UserTable extends DBBaseTableex {
+class UserTable extends DBBaseTable {
   var db_table = 'user';
   static String sql_code = '''
           CREATE TABLE  user (
@@ -10,10 +9,8 @@ class UserTable extends DBBaseTableex {
               email TEXT UNIQUE NOT NULL,
               passwordHash TEXT NOT NULL,
               profilePicture TEXT,
-              bio TEXT,
+
               createdAt TIMESTAMP NOT NULL
             );
         ''';
 }
-
-

@@ -1,7 +1,6 @@
-import 'package:dzevent/data/databases/db_base_acc.dart';
+import 'package:dzevent/data/databases/db_base.dart';
 
-
-class AssociationTable extends DBBaseTableex {
+class AssociationTable extends DBBaseTable {
   var db_table = 'association';
   static String sql_code = '''
           CREATE TABLE  association (
@@ -16,4 +15,3 @@ class AssociationTable extends DBBaseTableex {
             );
         ''';
 }
-

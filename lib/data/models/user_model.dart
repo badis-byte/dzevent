@@ -7,7 +7,7 @@ class UserModel {
   String email;
   String passwordHash;
   String profilePicture;
-  String bio;
+
   DateTime createdAt;
   UserModel({
     required this.id,
@@ -15,7 +15,6 @@ class UserModel {
     required this.email,
     required this.passwordHash,
     required this.profilePicture,
-    required this.bio,
     required this.createdAt,
   });
 
@@ -25,7 +24,6 @@ class UserModel {
     String? email,
     String? passwordHash,
     String? profilePicture,
-    String? bio,
     DateTime? createdAt,
   }) {
     return UserModel(
@@ -34,7 +32,6 @@ class UserModel {
       email: email ?? this.email,
       passwordHash: passwordHash ?? this.passwordHash,
       profilePicture: profilePicture ?? this.profilePicture,
-      bio: bio ?? this.bio,
       createdAt: createdAt ?? this.createdAt,
     );
   }
@@ -46,57 +43,50 @@ class UserModel {
       'email': email,
       'passwordHash': passwordHash,
       'profilePicture': profilePicture,
-      'bio': bio,
       'createdAt': createdAt.toIso8601String(),
     };
   }
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
-  return UserModel(
-    id: map['id'] is int ? map['id'] : int.parse(map['id'].toString()),
-    name: map['name']?.toString() ?? '',
-    email: map['email']?.toString() ?? '',
-    passwordHash: map['passwordHash']?.toString() ?? '',
-    profilePicture: map['profilePicture']?.toString() ?? '',
-    bio: map['bio']?.toString() ?? '',
-    createdAt: map['createdAt'] is int
-        ? DateTime.fromMillisecondsSinceEpoch(map['createdAt'])
-        : DateTime.parse(map['createdAt'].toString()),
-  );
-}
-
+    return UserModel(
+      id: map['id'] as int,
+      name: map['name'] as String,
+      email: map['email'] as String,
+      passwordHash: map['passwordHash'] as String,
+      profilePicture: map['profilePicture'] as String,
+      createdAt: DateTime.parse(map['createdAt'] as String),
+    );
+  }
 
   String toJson() => json.encode(toMap());
 
-  factory UserModel.fromJson(String source) => UserModel.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory UserModel.fromJson(String source) =>
+      UserModel.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {
-    return 'UserModel(id: $id, name: $name, email: $email, passwordHash: $passwordHash, profilePicture: $profilePicture, bio: $bio, createdAt: $createdAt';
+    return 'UserModel(id: $id, name: $name, email: $email, passwordHash: $passwordHash, profilePicture: $profilePicture, createdAt: $createdAt)';
   }
 
   @override
   bool operator ==(covariant UserModel other) {
     if (identical(this, other)) return true;
-  
-    return 
-      other.id == id &&
-      other.name == name &&
-      other.email == email &&
-      other.passwordHash == passwordHash &&
-      other.profilePicture == profilePicture &&
-      other.bio == bio &&
-      other.createdAt == createdAt;
+
+    return other.id == id &&
+        other.name == name &&
+        other.email == email &&
+        other.passwordHash == passwordHash &&
+        other.profilePicture == profilePicture &&
+        other.createdAt == createdAt;
   }
 
   @override
   int get hashCode {
     return id.hashCode ^
-      name.hashCode ^
-      email.hashCode ^
-      passwordHash.hashCode ^
-      profilePicture.hashCode ^
-      bio.hashCode ^
-      createdAt.hashCode;
+        name.hashCode ^
+        email.hashCode ^
+        passwordHash.hashCode ^
+        profilePicture.hashCode ^
+        createdAt.hashCode;
   }
 }
