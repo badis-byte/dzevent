@@ -5,17 +5,14 @@ class UserModel {
   int id;
   String name;
   String email;
-  String passwordHash;
   String profilePicture;
-  String bio;
   DateTime createdAt;
+
   UserModel({
     required this.id,
     required this.name,
     required this.email,
-    required this.passwordHash,
     required this.profilePicture,
-    required this.bio,
     required this.createdAt,
   });
 
@@ -23,18 +20,14 @@ class UserModel {
     int? id,
     String? name,
     String? email,
-    String? passwordHash,
     String? profilePicture,
-    String? bio,
     DateTime? createdAt,
   }) {
     return UserModel(
       id: id ?? this.id,
       name: name ?? this.name,
       email: email ?? this.email,
-      passwordHash: passwordHash ?? this.passwordHash,
       profilePicture: profilePicture ?? this.profilePicture,
-      bio: bio ?? this.bio,
       createdAt: createdAt ?? this.createdAt,
     );
   }
@@ -44,9 +37,7 @@ class UserModel {
       'id': id,
       'name': name,
       'email': email,
-      'passwordHash': passwordHash,
       'profilePicture': profilePicture,
-      'bio': bio,
       'createdAt': createdAt.toIso8601String(),
     };
   }
@@ -56,44 +47,38 @@ class UserModel {
       id: map['id'] as int,
       name: map['name'] as String,
       email: map['email'] as String,
-      passwordHash: map['passwordHash'] as String,
       profilePicture: map['profilePicture'] as String,
-      bio: map['bio'] as String,
-      createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] ),
+      createdAt: DateTime.parse(map['createdAt'] as String),
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory UserModel.fromJson(String source) => UserModel.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory UserModel.fromJson(String source) =>
+      UserModel.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {
-    return 'UserModel(id: $id, name: $name, email: $email, passwordHash: $passwordHash, profilePicture: $profilePicture, bio: $bio, createdAt: $createdAt';
+    return 'UserModel(id: $id, name: $name, email: $email, profilePicture: $profilePicture, createdAt: $createdAt)';
   }
 
   @override
   bool operator ==(covariant UserModel other) {
     if (identical(this, other)) return true;
-  
-    return 
-      other.id == id &&
-      other.name == name &&
-      other.email == email &&
-      other.passwordHash == passwordHash &&
-      other.profilePicture == profilePicture &&
-      other.bio == bio &&
-      other.createdAt == createdAt;
+
+    return other.id == id &&
+        other.name == name &&
+        other.email == email &&
+        other.profilePicture == profilePicture &&
+        other.createdAt == createdAt;
   }
 
   @override
   int get hashCode {
     return id.hashCode ^
-      name.hashCode ^
-      email.hashCode ^
-      passwordHash.hashCode ^
-      profilePicture.hashCode ^
-      bio.hashCode ^
-      createdAt.hashCode;
+        name.hashCode ^
+        email.hashCode ^
+        profilePicture.hashCode ^
+        createdAt.hashCode;
   }
 }
