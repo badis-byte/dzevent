@@ -2,7 +2,7 @@ import 'db_base.dart';
 
 class EventsTable extends DBBaseTable {
   @override
-  var db_table = 'events';
+  var dbTable = 'events';
 
   static String sql_code = '''
     CREATE TABLE events (

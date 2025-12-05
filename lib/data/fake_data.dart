@@ -1,7 +1,8 @@
 import 'package:dzevent/data/models/event_model.dart';
+import 'package:uuid/uuid.dart';
 
 final event1 = EventModel.fromMap({
-  "id": 1,
+  "id": Uuid().v6(),
   "title": "Campus Tech Meetup",
   "description":
       "A gathering for students interested in software, AI, and robotics.",
@@ -15,7 +16,7 @@ final event1 = EventModel.fromMap({
 });
 
 final event2 = EventModel.fromMap({
-  "id": 2,
+  "id": Uuid().v6(),
   "title": "Art & Creativity Workshop",
   "description":
       "Hands-on workshop exploring painting, design, and digital art.",

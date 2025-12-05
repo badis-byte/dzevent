@@ -24,10 +24,11 @@ class EventsCubit extends Cubit<EventsState> {
       emit(EventsLoading());
       final response = await localRepo.insertData(event);
       if (!response) {
-        emit(AddNewEventFailure());
+        emit(EventsError(error: "Failed to add the event"));
         return false;
       } else {
         emit(AddNewEventSuccess());
+        emit(EventsInitial());
         return true;
       }
     } catch (e) {
@@ -40,8 +41,14 @@ class EventsCubit extends Cubit<EventsState> {
     try {
       emit(EventsLoading());
       final response = await localRepo.updateRecord(event, event.id);
-      emit(AddNewEventSuccess());
-      return true;
+      if (!response) {
+        emit(EventsError(error: "Failed to update the event"));
+        return false;
+      } else {
+        emit(UpdateEventSuccess());
+        emit(EventsInitial());
+        return true;
+      }
     } catch (e) {
       emit(EventsError(error: e.toString()));
       return false;
@@ -52,8 +59,14 @@ class EventsCubit extends Cubit<EventsState> {
     try {
       emit(EventsLoading());
       final response = await localRepo.deleteRecord(id);
-      // emit(DeleteEventSuccess());
-      return true;
+      if (!response) {
+        emit(EventsError(error: "Failed to delete the event"));
+        return false;
+      } else {
+        emit(DeleteEventSuccess());
+        emit(EventsInitial());
+        return true;
+      }
     } catch (e) {
       emit(EventsError(error: e.toString()));
       return false;

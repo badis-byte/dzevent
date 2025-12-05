@@ -22,7 +22,7 @@ class DBHelper {
   static Future<Database> getDatabase() async {
     if (_db != null) return _db!;
 
-    database = openDatabase(
+    _db = await openDatabase(
       join(await getDatabasesPath(), _database_name),
       onCreate: (database, version) {
         for (var item in sql_codes) {
@@ -30,11 +30,6 @@ class DBHelper {
         }
       },
       version: _database_version,
-      onCreate: (db, version) async {
-        for (var item in sql_codes) {
-          await db.execute(item);
-        }
-      },
       onUpgrade: (db, oldVersion, newVersion) async {
         // Example: recreate all tables if version changes
         for (var item in sql_codes) {

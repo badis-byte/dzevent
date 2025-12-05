@@ -1,4 +1,3 @@
-import 'package:dzevent/data/fake_data.dart';
 import 'package:dzevent/data/models/event_model.dart';
 import 'package:dzevent/lib/utils.dart';
 import 'package:dzevent/logic/cubits/events/events_cubit.dart';
@@ -40,7 +39,6 @@ enum _FormField {
 class _AddeventState extends State<Addevent> {
   late final Map<_FormField, TextEditingController> controllers;
   late final GlobalKey<FormState> _formKey;
-  String? _selectedCategory;
 
   @override
   void initState() {
@@ -87,21 +85,6 @@ class _AddeventState extends State<Addevent> {
       controllers[_FormField.imageUrl]!.text = event.imageUrl;
       controllers[_FormField.location]!.text = event.location;
       controllers[_FormField.category]!.text = event.category;
-
-      // Validate category exists in dropdown options
-      final validCategories = [
-        "Tech",
-        "AI and Data Science",
-        "Business",
-        "Agriculture",
-        "Sociology",
-      ];
-
-      if (validCategories.contains(event.category)) {
-        setState(() {
-          _selectedCategory = event.category;
-        });
-      }
     });
   }
 
@@ -281,7 +264,7 @@ class _AddeventState extends State<Addevent> {
                         Text("Event Category"),
                         SizedBox(height: 8),
                         DropdownButtonFormField<String>(
-                          initialValue: _selectedCategory,
+                          initialValue: widget.event?.category,
                           validator: getIsRequiredValidator(isRequired: true),
                           decoration: InputDecoration(
                             labelText: "Select a category",
@@ -303,6 +286,7 @@ class _AddeventState extends State<Addevent> {
                                     "Business",
                                     "Agriculture",
                                     "Sociology",
+                                    "Meetup",
                                   ]
                                   .map(
                                     (e) => DropdownMenuItem(
@@ -312,9 +296,6 @@ class _AddeventState extends State<Addevent> {
                                   )
                                   .toList(),
                           onChanged: (value) {
-                            setState(() {
-                              _selectedCategory = value;
-                            });
                             controllers[_FormField.category]!.text = value!;
                           },
                         ),

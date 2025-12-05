@@ -1,5 +1,6 @@
 import 'package:dzevent/data/models/event_model.dart';
 import 'package:dzevent/logic/cubits/events/events_cubit.dart';
+import 'package:dzevent/logic/cubits/events/events_state.dart';
 import 'package:dzevent/presentation/screens/add_event.dart';
 import 'package:dzevent/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,12 @@ class AssocProfTwo extends StatefulWidget {
 }
 
 class _AssocProfTwoState extends State<AssocProfTwo> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<EventsCubit>().getAll();
+  }
+
   var logo =
       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0NfsQx_-GICZJcadqDeNBMvwzq-RInkcOzg&s";
 
@@ -82,9 +89,7 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
     );
   }
 
-  Widget eventCard(
-    EventModel event
-  ) {
+  Widget eventCard(EventModel event) {
     final loc = AppLocalizations.of(context)!;
 
     return SizedBox(
@@ -139,11 +144,8 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
                               color: Colors.grey,
                             ),
                           ),
-                          
                         ],
-
                       ),
-
                     ],
                   ),
                   PopupMenuButton<String>(
@@ -160,25 +162,27 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
                       PopupMenuItem(
                         value: 'edit',
                         child: const Text('Edit'),
-                        onTap: (){
+                        onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => Addevent(event: event,)),
+                            MaterialPageRoute(
+                              builder: (context) => Addevent(event: event),
+                            ),
                           );
                         },
                       ),
                       PopupMenuItem(
                         value: 'delete',
                         child: Text('Delete'),
-                        onTap: ()async{
-                            final cubit = context.read<EventsCubit>();
-                            try {
-                              if (await cubit.deleteInstace(event.id)) {
-                                print("Event deleted successfully");
-                              }
-                            } catch (e) {
-                              print("Error deleting event: $e");
+                        onTap: () async {
+                          final cubit = context.read<EventsCubit>();
+                          try {
+                            if (await cubit.deleteInstace(event.id)) {
+                              print("Event deleted successfully");
                             }
+                          } catch (e) {
+                            print("Error deleting event: $e");
+                          }
                         },
                       ),
                     ],
@@ -196,10 +200,6 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
-    EventModel event1 = EventModel(id: "1", title: "Tech Innovators Meetup", description: "Join us for a day of tech talks and networking.", startDatetime: DateTime(2025, 11, 15, 10, 0), endDatetime: DateTime(2025, 11, 15, 17, 0), imageUrl: logo, location: "Tech Hub", createdAt: DateTime.now(), associationId: 1, category: "Meetup");
-    EventModel event2 = EventModel(id: "2", title: "AI Conference", description: "Explore the latest advancements in AI.", startDatetime: DateTime(2025, 12, 10, 9, 0), endDatetime: DateTime(2025, 12, 10, 18, 0), imageUrl: logo, location: "Innovation Center", createdAt: DateTime.now(), associationId: 1, category: "Conference");
-    EventModel event3 = EventModel(id: "3", title: "Blockchain Workshop", description: "Learn about the future of blockchain technology.", startDatetime: DateTime(2025, 12, 15, 10, 0), endDatetime: DateTime(2025, 12, 15, 17, 0), imageUrl: logo, location: "Tech Hub", createdAt: DateTime.now(), associationId: 1, category: "Workshop");
-    EventModel event4 = EventModel(id: "4", title: "Cybersecurity Summit", description: "Discuss the latest trends in cybersecurity.", startDatetime: DateTime(2025, 12, 20, 9, 0), endDatetime: DateTime(2025, 12, 20, 18, 0), imageUrl: logo, location: "Innovation Center", createdAt: DateTime.now(), associationId: 1, category: "Conference");
     // late final Map<_FormField, TextEditingController> controllers;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -242,25 +242,28 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
                   ),
                 ),
               ),
-              Expanded(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: Column(
-                    children: [
-                      eventCard(event1
+              BlocBuilder<EventsCubit, EventsState>(
+                builder: (context, state) {
+                  if (state is EventsLoading) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  if (state is EventsError) {
+                    return Center(child: Text(state.error));
+                  }
+                  if (state is EventsFetched) {
+                    return Expanded(
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
+                        child: Column(
+                          children: [
+                            for (final event in state.events) eventCard(event),
+                          ],
+                        ),
                       ),
-                      eventCard(
-                        event2
-                      ),
-                      eventCard(
-                        event3
-                      ),
-                      eventCard(
-                        event4
-                      ),
-                    ],
-                  ),
-                ),
+                    );
+                  }
+                  return Text("Unexpected state: ${state.runtimeType}");
+                },
               ),
             ],
           ),

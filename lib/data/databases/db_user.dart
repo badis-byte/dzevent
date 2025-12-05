@@ -1,7 +1,8 @@
 import 'package:dzevent/data/databases/db_base.dart';
 
 class UserTable extends DBBaseTable {
-  var db_table = 'user';
+  @override
+  var dbTable = 'user';
   static String sql_code = '''
           CREATE TABLE  user (
               id INTEGER PRIMARY KEY AUTOINCREMENT, 
