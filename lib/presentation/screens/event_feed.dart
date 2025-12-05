@@ -1,13 +1,15 @@
-import 'package:dzevent/data/models/event_model.dart';
 import 'package:dzevent/lib/styles.dart';
 import 'package:dzevent/logic/cubits/events/events_cubit.dart';
 import 'package:dzevent/logic/cubits/events/events_state.dart';
+import 'package:dzevent/presentation/widgets/feed_event_card.dart';
+import 'package:dzevent/presentation/widgets/main_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:dzevent/l10n/app_localizations.dart';
 
 class EventFeed extends StatefulWidget {
+  static MaterialPageRoute route() =>
+      MaterialPageRoute(builder: (context) => EventFeed());
   static const String pageRoute = "event-feed";
 
   const EventFeed({super.key});
@@ -28,29 +30,21 @@ class _EventFeedState extends State<EventFeed> {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
+    return MainScaffold(
+      title: Text(
+        loc.upcomingEvents,
+        textAlign: TextAlign.center,
+        style: headingStyle,
+      ),
+      actions: [
+        IconButton(onPressed: () {}, icon: Icon(Icons.notifications_none)),
+      ],
 
-    return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
           spacing: 16.0,
           children: [
-            Row(
-              children: [
-                IconButton(onPressed: () {}, icon: Icon(Icons.list)),
-                Expanded(
-                  child: Text(
-                    loc.upcomingEvents,
-                    textAlign: TextAlign.center,
-                    style: headingStyle,
-                  ),
-                ),
-                IconButton(
-                  onPressed: () {},
-                  icon: Icon(Icons.notifications_none),
-                ),
-              ],
-            ),
             SearchAnchor.bar(
               suggestionsBuilder: (context, controller) => [],
               barHintText: loc.searchBarHint,
@@ -81,7 +75,7 @@ class _EventFeedState extends State<EventFeed> {
                     child: ListView.builder(
                       itemCount: events.length,
                       itemBuilder: (context, index) =>
-                          EventCard(event: events[index]),
+                          FeedEventCard(event: events[index]),
                     ),
                   );
                 }
@@ -107,91 +101,6 @@ class Filters extends StatelessWidget {
         for (final filter in filters)
           OutlinedButton(onPressed: () {}, child: Text(filter)),
       ],
-    );
-  }
-}
-
-class EventCard extends StatelessWidget {
-  static const double _height = 400;
-  final EventModel event;
-  const EventCard({super.key, required this.event});
-
-  @override
-  Widget build(BuildContext context) {
-    final loc = AppLocalizations.of(context)!;
-
-    return SizedBox(
-      width: double.infinity,
-      height: _height,
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          Image.asset(event.imageUrl, fit: BoxFit.cover),
-          Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Colors.black.withOpacity(0.6), Colors.transparent],
-                begin: Alignment.bottomCenter,
-                end: Alignment.topCenter,
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Flexible(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Spacer(),
-                      Text(
-                        event.title,
-                        style: headingStyle.copyWith(color: Colors.white),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        DateFormat(
-                          "E, MMM d\n",
-                        ).add_jm().format(event.startDatetime),
-                        style: subtitleStyle.copyWith(
-                          color: Colors.grey.shade400,
-                        ),
-                      ),
-                      Text(
-                        event.location,
-                        style: subtitleStyle.copyWith(
-                          color: Colors.grey.shade400,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Flexible(
-                  child: Column(
-                    children: [
-                      Spacer(),
-                      Align(
-                        alignment: Alignment.bottomRight,
-                        child: ElevatedButton.icon(
-                          onPressed: () {},
-                          label: Text(loc.showInterest),
-                          icon: const Icon(Icons.favorite_border),
-                          iconAlignment: IconAlignment.end,
-                          style: getPrimaryBtnStyle(
-                            context: context,
-                            raduis: 15,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
