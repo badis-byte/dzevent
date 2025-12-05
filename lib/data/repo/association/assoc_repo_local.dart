@@ -12,9 +12,9 @@ class AssocRepoLocal extends AssocRepoBase {
   Future<List<AssociationModel>> getData() async {
     final obj = await associatoinTable.getRecords();
     List<AssociationModel> result = [];
-    obj.forEach((item) {
+    for (var item in obj) {
       result.add(AssociationModel.fromMap(item));
-    });
+    }
     return result;
   }
 
@@ -30,11 +30,14 @@ class AssocRepoLocal extends AssocRepoBase {
   }
 
   @override
-  Future<AssociationModel> login(String email, String password) async{
-    try{
-      var association = await authTable.getAssociationByCredentials(email, password);
+  Future<AssociationModel> login(String email, String password) async {
+    try {
+      var association = await authTable.getAssociationByCredentials(
+        email,
+        password,
+      );
       return association;
-    }catch(e){
+    } catch (e) {
       rethrow;
     }
   }

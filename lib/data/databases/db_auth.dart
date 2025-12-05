@@ -1,6 +1,5 @@
 import 'package:dzevent/data/models/assoc_model.dart';
 import 'package:dzevent/data/models/user_model.dart';
-import 'package:sqflite/sqflite.dart';
 
 import 'dbhelper.dart';
 

@@ -22,16 +22,14 @@ class DBHelper {
   static Future<Database> getDatabase() async {
     if (_db != null) return _db!;
 
-    final path = join(await getDatabasesPath(), _database_name);
-
     _db = await openDatabase(
-      path,
-      version: _database_version,
-      onCreate: (db, version) async {
+      join(await getDatabasesPath(), _database_name),
+      onCreate: (database, version) {
         for (var item in sql_codes) {
-          await db.execute(item);
+          database.execute(item);
         }
       },
+      version: _database_version,
       onUpgrade: (db, oldVersion, newVersion) async {
         // Example: recreate all tables if version changes
         for (var item in sql_codes) {

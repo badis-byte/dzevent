@@ -10,7 +10,7 @@ import 'package:dzevent/l10n/app_localizations.dart';
 class EventFeed extends StatefulWidget {
   static const String pageRoute = "event-feed";
 
-  EventFeed({super.key});
+  const EventFeed({super.key});
 
   @override
   State<EventFeed> createState() => _EventFeedState();
