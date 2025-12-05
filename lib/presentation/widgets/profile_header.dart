@@ -1,5 +1,6 @@
 import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
 import 'package:dzevent/logic/cubits/auth/auth_states.dart';
+import 'package:dzevent/presentation/screens/user_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -51,7 +52,11 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                     Text(state.user.name),
                     SizedBox(height: 8),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(
+                          context,
+                        ).pushReplacement(UserProfileScreen.route());
+                      },
                       child: Text("View Profile"),
                     ),
                   ],
