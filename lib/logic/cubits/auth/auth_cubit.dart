@@ -103,4 +103,21 @@ class AccountCubit extends Cubit<AccountState> {
       return true;
     }
   }
+
+  Future<bool> getUserData() async {
+    try {
+      emit(AccountLoading());
+      final response = await localUserRepo.getData();
+      if (response.isEmpty) {
+        emit(AccountGuest());
+        return false;
+      } else {
+        emit(UserFetched(user: response[0]));
+        return true;
+      }
+    } catch (e) {
+      emit(AccountError(error: "Failed to get user data. Error: ${e}"));
+      return false;
+    }
+  }
 }

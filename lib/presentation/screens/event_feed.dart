@@ -1,7 +1,10 @@
 import 'package:dzevent/data/models/event_model.dart';
 import 'package:dzevent/lib/styles.dart';
+import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
+import 'package:dzevent/logic/cubits/auth/auth_states.dart';
 import 'package:dzevent/logic/cubits/events/events_cubit.dart';
 import 'package:dzevent/logic/cubits/events/events_state.dart';
+import 'package:dzevent/presentation/widgets/profile_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -30,6 +33,33 @@ class _EventFeedState extends State<EventFeed> {
     final loc = AppLocalizations.of(context)!;
 
     return Scaffold(
+      drawer: Drawer(
+        child: Column(
+          children: [
+            DrawerHeader(child: ProfileHeader()),
+            ListTile(leading: Icon(Icons.home), title: const Text("Feed")),
+            ListTile(
+              leading: Icon(Icons.calendar_month),
+              title: const Text("My events"),
+            ),
+            ListTile(
+              leading: Icon(Icons.notifications),
+              title: const Text("notifications"),
+            ),
+            ListTile(
+              leading: Icon(Icons.group),
+              title: const Text("Followed Associatinons"),
+            ),
+            Spacer(),
+            Divider(),
+            ListTile(
+              leading: Icon(Icons.settings),
+              title: const Text("Settings"),
+            ),
+            ListTile(leading: Icon(Icons.logout), title: const Text("Log Out")),
+          ],
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -37,7 +67,14 @@ class _EventFeedState extends State<EventFeed> {
           children: [
             Row(
               children: [
-                IconButton(onPressed: () {}, icon: Icon(Icons.list)),
+                Builder(
+                  builder: (context) => IconButton(
+                    onPressed: () {
+                      Scaffold.of(context).openDrawer();
+                    },
+                    icon: Icon(Icons.list),
+                  ),
+                ),
                 Expanded(
                   child: Text(
                     loc.upcomingEvents,
