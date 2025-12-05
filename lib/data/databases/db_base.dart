@@ -31,6 +31,21 @@ class DBBaseTable {
     return false;
   }
 
+  Future<List<Map<String, dynamic>>> getRecordbyId(int id) async {
+    try {
+      final database = await DBHelper.getDatabase();
+      var data = await database.query(
+        dbTable,
+        where: 'associationId = ?',
+        whereArgs: [id],
+      );
+      return data;
+    } catch (e, stacktrace) {
+      print('$e --> $stacktrace');
+    }
+    return [];
+  }
+
   Future<List<Map<String, dynamic>>> getRecords() async {
     try {
       final database = await DBHelper.getDatabase();

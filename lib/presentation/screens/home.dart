@@ -8,7 +8,7 @@ import 'package:dzevent/presentation/screens/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:dzevent/presentation/screens/login.dart';
 import 'package:dzevent/presentation/screens/my_account_credentials.dart';
-import 'package:dzevent/presentation/screens/reg_user_profile.dart';
+import 'package:dzevent/presentation/screens/user_profile.dart';
 import 'package:dzevent/l10n/app_localizations.dart';
 
 /// # New Screen Setup
@@ -56,7 +56,7 @@ class NavScreen extends StatelessWidget {
         page: PublicAssocProfile(),
       ),
       Link(icon: Icons.add, label: loc.creds, page: Myaccountcredentials()),
-      Link(icon: Icons.add, label: loc.userRegs, page: ProfileScreen()),
+      Link(icon: Icons.add, label: loc.userRegs, page: UserProfileScreen()),
     ];
 
     return Scaffold(

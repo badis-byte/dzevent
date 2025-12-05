@@ -25,14 +25,15 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: [BlocProvider(create: (context) => EventsCubit()),
-                  BlocProvider(create: (context) => AccountCubit()),
+      providers: [
+        BlocProvider(create: (context) => EventsCubit()),
+        BlocProvider(create: (context) => AccountCubit()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
 
         //localization
-        locale: Locale('ar'),
+        locale: Locale('en'),
         localizationsDelegates: [
           AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
