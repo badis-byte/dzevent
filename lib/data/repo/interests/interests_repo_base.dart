@@ -3,7 +3,7 @@ import 'package:dzevent/data/models/interest_model.dart';
 import 'interests_repo.dart';
 
 abstract class InterestRepoBase {
-  Future<List<InterestModel>> getUserInterests({required int userId});
+  Future<List<InterestModel>> getAllUserInterests({required int userId});
   // Future<List<InterestModel>> getEventInterests({required String eventId});
 
   Future<bool> createInterest({required InterestModel interest});

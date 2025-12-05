@@ -35,7 +35,7 @@ class _InterestedEventsState extends State<InterestedEvents> {
             return ListView.builder(
               itemCount: events.length,
               itemBuilder: (context, index) =>
-                  FeedEventCard(event: events[index]),
+                  FeedEventCard(event: events[index], isInterested: false),
             );
           }
           return Text("Unexpected state ${state.runtimeType}");

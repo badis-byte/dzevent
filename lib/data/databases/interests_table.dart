@@ -8,7 +8,7 @@ class InterestsTable extends DBBaseTable {
   static var sql_code = """
     CREATE TABLE interests (
     userId INTEGER NOT NULL,
-    eventId TEXT NOT NULL (eventId <> ''),
+    eventId TEXT NOT NULL CHECK (eventId <> ''),
     createdAt TEXT NOT NULL CHECK (createdAt <> ''),
     
     PRIMARY KEY (userId, eventId),
@@ -43,7 +43,7 @@ class InterestsTable extends DBBaseTable {
   }) async {
     try {
       final db = await DBHelper.getDatabase();
-      final records = db.query(
+      final records = await db.query(
         'interests',
         where: 'userId = ?',
         whereArgs: [userId],
@@ -52,6 +52,30 @@ class InterestsTable extends DBBaseTable {
     } catch (e, stacktrace) {
       print('$e --> $stacktrace');
       return [];
+    }
+  }
+
+  Future<Map<String, dynamic>?> getInterest({
+    required int userId,
+    required String eventId,
+  }) async {
+    try {
+      final db = await DBHelper.getDatabase();
+      final records = await db.query(
+        'interests',
+        where: 'userId = ? AND eventId = ?',
+        whereArgs: [userId, eventId],
+      );
+      if (records.length == 0) {
+        return null;
+      } else if (records.length == 1) {
+        return records[0];
+      } else {
+        throw Exception("(GET): Many interest records with the same id");
+      }
+    } catch (e, stacktrace) {
+      print('$e --> $stacktrace');
+      return null;
     }
   }
 }

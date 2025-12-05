@@ -13,7 +13,7 @@ class InterestsCubit extends Cubit<InterestsState> {
   Future<bool> getUserInterests({required int userId}) async {
     try {
       emit(InterestsLoading());
-      final response = await localRepo.getUserInterests(userId: userId);
+      final response = await localRepo.getAllUserInterests(userId: userId);
       emit(InterestsFetched(interests: response));
       return true;
     } catch (e) {
@@ -58,6 +58,25 @@ class InterestsCubit extends Cubit<InterestsState> {
     } catch (e) {
       emit(InterestsError(error: e.toString()));
       return false;
+    }
+  }
+
+  Future<bool> toggle({required int userId, required String eventId}) async {
+    final interest = await localRepo.getInterest(
+      userId: userId,
+      eventId: eventId,
+    );
+    if (interest == null) {
+      // not found, create one
+      return await insert(
+        interest: InterestModel(
+          userId: userId,
+          eventId: eventId,
+          createdAt: DateTime.now(),
+        ),
+      );
+    } else {
+      return await delete(userId: userId, eventId: eventId);
     }
   }
 }

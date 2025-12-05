@@ -26,8 +26,17 @@ class InterestsRepo extends InterestRepoBase {
   // }
 
   @override
-  Future<List<InterestModel>> getUserInterests({required int userId}) async {
+  Future<List<InterestModel>> getAllUserInterests({required int userId}) async {
     final records = await table.getUserInterests(userId: userId);
     return records.map((record) => InterestModel.fromMap(record)).toList();
+  }
+
+  @override
+  Future<InterestModel?> getInterest({
+    required int userId,
+    required String eventId,
+  }) async {
+    final record = await table.getInterest(userId: userId, eventId: eventId);
+    return record == null ? null : InterestModel.fromMap(record);
   }
 }
