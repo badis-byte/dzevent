@@ -2,9 +2,9 @@ import 'package:dzevent/data/databases/db_base.dart';
 
 class AssociationTable extends DBBaseTable {
   @override
-  var db_table = 'associations';
+  var db_table = 'association';
   static String sql_code = '''
-          CREATE TABLE  associations (
+          CREATE TABLE  association (
               id INTEGER PRIMARY KEY AUTOINCREMENT, 
               name TEXT NOT NULL CHECK (name <> ''),
               email TEXT UNIQUE NOT NULL CHECK (email <> ''),
@@ -13,7 +13,7 @@ class AssociationTable extends DBBaseTable {
               bio TEXT NOT NULL CHECK (bio <> ''),
 
               createdAt TIMESTAMP NOT NULL CHECK (createdAt <> ''),
-              isVerified INTEGER NOT NULL DEFAULT FALSE
+              isVerified INTEGER NOT NULL DEFAULT 0
             );
         ''';
 }

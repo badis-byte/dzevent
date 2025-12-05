@@ -32,19 +32,19 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
       listener: (context, state) {
         if (state is AssociationFetched) {
           _currentAssoc = state.association;
-        } 
+        }
       },
     );
     _currentAssoc ??= AssociationModel(
-        id: 2,
-        name: "Meta",
-        email: "Meta@gmail.com",
-        profilePicture:
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBzkx9EjnTvs28LpVsnDW72jM0jNN-D4wOvw&s",
-        bio: "meta",
-        createdAt: DateTime(2000),
-        verified: true,
-      );
+      id: 2,
+      name: "Meta",
+      email: "Meta@gmail.com",
+      profilePicture:
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBzkx9EjnTvs28LpVsnDW72jM0jNN-D4wOvw&s",
+      bio: "meta",
+      createdAt: DateTime(2000),
+      verified: 1,
+    );
     debugPrint(_currentAssoc?.id.toString() ?? "no id");
     context.read<EventsCubit>().getAllEventsByUser(_currentAssoc!.id);
   }
@@ -84,7 +84,7 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Center(
-          child: CircleAvatar(backgroundImage: NetworkImage(logo), radius: 64),
+          child: CircleAvatar(backgroundImage: NetworkImage(assos.profilePicture), radius: 64),
         ),
         Text(
           assos.name,
@@ -143,6 +143,10 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
                     image: NetworkImage(event.imageUrl),
                     width: 120,
                     height: 120,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Icon(Icons.event,size: 48,);
+                    },
                   ),
                   SizedBox(width: 8),
                   Column(

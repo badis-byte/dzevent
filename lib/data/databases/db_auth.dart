@@ -24,7 +24,7 @@ class DBAuth {
 
     if (result.isNotEmpty) {
       var association = AssociationModel.fromMap(result.first);
-      if (association.verified == true) {
+      if (association.verified == 0) {
         return association;
       }
       throw NotVerifiedException();
@@ -68,16 +68,20 @@ class DBAuth {
       throw ExistingCredException();
     }
 
+    return true;
+  }
+
+  Future<bool> checkUniqueEmail(String email) async {
+    final db = await DBHelper.getDatabase();
+
     final result2 = await db.query(
       'association',
       where: 'email = ?',
       whereArgs: [email],
     );
-
     if (result2.isNotEmpty) {
       throw ExistingCredException();
     }
-
     return true;
   }
 }

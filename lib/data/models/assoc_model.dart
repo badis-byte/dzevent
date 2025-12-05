@@ -8,7 +8,7 @@ class AssociationModel {
   String profilePicture;
   String bio;
   DateTime createdAt;
-  bool verified = false;
+  int verified = 0;
 
   AssociationModel({
     required this.id,
@@ -27,7 +27,7 @@ class AssociationModel {
     String? profilePicture,
     String? bio,
     DateTime? createdAt,
-    bool? verified,
+    int? verified,
   }) {
     return AssociationModel(
       id: id ?? this.id,
@@ -60,7 +60,7 @@ class AssociationModel {
       profilePicture: map['profilePicture'] as String,
       bio: map['bio'] as String,
       createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int),
-      verified: map['verified'] as bool,
+      verified: map['verified'] as int,
     );
   }
 

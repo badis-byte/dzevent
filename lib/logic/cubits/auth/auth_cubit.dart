@@ -52,7 +52,7 @@ class AccountCubit extends Cubit<AccountState> {
   //   if(state is AssociationFetched()){
 
   //   }
-    
+
   // }
 
   Future<bool> register(
@@ -63,8 +63,9 @@ class AccountCubit extends Cubit<AccountState> {
   ) async {
     emit(AccountLoading());
     try {
-      await authTable.checkUnique(email);
+      await authTable.checkUniqueEmail(email);
     } catch (e) {
+      print("problem here");
       if (e is ExistingCredException) {
         emit(AccountExists());
         return true;
@@ -82,7 +83,7 @@ class AccountCubit extends Cubit<AccountState> {
           profilePicture: "/picAssociation",
           bio: "we're a new Associatoin to DZevent!",
           createdAt: DateTime.now(),
-          verified: false,
+          verified: 0,
         );
         localAssRepo.insertData(assoc);
         emit(AccountGuest());
