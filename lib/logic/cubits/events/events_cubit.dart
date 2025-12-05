@@ -19,6 +19,23 @@ class EventsCubit extends Cubit<EventsState> {
     }
   }
 
+  Future<bool> getEvent({required String id}) async {
+    try {
+      emit(EventsLoading());
+      final response = await localRepo.getEvent(id: id);
+      if (response == null) {
+        emit(EventsError(error: "(getEvent) event #$id not found"));
+        return false;
+      } else {
+        emit(SingleEventFetched(event: response));
+        return true;
+      }
+    } catch (e) {
+      emit(EventsError(error: e.toString()));
+      return false;
+    }
+  }
+
   Future<bool> getAllEventsByUser(int userId) async {
     try {
       emit(EventsLoading());

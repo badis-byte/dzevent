@@ -16,6 +16,11 @@ class EventsFetched extends EventsState {
   EventsFetched({required this.events});
 }
 
+class SingleEventFetched extends EventsState {
+  final EventModel event;
+  SingleEventFetched({required this.event});
+}
+
 class AddNewEventSuccess extends EventsState {}
 
 class UpdateEventSuccess extends EventsState {}

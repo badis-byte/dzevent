@@ -10,7 +10,7 @@ class AssocRepoLocal extends AssocRepoBase {
 
   @override
   Future<List<AssociationModel>> getData() async {
-    final obj = await associatoinTable.getRecords();
+    final obj = await associatoinTable.getAllRecords();
     List<AssociationModel> result = [];
     for (var item in obj) {
       result.add(AssociationModel.fromMap(item));

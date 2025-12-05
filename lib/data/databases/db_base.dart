@@ -48,7 +48,7 @@ class DBBaseTable {
     return [];
   }
 
-  Future<List<Map<String, dynamic>>> getRecords() async {
+  Future<List<Map<String, dynamic>>> getAllRecords() async {
     try {
       final database = await DBHelper.getDatabase();
       var data = await database.rawQuery(
@@ -59,6 +59,31 @@ class DBBaseTable {
       print('$e --> $stacktrace');
     }
     return [];
+  }
+
+  Future<Map<String, dynamic>?> getRecord({
+    required String where,
+    required List<Object> whereArgs,
+  }) async {
+    try {
+      final database = await DBHelper.getDatabase();
+      var data = await database.query(
+        db_table,
+        where: where,
+        whereArgs: whereArgs,
+      );
+      if (data.length == 0) {
+        // not found
+        return null;
+      }
+      if (data.length == 1) {
+        return data[0];
+      }
+      throw Exception("(GET) multiple records with the same id");
+    } catch (e, stacktrace) {
+      print('$e --> $stacktrace');
+      return null;
+    }
   }
 
   Future<bool> deleteRecords() async {

@@ -9,6 +9,7 @@ abstract class EventsRepoBase {
   Future<bool> deleteAllData();
   Future<bool> updateRecord(EventModel value, String id);
   Future<bool> deleteRecord(String id);
+  Future<EventModel?> getEvent({required String id});
 
   static EventsRepoBase? _historyInstance;
 
