@@ -52,7 +52,7 @@ class AccountCubit extends Cubit<AccountState> {
   //   if(state is AssociationFetched()){
 
   //   }
-    
+
   // }
 
   Future<bool> register(
@@ -82,7 +82,7 @@ class AccountCubit extends Cubit<AccountState> {
           profilePicture: "/picAssociation",
           bio: "we're a new Associatoin to DZevent!",
           createdAt: DateTime.now(),
-          verified: false,
+          isVerified: false,
         );
         localAssRepo.insertData(assoc);
         emit(AccountGuest());

@@ -24,7 +24,7 @@ class DBAuth {
 
     if (result.isNotEmpty) {
       var association = AssociationModel.fromMap(result.first);
-      if (association.verified == true) {
+      if (association.isVerified == true) {
         return association;
       }
       throw NotVerifiedException();
