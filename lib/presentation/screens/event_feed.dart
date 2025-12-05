@@ -2,6 +2,7 @@ import 'package:dzevent/data/models/event_model.dart';
 import 'package:dzevent/lib/styles.dart';
 import 'package:dzevent/logic/cubits/events/events_cubit.dart';
 import 'package:dzevent/logic/cubits/events/events_state.dart';
+import 'package:dzevent/presentation/widgets/main_scaffold.dart';
 import 'package:dzevent/presentation/widgets/profile_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,6 +10,8 @@ import 'package:intl/intl.dart';
 import 'package:dzevent/l10n/app_localizations.dart';
 
 class EventFeed extends StatefulWidget {
+  static MaterialPageRoute route() =>
+      MaterialPageRoute(builder: (context) => EventFeed());
   static const String pageRoute = "event-feed";
 
   const EventFeed({super.key});
@@ -29,73 +32,21 @@ class _EventFeedState extends State<EventFeed> {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
-    final drawerItemsUp = [
-      {'label': "Feed", 'icon': Icons.home},
-      {'label': "My events", 'icon': Icons.calendar_month},
-      {'label': "Notifications", 'icon': Icons.notifications},
-      {'label': "Followed Associatinons", 'icon': Icons.group},
-    ];
-    final drawerItemsBottom = [
-      {'label': "Settings", 'icon': Icons.settings},
-      {'label': "Log Out", 'icon': Icons.logout},
-    ];
-
-    return Scaffold(
-      drawer: Drawer(
-        child: Column(
-          children: [
-            DrawerHeader(child: ProfileHeader()),
-            for (final item in drawerItemsUp)
-              InkWell(
-                onTap: () {},
-                hoverColor: Colors.grey.shade200,
-                child: ListTile(
-                  title: Text(item['label'] as String),
-                  leading: Icon(item['icon'] as IconData),
-                ),
-              ),
-            Spacer(),
-            Divider(),
-            for (final item in drawerItemsBottom)
-              InkWell(
-                onTap: () {},
-                hoverColor: Colors.grey.shade200,
-                child: ListTile(
-                  title: Text(item['label'] as String),
-                  leading: Icon(item['icon'] as IconData),
-                ),
-              ),
-          ],
-        ),
+    return MainScaffold(
+      title: Text(
+        loc.upcomingEvents,
+        textAlign: TextAlign.center,
+        style: headingStyle,
       ),
+      actions: [
+        IconButton(onPressed: () {}, icon: Icon(Icons.notifications_none)),
+      ],
+
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
           spacing: 16.0,
           children: [
-            Row(
-              children: [
-                Builder(
-                  builder: (context) => IconButton(
-                    onPressed: () {
-                      Scaffold.of(context).openDrawer();
-                    },
-                    icon: Icon(Icons.list),
-                  ),
-                ),
-                Expanded(
-                  child: Text(
-                    loc.upcomingEvents,
-                    textAlign: TextAlign.center,
-                    style: headingStyle,
-                  ),
-                ),
-                IconButton(
-                  onPressed: () {},
-                  icon: Icon(Icons.notifications_none),
-                ),
-              ],
-            ),
             SearchAnchor.bar(
               suggestionsBuilder: (context, controller) => [],
               barHintText: loc.searchBarHint,
