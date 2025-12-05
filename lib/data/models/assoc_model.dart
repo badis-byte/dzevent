@@ -8,7 +8,7 @@ class AssociationModel {
   String profilePicture;
   String bio;
   DateTime createdAt;
-  bool verified = false;
+  bool isVerified;
 
   AssociationModel({
     required this.id,
@@ -17,7 +17,7 @@ class AssociationModel {
     required this.profilePicture,
     required this.bio,
     required this.createdAt,
-    required this.verified,
+    required this.isVerified,
   });
 
   AssociationModel copyWith({
@@ -27,7 +27,7 @@ class AssociationModel {
     String? profilePicture,
     String? bio,
     DateTime? createdAt,
-    bool? verified,
+    bool? isVerified,
   }) {
     return AssociationModel(
       id: id ?? this.id,
@@ -36,7 +36,7 @@ class AssociationModel {
       profilePicture: profilePicture ?? this.profilePicture,
       bio: bio ?? this.bio,
       createdAt: createdAt ?? this.createdAt,
-      verified: verified ?? this.verified,
+      isVerified: isVerified ?? this.isVerified,
     );
   }
 
@@ -48,7 +48,7 @@ class AssociationModel {
       'profilePicture': profilePicture,
       'bio': bio,
       'createdAt': createdAt.millisecondsSinceEpoch,
-      'verified': verified,
+      'isVerified': isVerified ? 0 : 1, // sqlite does not support boolean type
     };
   }
 
@@ -60,7 +60,7 @@ class AssociationModel {
       profilePicture: map['profilePicture'] as String,
       bio: map['bio'] as String,
       createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int),
-      verified: map['verified'] as bool,
+      isVerified: map['isVerified'] as bool,
     );
   }
 
@@ -71,7 +71,7 @@ class AssociationModel {
 
   @override
   String toString() {
-    return 'AssociationModel(id: $id, name: $name, email: $email, profilePicture: $profilePicture, bio: $bio, createdAt: $createdAt, verified: $verified)';
+    return 'AssociationModel(id: $id, name: $name, email: $email, profilePicture: $profilePicture, bio: $bio, createdAt: $createdAt, isVerified: $isVerified)';
   }
 
   @override
@@ -84,7 +84,7 @@ class AssociationModel {
         other.profilePicture == profilePicture &&
         other.bio == bio &&
         other.createdAt == createdAt &&
-        other.verified == verified;
+        other.isVerified == isVerified;
   }
 
   @override
@@ -95,6 +95,6 @@ class AssociationModel {
         profilePicture.hashCode ^
         bio.hashCode ^
         createdAt.hashCode ^
-        verified.hashCode;
+        isVerified.hashCode;
   }
 }
