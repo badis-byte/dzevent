@@ -17,6 +17,16 @@ class EventsRepo extends PostRepoBase {
   }
 
   @override
+  Future<List<EventModel>> getUserEvents(int id) async {
+    final obj = await postTable.getRecordbyId(id);
+    List<EventModel> result = [];
+    for (var item in obj) {
+      result.add(EventModel.fromMap(item));
+    }
+    return result;
+  }
+
+  @override
   Future<bool> insertData(EventModel post) async {
     final isInserted = postTable.insertRecord(post.toMap());
     return isInserted;

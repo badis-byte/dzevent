@@ -1,4 +1,7 @@
 import 'package:dzevent/data/models/event_model.dart';
+import 'package:dzevent/data/models/user_model.dart';
+import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
+import 'package:dzevent/logic/cubits/auth/auth_states.dart';
 import 'package:dzevent/logic/cubits/events/events_cubit.dart';
 import 'package:dzevent/logic/cubits/events/events_state.dart';
 import 'package:dzevent/presentation/screens/add_event.dart';
@@ -18,10 +21,21 @@ class AssocProfTwo extends StatefulWidget {
 }
 
 class _AssocProfTwoState extends State<AssocProfTwo> {
+  UserModel? current_user;
+  int id = 1;
   @override
   void initState() {
     super.initState();
-    context.read<EventsCubit>().getAll();
+    //store current user id
+    //fetch events
+    current_user = context.read<AccountCubit>().getCurrentUser();
+    debugPrint(current_user?.id.toString() ?? "no id");
+    if (current_user != null) {
+      context.read<EventsCubit>().getAllEventsByUser(current_user!.id);
+    } else {
+      debugPrint("Fake id used");
+      context.read<EventsCubit>().getAllEventsByUser(id);
+    }
   }
 
   var logo =
@@ -242,29 +256,59 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
                   ),
                 ),
               ),
-              BlocBuilder<EventsCubit, EventsState>(
-                builder: (context, state) {
-                  if (state is EventsLoading) {
-                    return Center(child: CircularProgressIndicator());
-                  }
-                  if (state is EventsError) {
-                    return Center(child: Text(state.error));
-                  }
-                  if (state is EventsFetched) {
-                    return Expanded(
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.vertical,
-                        child: Column(
-                          children: [
-                            for (final event in state.events) eventCard(event),
-                          ],
-                        ),
-                      ),
-                    );
-                  }
-                  return Text("Unexpected state: ${state.runtimeType}");
-                },
-              ),
+              current_user == null
+                  ? BlocBuilder<EventsCubit, EventsState>(
+                      builder: (context, state) {
+                        if (state is EventsLoading) {
+                          return Center(child: CircularProgressIndicator());
+                        }
+                        if (state is EventsError) {
+                          return Center(child: Text(state.error));
+                        }
+                        if (state is EventsFetched) {
+                          debugPrint(state.events.toString());
+                          return Expanded(
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.vertical,
+                              child: Column(
+                                children: [
+                                  for (final event in state.events)
+                                    eventCard(event),
+                                ],
+                              ),
+                            ),
+                          );
+                        }
+                        return Text("Unexpected state: ${state.runtimeType}");
+                      },
+                    )
+                  : BlocBuilder<EventsCubit, EventsState>(
+                      builder: (context, state) {
+                        if (state is EventsLoading) {
+                          return Center(child: CircularProgressIndicator());
+                        }
+                        if (state is EventsError) {
+                          return Center(child: Text(state.error));
+                        }
+                        if (state is EventsFetched) {
+                          debugPrint(state.events.toString());
+                          return Expanded(
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.vertical,
+                              child: Column(
+                                children: [
+                                  for (final event in state.events)
+                                    eventCard(event),
+                                ],
+                              ),
+                            ),
+                          );
+                        }else{
+                          debugPrint("no event fetched");
+                        }
+                        return Text("Unexpected state: ${state.runtimeType}");
+                      },
+                    ),
             ],
           ),
         ),

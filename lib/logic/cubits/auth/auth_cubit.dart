@@ -44,6 +44,10 @@ class AccountCubit extends Cubit<AccountState> {
     return true;
   }
 
+  UserModel? getCurrentUser() {
+    return _currentUser;
+  }
+
   Future<bool> register(
     String name,
     String email,
@@ -51,16 +55,16 @@ class AccountCubit extends Cubit<AccountState> {
     bool association,
   ) async {
     emit(AccountLoading());
-    try {
-      await authTable.checkUnique(email);
-    } catch (e) {
-      if (e is ExistingCredException) {
-        emit(AccountExists());
-        return true;
-      } else {
-        emit(AccountError(error: "cant connect to DB"));
-      }
-    }
+    // try {
+    //   await authTable.checkUnique(email);
+    // } catch (e) {
+    //   if (e is ExistingCredException) {
+    //     emit(AccountExists());
+    //     return true;
+    //   } else {
+    //     emit(AccountError(error: "cant connect to DB"));
+    //   }
+    // }
     try {
       emit(AccountLoading());
       if (association) {

@@ -133,7 +133,7 @@ class _AddeventState extends State<Addevent> {
       final createdAt = widget.event?.createdAt ?? DateTime.now();
       final category = controllers[_FormField.category]!.text;
       final associationId =
-          widget.event?.associationId ?? 1; // TODO : this is dummy.
+          widget.event?.associationId ?? 2; // TODO : this is dummy.
 
       final event = EventModel(
         id: id,
