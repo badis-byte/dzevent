@@ -3,17 +3,19 @@ import 'package:sqflite/sqflite.dart';
 import 'dbhelper.dart';
 
 class DBBaseTable {
-  var dbTable = 'TABLE_NAME_MUST_OVERRIDE';
+  var db_table = 'TABLE_NAME_MUST_OVERRIDE';
 
   Future<bool> insertRecord(Map<String, dynamic> data) async {
     try {
       final database = await DBHelper.getDatabase();
-      database.insert(
-        dbTable,
-        data,
-        conflictAlgorithm: ConflictAlgorithm.replace,
-      );
-      return true;
+      final isInserted =
+          await database.insert(
+            db_table,
+            data,
+            conflictAlgorithm: ConflictAlgorithm.replace,
+          ) !=
+          0;
+      return isInserted;
     } catch (e, stacktrace) {
       print('$e --> $stacktrace');
     }
@@ -23,7 +25,7 @@ class DBBaseTable {
   Future<bool> deleteRecord(String id) async {
     try {
       final db = await DBHelper.getDatabase();
-      await db.delete(dbTable, where: 'id = ?', whereArgs: [id]);
+      await db.delete(db_table, where: 'id = ?', whereArgs: [id]);
       return true;
     } on Exception catch (e, stacktrace) {
       print('$e --> $stacktrace');
@@ -35,7 +37,7 @@ class DBBaseTable {
     try {
       final database = await DBHelper.getDatabase();
       var data = await database.query(
-        dbTable,
+        db_table,
         where: 'associationId = ?',
         whereArgs: [id],
       );
@@ -50,7 +52,7 @@ class DBBaseTable {
     try {
       final database = await DBHelper.getDatabase();
       var data = await database.rawQuery(
-        "select * from $dbTable order by id DESC",
+        "select * from $db_table order by id DESC",
       );
       return data;
     } catch (e, stacktrace) {
@@ -62,7 +64,7 @@ class DBBaseTable {
   Future<bool> deleteRecords() async {
     try {
       final db = await DBHelper.getDatabase();
-      await db.delete(dbTable);
+      await db.delete(db_table);
       return true;
     } on Exception catch (e, stacktrace) {
       print('$e --> $stacktrace');
@@ -74,7 +76,7 @@ class DBBaseTable {
     try {
       final db = await DBHelper.getDatabase();
       await db.update(
-        dbTable,
+        db_table,
         data,
         where: 'id = ?',
         whereArgs: [id],

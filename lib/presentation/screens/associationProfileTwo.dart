@@ -32,19 +32,19 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
       listener: (context, state) {
         if (state is AssociationFetched) {
           _currentAssoc = state.association;
-        } 
+        }
       },
     );
     _currentAssoc ??= AssociationModel(
-        id: 2,
-        name: "Meta",
-        email: "Meta@gmail.com",
-        profilePicture:
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBzkx9EjnTvs28LpVsnDW72jM0jNN-D4wOvw&s",
-        bio: "meta",
-        createdAt: DateTime(2000),
-        verified: true,
-      );
+      id: 2,
+      name: "Meta",
+      email: "Meta@gmail.com",
+      profilePicture:
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBzkx9EjnTvs28LpVsnDW72jM0jNN-D4wOvw&s",
+      bio: "meta",
+      createdAt: DateTime(2000),
+      isVerified: true,
+    );
     debugPrint(_currentAssoc?.id.toString() ?? "no id");
     context.read<EventsCubit>().getAllEventsByUser(_currentAssoc!.id);
   }
