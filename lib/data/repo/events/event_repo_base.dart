@@ -2,7 +2,7 @@ import 'package:dzevent/data/models/event_model.dart';
 
 import 'events_repo.dart';
 
-abstract class PostRepoBase {
+abstract class EventsRepoBase {
   Future<List<EventModel>> getData();
   Future<List<EventModel>> getUserEvents(int id);
   Future<bool> insertData(EventModel value);
@@ -10,9 +10,9 @@ abstract class PostRepoBase {
   Future<bool> updateRecord(EventModel value, String id);
   Future<bool> deleteRecord(String id);
 
-  static PostRepoBase? _historyInstance;
+  static EventsRepoBase? _historyInstance;
 
-  static PostRepoBase getInstance() {
+  static EventsRepoBase getInstance() {
     _historyInstance ??= EventsRepo();
     return _historyInstance!; // For backend data
   }

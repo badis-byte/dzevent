@@ -3,7 +3,7 @@ import 'package:dzevent/data/repo/events/event_repo_base.dart';
 
 import '../../databases/db_events.dart';
 
-class EventsRepo extends PostRepoBase {
+class EventsRepo extends EventsRepoBase {
   final postTable = EventsTable(); // Badly Coupled..
 
   @override
