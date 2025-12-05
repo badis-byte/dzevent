@@ -68,7 +68,6 @@ class AccountCubit extends Cubit<AccountState> {
           id: 1,
           name: name,
           email: email,
-          passwordHash: password,
           profilePicture: "/picAssociation",
           bio: "we're a new Associatoin to DZevent!",
           createdAt: DateTime.now(),
@@ -84,7 +83,6 @@ class AccountCubit extends Cubit<AccountState> {
           id: 1,
           name: name,
           email: email,
-          passwordHash: password,
           profilePicture: "no image",
           createdAt: DateTime.now(),
         );

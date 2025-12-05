@@ -5,15 +5,13 @@ class UserModel {
   int id;
   String name;
   String email;
-  String passwordHash;
   String profilePicture;
-
   DateTime createdAt;
+
   UserModel({
     required this.id,
     required this.name,
     required this.email,
-    required this.passwordHash,
     required this.profilePicture,
     required this.createdAt,
   });
@@ -22,7 +20,6 @@ class UserModel {
     int? id,
     String? name,
     String? email,
-    String? passwordHash,
     String? profilePicture,
     DateTime? createdAt,
   }) {
@@ -30,7 +27,6 @@ class UserModel {
       id: id ?? this.id,
       name: name ?? this.name,
       email: email ?? this.email,
-      passwordHash: passwordHash ?? this.passwordHash,
       profilePicture: profilePicture ?? this.profilePicture,
       createdAt: createdAt ?? this.createdAt,
     );
@@ -41,7 +37,6 @@ class UserModel {
       'id': id,
       'name': name,
       'email': email,
-      'passwordHash': passwordHash,
       'profilePicture': profilePicture,
       'createdAt': createdAt.toIso8601String(),
     };
@@ -52,7 +47,6 @@ class UserModel {
       id: map['id'] as int,
       name: map['name'] as String,
       email: map['email'] as String,
-      passwordHash: map['passwordHash'] as String,
       profilePicture: map['profilePicture'] as String,
       createdAt: DateTime.parse(map['createdAt'] as String),
     );
@@ -65,7 +59,7 @@ class UserModel {
 
   @override
   String toString() {
-    return 'UserModel(id: $id, name: $name, email: $email, passwordHash: $passwordHash, profilePicture: $profilePicture, createdAt: $createdAt)';
+    return 'UserModel(id: $id, name: $name, email: $email, profilePicture: $profilePicture, createdAt: $createdAt)';
   }
 
   @override
@@ -75,7 +69,6 @@ class UserModel {
     return other.id == id &&
         other.name == name &&
         other.email == email &&
-        other.passwordHash == passwordHash &&
         other.profilePicture == profilePicture &&
         other.createdAt == createdAt;
   }
@@ -85,7 +78,6 @@ class UserModel {
     return id.hashCode ^
         name.hashCode ^
         email.hashCode ^
-        passwordHash.hashCode ^
         profilePicture.hashCode ^
         createdAt.hashCode;
   }

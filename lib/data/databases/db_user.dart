@@ -5,12 +5,11 @@ class UserTable extends DBBaseTable {
   static String sql_code = '''
           CREATE TABLE  user (
               id INTEGER PRIMARY KEY AUTOINCREMENT, 
-              name TEXT NOT NULL,
-              email TEXT UNIQUE NOT NULL,
-              passwordHash TEXT NOT NULL,
-              profilePicture TEXT,
+              name TEXT NOT NULL CHECK (name <> ''),
+              email TEXT UNIQUE NOT NULL CHECK (email <> ''),
 
-              createdAt TIMESTAMP NOT NULL
+              profilePicture TEXT,
+              createdAt TIMESTAMP NOT NULL CHECK (createdAt <> '')
             );
         ''';
 }
