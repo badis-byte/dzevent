@@ -1,6 +1,10 @@
+import 'package:dzevent/data/models/event_model.dart';
+import 'package:dzevent/logic/cubits/events/events_cubit.dart';
+import 'package:dzevent/logic/cubits/events/events_state.dart';
 import 'package:dzevent/presentation/screens/add_event.dart';
 import 'package:dzevent/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main(List<String> args) {
   runApp(const AssocProfTwo());
@@ -14,6 +18,12 @@ class AssocProfTwo extends StatefulWidget {
 }
 
 class _AssocProfTwoState extends State<AssocProfTwo> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<EventsCubit>().getAll();
+  }
+
   var logo =
       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0NfsQx_-GICZJcadqDeNBMvwzq-RInkcOzg&s";
 
@@ -79,13 +89,7 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
     );
   }
 
-  Widget eventCard(
-    String eventImage,
-    String eventTitle,
-    String eventDate,
-    String eventTime,
-    int numOfMembers,
-  ) {
+  Widget eventCard(EventModel event) {
     final loc = AppLocalizations.of(context)!;
 
     return SizedBox(
@@ -101,7 +105,7 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
               child: Row(
                 children: [
                   Image(
-                    image: NetworkImage(eventImage),
+                    image: NetworkImage(event.imageUrl),
                     width: 120,
                     height: 120,
                   ),
@@ -110,7 +114,7 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        eventTitle,
+                        event.title,
                         textAlign: TextAlign.start,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
@@ -119,7 +123,7 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        "$eventDate - $eventTime",
+                        event.startDatetime.toString(),
                         textAlign: TextAlign.start,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
@@ -133,7 +137,7 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
                           const Icon(Icons.people_outline, color: Colors.grey),
                           const SizedBox(width: 2),
                           Text(
-                            loc.interestedCount(numOfMembers),
+                            loc.interestedCount(100), //dynamic
                             textAlign: TextAlign.start,
                             style: const TextStyle(
                               fontSize: 16,
@@ -143,6 +147,46 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
                         ],
                       ),
                     ],
+                  ),
+                  PopupMenuButton<String>(
+                    color: Colors.white,
+                    onSelected: (value) {
+                      // Handle option selected
+                      if (value == 'edit') {
+                        print("Edit clicked");
+                      } else if (value == 'delete') {
+                        print("Delete clicked");
+                      }
+                    },
+                    itemBuilder: (BuildContext context) => [
+                      PopupMenuItem(
+                        value: 'edit',
+                        child: const Text('Edit'),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Addevent(event: event),
+                            ),
+                          );
+                        },
+                      ),
+                      PopupMenuItem(
+                        value: 'delete',
+                        child: Text('Delete'),
+                        onTap: () async {
+                          final cubit = context.read<EventsCubit>();
+                          try {
+                            if (await cubit.deleteInstace(event.id)) {
+                              print("Event deleted successfully");
+                            }
+                          } catch (e) {
+                            print("Error deleting event: $e");
+                          }
+                        },
+                      ),
+                    ],
+                    icon: const Icon(Icons.more_vert),
                   ),
                 ],
               ),
@@ -156,7 +200,7 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
-
+    // late final Map<_FormField, TextEditingController> controllers;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -198,42 +242,28 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
                   ),
                 ),
               ),
-              Expanded(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: Column(
-                    children: [
-                      eventCard(
-                        logo,
-                        "Tech Innovators Meetup", // dynamic
-                        "2025-11-15",
-                        "10:00 AM",
-                        120,
+              BlocBuilder<EventsCubit, EventsState>(
+                builder: (context, state) {
+                  if (state is EventsLoading) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  if (state is EventsError) {
+                    return Center(child: Text(state.error));
+                  }
+                  if (state is EventsFetched) {
+                    return Expanded(
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
+                        child: Column(
+                          children: [
+                            for (final event in state.events) eventCard(event),
+                          ],
+                        ),
                       ),
-                      eventCard(
-                        logo,
-                        "Jazz Night", // dynamic
-                        "2025-12-02",
-                        "7:30 PM",
-                        85,
-                      ),
-                      eventCard(
-                        logo,
-                        "Modern Art Expo", // dynamic
-                        "2026-01-10",
-                        "3:00 PM",
-                        45,
-                      ),
-                      eventCard(
-                        logo,
-                        "City Marathon", // dynamic
-                        "2025-11-25",
-                        "6:00 AM",
-                        300,
-                      ),
-                    ],
-                  ),
-                ),
+                    );
+                  }
+                  return Text("Unexpected state: ${state.runtimeType}");
+                },
               ),
             ],
           ),

@@ -46,7 +46,7 @@ class EventModel {
       imageUrl: imageUrl ?? this.imageUrl,
       location: location ?? this.location,
       createdAt: createdAt ?? this.createdAt,
-      associationId: associatoinId ?? this.associationId,
+      associationId: associatoinId ?? associationId,
       category: category ?? this.category,
     );
   }

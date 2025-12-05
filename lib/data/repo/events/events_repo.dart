@@ -10,9 +10,9 @@ class EventsRepo extends PostRepoBase {
   Future<List<EventModel>> getData() async {
     final obj = await postTable.getRecords();
     List<EventModel> result = [];
-    obj.forEach((item) {
+    for (var item in obj) {
       result.add(EventModel.fromMap(item));
-    });
+    }
     return result;
   }
 
@@ -23,7 +23,17 @@ class EventsRepo extends PostRepoBase {
   }
 
   @override
+  Future<bool> updateRecord(EventModel value, String id) async {
+    return postTable.updateRecord(value.toMap(), id);
+  }
+
+  @override
   Future<bool> deleteAllData() async {
     return postTable.deleteRecords();
+  }
+
+  @override
+  Future<bool> deleteRecord(String id) async {
+    return postTable.deleteRecord(id);
   }
 }

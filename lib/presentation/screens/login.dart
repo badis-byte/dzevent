@@ -174,11 +174,6 @@ class _LoginState extends State<Login> {
               context,
             ).showSnackBar(SnackBar(content: Text(state.error)));
           }
-          if (state is AccountExists) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text("Email already exists")));
-          }
           if (state is UserFetched || state is AssociationFetched) {
             Navigator.pushReplacement(
               context,
