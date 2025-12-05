@@ -38,6 +38,7 @@ class FeedEventCard extends StatelessWidget {
       userId: authState.user.id,
       eventId: event.id,
     );
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(toggled ? "Toggled succefully" : "Failed to toggle"),

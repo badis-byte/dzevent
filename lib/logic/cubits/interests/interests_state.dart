@@ -16,6 +16,6 @@ class InterestsFetched extends InterestsState {
   InterestsFetched({required this.interests});
 }
 
-class InterestsAdded extends InterestsState {}
+class InterestAdded extends InterestsState {}
 
-class InterestsDeleted extends InterestsState {}
+class InterestDeleted extends InterestsState {}

@@ -1,8 +1,5 @@
-import 'package:dzevent/data/models/event_model.dart';
 import 'package:dzevent/data/models/interest_model.dart';
-import 'package:dzevent/data/repo/events/events_repo.dart';
 import 'package:dzevent/data/repo/interests/interests_repo.dart';
-import 'package:dzevent/logic/cubits/events/events_state.dart';
 import 'package:dzevent/logic/cubits/interests/interests_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -30,7 +27,7 @@ class InterestsCubit extends Cubit<InterestsState> {
         emit(InterestsError(error: "Failed to add the interest"));
         return false;
       } else {
-        emit(InterestsAdded());
+        emit(InterestAdded());
         emit(InterestsInitial());
         return true;
       }
@@ -51,7 +48,7 @@ class InterestsCubit extends Cubit<InterestsState> {
         emit(InterestsError(error: "Failed to delete the interest"));
         return false;
       } else {
-        emit(InterestsDeleted());
+        emit(InterestDeleted());
         emit(InterestsInitial());
         return true;
       }
@@ -66,9 +63,10 @@ class InterestsCubit extends Cubit<InterestsState> {
       userId: userId,
       eventId: eventId,
     );
+    bool isToggled;
     if (interest == null) {
       // not found, create one
-      return await insert(
+      isToggled = await insert(
         interest: InterestModel(
           userId: userId,
           eventId: eventId,
@@ -76,7 +74,12 @@ class InterestsCubit extends Cubit<InterestsState> {
         ),
       );
     } else {
-      return await delete(userId: userId, eventId: eventId);
+      isToggled = await delete(userId: userId, eventId: eventId);
     }
+    if (isToggled) {
+      // refresh
+      getUserInterests(userId: userId);
+    }
+    return isToggled;
   }
 }
