@@ -32,7 +32,33 @@ class _ProfileHeaderState extends State<ProfileHeader> {
           return const Text("Guest");
         }
         if (state is UserFetched) {
-          return Text("User: ${state.user.name}");
+          final user = state.user;
+          return Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: 50,
+                child: Image.network(
+                  user.profilePicture,
+                  errorBuilder: (context, error, stackTrace) =>
+                      Text("Invalid image"),
+                ),
+              ),
+              SizedBox(width: 16),
+              IntrinsicHeight(
+                child: Column(
+                  children: [
+                    Text(state.user.name),
+                    SizedBox(height: 8),
+                    ElevatedButton(
+                      onPressed: () {},
+                      child: Text("View Profile"),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          );
         }
         return Text("unexpected state: ${state.runtimeType}");
       },

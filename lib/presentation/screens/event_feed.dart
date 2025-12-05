@@ -1,7 +1,5 @@
 import 'package:dzevent/data/models/event_model.dart';
 import 'package:dzevent/lib/styles.dart';
-import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
-import 'package:dzevent/logic/cubits/auth/auth_states.dart';
 import 'package:dzevent/logic/cubits/events/events_cubit.dart';
 import 'package:dzevent/logic/cubits/events/events_state.dart';
 import 'package:dzevent/presentation/widgets/profile_header.dart';
@@ -31,32 +29,42 @@ class _EventFeedState extends State<EventFeed> {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
+    final drawerItemsUp = [
+      {'label': "Feed", 'icon': Icons.home},
+      {'label': "My events", 'icon': Icons.calendar_month},
+      {'label': "Notifications", 'icon': Icons.notifications},
+      {'label': "Followed Associatinons", 'icon': Icons.group},
+    ];
+    final drawerItemsBottom = [
+      {'label': "Settings", 'icon': Icons.settings},
+      {'label': "Log Out", 'icon': Icons.logout},
+    ];
 
     return Scaffold(
       drawer: Drawer(
         child: Column(
           children: [
             DrawerHeader(child: ProfileHeader()),
-            ListTile(leading: Icon(Icons.home), title: const Text("Feed")),
-            ListTile(
-              leading: Icon(Icons.calendar_month),
-              title: const Text("My events"),
-            ),
-            ListTile(
-              leading: Icon(Icons.notifications),
-              title: const Text("notifications"),
-            ),
-            ListTile(
-              leading: Icon(Icons.group),
-              title: const Text("Followed Associatinons"),
-            ),
+            for (final item in drawerItemsUp)
+              InkWell(
+                onTap: () {},
+                hoverColor: Colors.grey.shade200,
+                child: ListTile(
+                  title: Text(item['label'] as String),
+                  leading: Icon(item['icon'] as IconData),
+                ),
+              ),
             Spacer(),
             Divider(),
-            ListTile(
-              leading: Icon(Icons.settings),
-              title: const Text("Settings"),
-            ),
-            ListTile(leading: Icon(Icons.logout), title: const Text("Log Out")),
+            for (final item in drawerItemsBottom)
+              InkWell(
+                onTap: () {},
+                hoverColor: Colors.grey.shade200,
+                child: ListTile(
+                  title: Text(item['label'] as String),
+                  leading: Icon(item['icon'] as IconData),
+                ),
+              ),
           ],
         ),
       ),
