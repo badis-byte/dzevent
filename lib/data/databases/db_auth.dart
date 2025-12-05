@@ -17,7 +17,7 @@ class DBAuth {
     final db = await DBHelper.getDatabase();
 
     final result = await db.query(
-      'association',
+      'associations',
       where: 'email = ?',
       whereArgs: [email],
     );
@@ -69,7 +69,7 @@ class DBAuth {
     }
 
     final result2 = await db.query(
-      'association',
+      'associations',
       where: 'email = ?',
       whereArgs: [email],
     );
