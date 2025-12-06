@@ -201,7 +201,7 @@ class _LoginState extends State<Login> {
         },
         builder: (context, state) {
           if (state is AccountLoading) {
-            return SizedBox(child: CircularProgressIndicator());
+            return SizedBox(width:20, child: CircularProgressIndicator());
           }
           return ElevatedButton(
             style: ElevatedButton.styleFrom(

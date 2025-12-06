@@ -42,7 +42,7 @@ class _EventFeedState extends State<EventFeed> {
       final userId = authState.user.id;
       print("EventCard: user fetched ${authState.user.name} ");
       final interestsCubit = context.read<InterestsCubit>();
-      await interestsCubit.getUserInterests(userId: userId);
+      await interestsCubit.getUserInterests(userId: userId!);
       return true;
     } else {
       print("Event Card: user not fetched");
