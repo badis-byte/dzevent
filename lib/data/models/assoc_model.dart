@@ -53,14 +53,34 @@ class AssociationModel {
   }
 
   factory AssociationModel.fromMap(Map<String, dynamic> map) {
+    int parseInt(dynamic value, [int defaultValue = 0]) {
+      if (value == null) return defaultValue;
+      if (value is int) return value;
+      try {
+        return int.parse(value.toString());
+      } catch (_) {
+        return defaultValue;
+      }
+    }
+
+    DateTime parseDate(dynamic value) {
+      if (value == null) return DateTime.now();
+      if (value is int) return DateTime.fromMillisecondsSinceEpoch(value);
+      try {
+        return DateTime.parse(value.toString());
+      } catch (_) {
+        return DateTime.now();
+      }
+    }
+
     return AssociationModel(
-      id: map['id'] as int,
-      name: map['name'] as String,
-      email: map['email'] as String,
-      profilePicture: map['profilePicture'] as String,
-      bio: map['bio'] as String,
-      createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int),
-      verified: map['verified'] as int,
+      id: parseInt(map['id']),
+      name: map['name'] as String? ?? '',
+      email: map['email'] as String? ?? '',
+      profilePicture: map['profilePicture'] as String? ?? '',
+      bio: map['bio'] as String? ?? '',
+      createdAt: parseDate(map['createdAt']),
+      verified: parseInt(map['verified']),
     );
   }
 

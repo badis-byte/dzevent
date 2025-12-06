@@ -1,4 +1,5 @@
 import 'package:dzevent/data/models/assoc_model.dart';
+import 'package:flutter/cupertino.dart';
 
 import '../../databases/db_association.dart';
 import '../../databases/db_auth.dart';
@@ -39,6 +40,21 @@ class AssocRepoLocal extends AssocRepoBase {
       return association;
     } catch (e) {
       rethrow;
+    }
+  }
+
+  @override
+  Future<List<AssociationModel>> getUnverifiedUser() async {
+    try {
+      final obj = await associatoinTable.getAssociationUnv();
+      print("size of object is ${obj.length}");
+      List<AssociationModel> result = [];
+      for (var item in obj) {
+        result.add(item);
+      }
+      return result;
+    } catch (e) {
+      throw Exception("something went wrong");
     }
   }
 }

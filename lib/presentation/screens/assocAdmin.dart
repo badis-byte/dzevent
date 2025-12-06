@@ -1,6 +1,9 @@
+import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
+import 'package:dzevent/logic/cubits/auth/auth_states.dart';
 import 'package:dzevent/presentation/screens/associationProfileTwo.dart';
 import 'package:dzevent/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
   runApp(const Assocadmin());
@@ -46,7 +49,10 @@ class _AssocadminState extends State<Assocadmin> {
         onPressed: () {},
         child: Text(
           text,
-          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );
@@ -66,16 +72,23 @@ class _AssocadminState extends State<Assocadmin> {
             children: [
               Text(
                 title,
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24,
+                ),
               ),
               const SizedBox(height: 8),
               Text(
                 description,
-                style: const TextStyle(color: Color.fromARGB(255, 107, 107, 107)),
+                style: const TextStyle(
+                  color: Color.fromARGB(255, 107, 107, 107),
+                ),
               ),
               Text(
                 loc.requestedOn(date),
-                style: const TextStyle(color: Color.fromARGB(255, 107, 107, 107)),
+                style: const TextStyle(
+                  color: Color.fromARGB(255, 107, 107, 107),
+                ),
               ),
               const SizedBox(height: 16),
               Row(
@@ -91,6 +104,14 @@ class _AssocadminState extends State<Assocadmin> {
         ),
       ),
     );
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    context.read<AccountCubit>().getUnvAssoc();
+    print("helloooo");
   }
 
   var Selected1 = true;
@@ -220,36 +241,46 @@ class _AssocadminState extends State<Assocadmin> {
                   ),
                   const SizedBox(height: 8),
                   Expanded(
-                    child: ListView(
-                      children: [
-                        // Dynamic association data — keep as is, don't translate
-                        cardAssoc(
-                          "Tech Innovators Society",
-                          "A community for tech enthusiasts and professionals",
-                          "2024-10-26",
-                        ),
-                        cardAssoc(
-                          "Future Leaders Initiative",
-                          "Empowering the next generation of innovators and leaders",
-                          "2024-10-25",
-                        ),
-                        cardAssoc(
-                          "AI Enthusiasts Club",
-                          "Learn, share, and explore AI technologies together",
-                          "2024-11-01",
-                        ),
-                        cardAssoc(
-                          "Open Source Developers",
-                          "Collaborate on open source projects and improve your skills",
-                          "2024-11-05",
-                        ),
-                        cardAssoc(
-                          "Cybersecurity Network",
-                          "Stay updated with the latest in cybersecurity and ethical hacking",
-                          "2024-11-10",
-                        ),
-                        const SizedBox(height: 16),
-                      ],
+                    child: BlocListener<AccountCubit, AccountState>(
+                      listener: (context, state) {
+                        print("hello inside");
+                        if (state is AssociationsFetched) {
+                          print("data : ${state.association}");
+                        } else if(state is AccountGuest){
+                          print("state changed: ${state}");
+                        }
+                      },
+                      child: ListView(
+                        children: [
+                          // Dynamic association data
+                          cardAssoc(
+                            "Tech Innovators Society",
+                            "A community for tech enthusiasts and professionals",
+                            "2024-10-26",
+                          ),
+                          cardAssoc(
+                            "Future Leaders Initiative",
+                            "Empowering the next generation of innovators and leaders",
+                            "2024-10-25",
+                          ),
+                          cardAssoc(
+                            "AI Enthusiasts Club",
+                            "Learn, share, and explore AI technologies together",
+                            "2024-11-01",
+                          ),
+                          cardAssoc(
+                            "Open Source Developers",
+                            "Collaborate on open source projects and improve your skills",
+                            "2024-11-05",
+                          ),
+                          cardAssoc(
+                            "Cybersecurity Network",
+                            "Stay updated with the latest in cybersecurity and ethical hacking",
+                            "2024-11-10",
+                          ),
+                          const SizedBox(height: 16),
+                        ],
+                      ),
                     ),
                   ),
                 ],
@@ -261,4 +292,3 @@ class _AssocadminState extends State<Assocadmin> {
     );
   }
 }
-

@@ -1,5 +1,6 @@
 import 'package:dzevent/data/models/assoc_model.dart';
 import 'package:dzevent/data/models/user_model.dart';
+import 'package:flutter/foundation.dart';
 
 import 'dbhelper.dart';
 
@@ -31,6 +32,31 @@ class DBAuth {
     }
 
     throw InvalidCredException();
+  }
+
+  Future<List<AssociationModel>> getAssociationUnv() async {
+    int unv = 0;
+    try {
+      final db = await DBHelper.getDatabase();
+      List<AssociationModel> result = [];
+      final associations = await db.query(
+        'association',
+        where: 'isVerified = ?',
+        whereArgs: [unv],
+      );
+      if (associations.isNotEmpty) {
+        for (var asso in associations) {
+          var association = AssociationModel.fromMap(asso);
+          result.add(association);
+        }
+        return result;
+      } else {
+        debugPrint("result is empty");
+        return [];
+      }
+    } catch (e) {
+      throw Exception("something went wrong !");
+    }
   }
 
   Future<UserModel> getUserByCredentials(String email, String password) async {

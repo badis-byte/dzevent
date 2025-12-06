@@ -1,3 +1,4 @@
+import 'package:dzevent/data/models/assoc_model.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'dbhelper.dart';
@@ -84,6 +85,32 @@ class DBBaseTable {
     } catch (e, stacktrace) {
       print('$e --> $stacktrace');
       return false;
+    }
+  }
+
+  Future<List<AssociationModel>> getAssociationUnv() async {
+    int unv = 0;
+    try {
+      final db = await DBHelper.getDatabase();
+      List<AssociationModel> result = [];
+      final associations = await db.rawQuery(
+        'SELECT * FROM association WHERE isVerified = 0;',
+        
+      );
+      print("fetched data : ${associations.toString()}");
+      if (associations.isNotEmpty) {
+        for (var asso in associations) {
+          var association = AssociationModel.fromMap(asso);
+          result.add(association);
+        }
+        return result;
+      } else {
+        print("result is empty");
+        return [];
+      }
+    } catch (e) {
+      print("catch bloc <db_base_file> : something went wrong ******* $e");
+      throw Exception("something went wrong !");
     }
   }
 }

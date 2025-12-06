@@ -25,6 +25,11 @@ class AssociationFetched extends AccountState {
   AssociationModel association;
   AssociationFetched({required this.association});
 }
+class AssociationsFetched extends AccountState {
+  final List<AssociationModel> association;
+
+  AssociationsFetched({required this.association});
+}
 
 
 //if(state is AssociationFetched){

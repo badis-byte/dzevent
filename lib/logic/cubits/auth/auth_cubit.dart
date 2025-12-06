@@ -132,4 +132,21 @@ class AccountCubit extends Cubit<AccountState> {
       return false;
     }
   }
+
+  Future<bool> getUnvAssoc() async{
+    try {
+      emit(AccountLoading());
+      final response = await localAssRepo.getUnverifiedUser();
+      if (response.isEmpty) {
+        emit(AccountGuest());
+        return false;
+      } else {
+        emit(AssociationsFetched(association: response));
+        return true;
+      }
+    } catch (e) {
+      emit(AccountError(error: "Failed to get user data. Error: ${e}"));
+      return false;
+    }
+  }
 }
