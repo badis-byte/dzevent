@@ -17,6 +17,13 @@ class _LoginState extends State<Login> {
   var emailController = TextEditingController();
   var passController = TextEditingController();
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    
+  }
+
+  @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
 

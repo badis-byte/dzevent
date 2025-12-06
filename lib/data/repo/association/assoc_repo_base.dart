@@ -10,6 +10,7 @@ abstract class AssocRepoBase {
   Future<List<AssociationModel>> getUnverifiedUser();
   Future<bool> verifyAssociation(int id);
   Future<bool> deleteAssociation(int id);
+  Future<List<AssociationModel>> getAssociation(int id);
   static AssocRepoBase? _assocInstance;
 
   static AssocRepoBase getInstance() {

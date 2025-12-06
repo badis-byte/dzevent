@@ -19,7 +19,17 @@ class FeedEventCard extends StatelessWidget {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          Image.asset(event.imageUrl, fit: BoxFit.cover),
+          Image.network(
+            
+            event.imageUrl,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return Image.asset(
+                event.imageUrl, // fallback image
+                fit: BoxFit.cover,
+              );
+            },
+          ),
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(

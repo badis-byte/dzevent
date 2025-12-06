@@ -150,6 +150,23 @@ class AccountCubit extends Cubit<AccountState> {
     }
   }
 
+  Future<bool> getAssoc(int id) async {
+    try {
+      emit(AccountLoading());
+      final response = await localAssRepo.getAssociation(id);
+      if (response.isEmpty) {
+        AccountError(error: "empty data");
+        return false;
+      } else {
+        emit(AssociationFetched(association: response.first));
+        return true;
+      }
+    } catch (e) {
+      emit(AccountError(error: "Failed to get user data. Error: $e"));
+      return false;
+    }
+  }
+
   Future<bool> verifyAccount(int id) async {
     try {
       emit(AccountLoading());

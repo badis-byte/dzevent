@@ -43,18 +43,18 @@ class NavScreen extends StatelessWidget {
       ),
       Link(icon: Icons.event, label: loc.eventFeed, page: EventFeed()),
       Link(icon: Icons.login, label: loc.login, page: Login()),
-      Link(
-        icon: Icons.person,
-        label: loc.publicAssocProfile,
-        page: PublicAssocProfile(),
-      ),
+      // Link(
+      //   icon: Icons.person,
+      //   label: loc.publicAssocProfile,
+      //   page: PublicAssocProfile(),
+      // ),
       Link(icon: Icons.add, label: loc.signup, page: Signup()),
       Link(icon: Icons.handshake, label: loc.welcome, page: ImageCarousel()),
-      Link(
-        icon: Icons.person,
-        label: loc.publicAssocProfile,
-        page: PublicAssocProfile(),
-      ),
+      // Link(
+      //   icon: Icons.person,
+      //   label: loc.publicAssocProfile,
+      //   // page: PublicAssocProfile(),
+      // ),
       Link(icon: Icons.add, label: loc.creds, page: Myaccountcredentials()),
       Link(icon: Icons.add, label: loc.userRegs, page: UserProfileScreen()),
     ];

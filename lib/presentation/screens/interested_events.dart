@@ -19,6 +19,7 @@ class _InterestedEventsState extends State<InterestedEvents> {
   void initState() {
     super.initState();
     context.read<EventsCubit>().getAll();
+    
   }
 
   @override

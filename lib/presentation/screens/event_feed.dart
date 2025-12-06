@@ -1,6 +1,7 @@
 import 'package:dzevent/lib/styles.dart';
 import 'package:dzevent/logic/cubits/events/events_cubit.dart';
 import 'package:dzevent/logic/cubits/events/events_state.dart';
+import 'package:dzevent/presentation/screens/event_details.dart';
 import 'package:dzevent/presentation/widgets/feed_event_card.dart';
 import 'package:dzevent/presentation/widgets/main_scaffold.dart';
 import 'package:flutter/material.dart';
@@ -74,8 +75,25 @@ class _EventFeedState extends State<EventFeed> {
                   return Expanded(
                     child: ListView.builder(
                       itemCount: events.length,
-                      itemBuilder: (context, index) =>
-                          FeedEventCard(event: events[index]),
+                      itemBuilder: (context, index) {
+                        return Column(
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) =>
+                                        EventDetails(event: events[index]),
+                                  ),
+                                );
+                              },
+                              child: FeedEventCard(event: events[index]),
+                            ),
+                            const SizedBox(height: 16),
+                          ],
+                        );
+                      },
                     ),
                   );
                 }
