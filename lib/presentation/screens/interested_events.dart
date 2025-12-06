@@ -26,7 +26,7 @@ class _InterestedEventsScreenState extends State<InterestedEventsScreen> {
     init();
   }
 
-  Future<void> init() async {
+  Future<bool> init() async {
     final authCubit = context.read<AccountCubit>();
     await authCubit.getUserData();
 
@@ -37,39 +37,62 @@ class _InterestedEventsScreenState extends State<InterestedEventsScreen> {
 
       final interestsCubit = context.read<InterestsCubit>();
       await interestsCubit.getUserInterestedEvents(userId: userId);
+
+      return true;
     } else {
       print("(InterestedEventsScreen): user not fetched");
+      return false;
     }
+  }
+
+  Future<bool> refresh() async {
+    return await init();
   }
 
   @override
   Widget build(BuildContext context) {
     return MainScaffold(
       title: const Text("Interested Events"),
-      body: BlocBuilder<InterestsCubit, InterestsState>(
-        builder: (context, state) {
-          if (state is InterestsLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
+      body: Column(
+        children: [
+          ElevatedButton(
+            onPressed: () async {
+              await refresh();
+            },
+            child: Text("Refresh"),
+          ),
+          SizedBox(height: 16),
 
-          if (state is InterestsError) {
-            return Center(child: Text("Error: ${state.error}"));
-          }
+          BlocBuilder<InterestsCubit, InterestsState>(
+            builder: (context, state) {
+              if (state is InterestsLoading) {
+                return const Center(child: CircularProgressIndicator());
+              }
 
-          if (state is InterestedEventsFetched) {
-            final intrestedEvents = state.interestedEvents;
+              if (state is InterestsError) {
+                return Center(child: Text("Error: ${state.error}"));
+              }
 
-            return ListView.builder(
-              itemCount: intrestedEvents.length, // <-- FIXED
-              itemBuilder: (context, index) => FeedEventCard(
-                event: intrestedEvents[index],
-                isInterested: true,
-              ),
-            );
-          }
-          ;
-          return Center(child: Text("Unexpected state: ${state.runtimeType}"));
-        },
+              if (state is InterestedEventsFetched) {
+                final intrestedEvents = state.interestedEvents;
+
+                return Expanded(
+                  child: ListView.builder(
+                    itemCount: intrestedEvents.length, // <-- FIXED
+                    itemBuilder: (context, index) => FeedEventCard(
+                      event: intrestedEvents[index],
+                      isInterested: true,
+                    ),
+                  ),
+                );
+              }
+              ;
+              return Center(
+                child: Text("Unexpected state: ${state.runtimeType}"),
+              );
+            },
+          ),
+        ],
       ),
     );
   }

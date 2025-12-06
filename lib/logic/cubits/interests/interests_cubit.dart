@@ -96,6 +96,8 @@ class InterestsCubit extends Cubit<InterestsState> {
   }
 
   Future<bool> toggle({required int userId, required String eventId}) async {
+    /// Just a switch
+    /// enterTmpAction and leaveTmpAction are done in both paths
     final interest = await localRepo.getInterest(
       userId: userId,
       eventId: eventId,
