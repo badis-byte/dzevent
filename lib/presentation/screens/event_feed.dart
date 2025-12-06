@@ -159,12 +159,15 @@ class Filters extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        for (final filter in filters)
-          OutlinedButton(onPressed: () {}, child: Text(filter)),
-      ],
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          for (final filter in filters)
+            OutlinedButton(onPressed: () {}, child: Text(filter)),
+        ],
+      ),
     );
   }
 }

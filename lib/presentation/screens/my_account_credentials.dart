@@ -1,5 +1,8 @@
+import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
+import 'package:dzevent/logic/cubits/events/events_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:dzevent/l10n/app_localizations.dart';
+import 'package:path/path.dart';
 
 class Myaccountcredentials extends StatelessWidget {
   const Myaccountcredentials({super.key});
@@ -37,7 +40,9 @@ class Myaccountcredentials extends StatelessWidget {
                         filled: true,
                         fillColor: const Color(0xFF00BF6D).withOpacity(0.05),
                         contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 24.0, vertical: 16.0),
+                          horizontal: 24.0,
+                          vertical: 16.0,
+                        ),
                         border: const OutlineInputBorder(
                           borderSide: BorderSide.none,
                           borderRadius: BorderRadius.all(Radius.circular(50)),
@@ -53,7 +58,9 @@ class Myaccountcredentials extends StatelessWidget {
                         filled: true,
                         fillColor: const Color(0xFF00BF6D).withOpacity(0.05),
                         contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 24.0, vertical: 16.0),
+                          horizontal: 24.0,
+                          vertical: 16.0,
+                        ),
                         border: const OutlineInputBorder(
                           borderSide: BorderSide.none,
                           borderRadius: BorderRadius.all(Radius.circular(50)),
@@ -69,7 +76,9 @@ class Myaccountcredentials extends StatelessWidget {
                         filled: true,
                         fillColor: const Color(0xFF00BF6D).withOpacity(0.05),
                         contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 24.0, vertical: 16.0),
+                          horizontal: 24.0,
+                          vertical: 16.0,
+                        ),
                         border: const OutlineInputBorder(
                           borderSide: BorderSide.none,
                           borderRadius: BorderRadius.all(Radius.circular(50)),
@@ -85,7 +94,9 @@ class Myaccountcredentials extends StatelessWidget {
                         filled: true,
                         fillColor: const Color(0xFF00BF6D).withOpacity(0.05),
                         contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 24.0, vertical: 16.0),
+                          horizontal: 24.0,
+                          vertical: 16.0,
+                        ),
                         border: const OutlineInputBorder(
                           borderSide: BorderSide.none,
                           borderRadius: BorderRadius.all(Radius.circular(50)),
@@ -99,14 +110,13 @@ class Myaccountcredentials extends StatelessWidget {
                       obscureText: true,
                       initialValue: "demopass",
                       decoration: InputDecoration(
-                        suffixIcon: const Icon(
-                          Icons.visibility_off,
-                          size: 20,
-                        ),
+                        suffixIcon: const Icon(Icons.visibility_off, size: 20),
                         filled: true,
                         fillColor: const Color(0xFF00BF6D).withOpacity(0.05),
                         contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 24.0, vertical: 16.0),
+                          horizontal: 24.0,
+                          vertical: 16.0,
+                        ),
                         border: const OutlineInputBorder(
                           borderSide: BorderSide.none,
                           borderRadius: BorderRadius.all(Radius.circular(50)),
@@ -122,7 +132,9 @@ class Myaccountcredentials extends StatelessWidget {
                         filled: true,
                         fillColor: const Color(0xFF00BF6D).withOpacity(0.05),
                         contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 24.0, vertical: 16.0),
+                          horizontal: 24.0,
+                          vertical: 16.0,
+                        ),
                         border: const OutlineInputBorder(
                           borderSide: BorderSide.none,
                           borderRadius: BorderRadius.all(Radius.circular(50)),
@@ -142,11 +154,9 @@ class Myaccountcredentials extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: () {},
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context)
-                          .textTheme
-                          .bodyLarge!
-                          .color!
-                          .withOpacity(0.08),
+                      backgroundColor: Theme.of(
+                        context,
+                      ).textTheme.bodyLarge!.color!.withOpacity(0.08),
                       foregroundColor: Colors.white,
                       minimumSize: const Size(double.infinity, 48),
                       shape: const StadiumBorder(),
@@ -197,29 +207,23 @@ class ProfilePic extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         border: Border.all(
-          color:
-              Theme.of(context).textTheme.bodyLarge!.color!.withOpacity(0.08),
+          color: Theme.of(
+            context,
+          ).textTheme.bodyLarge!.color!.withOpacity(0.08),
         ),
       ),
       child: Stack(
         alignment: Alignment.bottomRight,
         children: [
-          CircleAvatar(
-            radius: 50,
-            backgroundImage: NetworkImage(image),
-          ),
+          CircleAvatar(radius: 50, backgroundImage: NetworkImage(image)),
           InkWell(
             onTap: imageUploadBtnPress,
             child: CircleAvatar(
               radius: 13,
               backgroundColor: Theme.of(context).primaryColor,
-              child: const Icon(
-                Icons.add,
-                color: Colors.white,
-                size: 20,
-              ),
+              child: const Icon(Icons.add, color: Colors.white, size: 20),
             ),
-          )
+          ),
         ],
       ),
     );
@@ -227,11 +231,7 @@ class ProfilePic extends StatelessWidget {
 }
 
 class UserInfoEditField extends StatelessWidget {
-  const UserInfoEditField({
-    super.key,
-    required this.text,
-    required this.child,
-  });
+  const UserInfoEditField({super.key, required this.text, required this.child});
 
   final String text;
   final Widget child;
@@ -242,14 +242,8 @@ class UserInfoEditField extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 16.0 / 2),
       child: Row(
         children: [
-          Expanded(
-            flex: 2,
-            child: Text(text),
-          ),
-          Expanded(
-            flex: 3,
-            child: child,
-          ),
+          Expanded(flex: 2, child: Text(text)),
+          Expanded(flex: 3, child: child),
         ],
       ),
     );

@@ -31,6 +31,7 @@ class _EventDetailsState extends State<EventDetails> {
 
   @override
   Widget build(BuildContext context) {
+    
     final loc = AppLocalizations.of(context)!;
 
     return Scaffold(
