@@ -92,7 +92,7 @@ class AccountCubit extends Cubit<AccountState> {
         print(_currentAssociation.toString());
       } else {
         UserModel user = UserModel(
-          id: 1,
+          // id: 1,
           name: name,
           email: email,
           profilePicture: "no image",
