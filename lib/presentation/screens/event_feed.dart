@@ -42,7 +42,7 @@ class _EventFeedState extends State<EventFeed> {
       final userId = authState.user.id;
       print("EventCard: user fetched ${authState.user.name} ");
       final interestsCubit = context.read<InterestsCubit>();
-      await interestsCubit.getUserInterests(userId: userId);
+      await interestsCubit.getUserInterests(userId: userId!);
       return true;
     } else {
       print("Event Card: user not fetched");
@@ -92,7 +92,6 @@ class _EventFeedState extends State<EventFeed> {
               },
               child: Text("Refresh"),
             ),
-
             BlocBuilder<EventsCubit, EventsState>(
               builder: (context, state) {
                 if (state is EventsLoading) {
@@ -106,38 +105,52 @@ class _EventFeedState extends State<EventFeed> {
                   if (events.isEmpty) {
                     return Text("No events found");
                   }
+
                   return BlocBuilder<InterestsCubit, InterestsState>(
                     builder: (context, state) {
                       Map<EventModel, bool> interested = Map.fromEntries(
                         events.map((event) => MapEntry(event, false)),
                       );
-                      if (state is InterestsLoading) {
-                        print("loading interests");
-                      }
-                      if (state is InterestsError) {
-                        print("Failed to fetch interests: ${state.error}");
-                      }
+
                       if (state is InterestsFetched) {
-                        print("Interests fetched");
                         final interests = state.interests;
                         interested = Map.fromEntries(
                           events.map(
                             (event) => MapEntry(
                               event,
-                              interests.any(
-                                (interest) => interest.eventId == event.id,
-                              ),
+                              interests.any((i) => i.eventId == event.id),
                             ),
                           ),
                         );
                       }
+
                       return Expanded(
                         child: ListView.builder(
                           itemCount: events.length,
-                          itemBuilder: (context, index) => FeedEventCard(
-                            event: events[index],
-                            isInterested: interested[events[index]]!,
-                          ),
+                          itemBuilder: (context, index) {
+                            final event = events[index];
+
+                            return Column(
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) =>
+                                            EventDetails(event: event),
+                                      ),
+                                    );
+                                  },
+                                  child: FeedEventCard(
+                                    event: event,
+                                    isInterested: interested[event]!,
+                                  ),
+                                ),
+                                const SizedBox(height: 16),
+                              ],
+                            );
+                          },
                         ),
                       );
                     },

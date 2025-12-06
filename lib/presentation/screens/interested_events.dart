@@ -36,7 +36,7 @@ class _InterestedEventsScreenState extends State<InterestedEventsScreen> {
       print("(InterestedEventsScreen): user fetched ${authState.user.name}");
 
       final interestsCubit = context.read<InterestsCubit>();
-      await interestsCubit.getUserInterestedEvents(userId: userId);
+      await interestsCubit.getUserInterestedEvents(userId: userId!);
 
       return true;
     } else {

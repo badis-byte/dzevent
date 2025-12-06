@@ -38,7 +38,7 @@ class FeedEventCard extends StatelessWidget {
     }
 
     final toggled = await interestsCubit.toggle(
-      userId: authState.user.id,
+      userId: authState.user.id!,
       eventId: event.id,
     );
 
