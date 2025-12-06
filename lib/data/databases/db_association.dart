@@ -3,7 +3,7 @@ import 'package:dzevent/data/databases/db_base.dart';
 class AssociationTable extends DBBaseTable {
   @override
   var db_table = 'associations';
-  
+
   static String sql_code = '''
           CREATE TABLE associations (
               id INTEGER PRIMARY KEY AUTOINCREMENT, 
