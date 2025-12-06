@@ -1,10 +1,11 @@
 import 'package:dzevent/data/models/interest_model.dart';
 import 'package:dzevent/data/repo/interests/interests_repo.dart';
+import 'package:dzevent/data/repo/interests/interests_repo_base.dart';
 import 'package:dzevent/logic/cubits/interests/interests_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class InterestsCubit extends Cubit<InterestsState> {
-  final localRepo = InterestsRepo();
+  final InterestsRepoBase localRepo = InterestsRepo();
   InterestsCubit() : super(InterestsInitial());
 
   Future<bool> getUserInterests({required int userId}) async {
@@ -12,6 +13,20 @@ class InterestsCubit extends Cubit<InterestsState> {
       emit(InterestsLoading());
       final response = await localRepo.getAllUserInterests(userId: userId);
       emit(InterestsFetched(interests: response));
+      return true;
+    } catch (e) {
+      emit(InterestsError(error: e.toString()));
+      return false;
+    }
+  }
+
+  Future<bool> getUserInterestedEvents({required int userId}) async {
+    try {
+      emit(InterestsLoading());
+      final interestedEvents = await localRepo.getUserInterestedEvents(
+        userId: userId,
+      );
+      emit(InterestedEventsFetched(interestedEvents: interestedEvents));
       return true;
     } catch (e) {
       emit(InterestsError(error: e.toString()));

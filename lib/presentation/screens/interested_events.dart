@@ -1,8 +1,6 @@
 import 'package:dzevent/data/models/event_model.dart';
 import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
 import 'package:dzevent/logic/cubits/auth/auth_states.dart';
-import 'package:dzevent/logic/cubits/events/events_cubit.dart';
-import 'package:dzevent/logic/cubits/events/events_state.dart';
 import 'package:dzevent/logic/cubits/interests/interests_cubit.dart';
 import 'package:dzevent/logic/cubits/interests/interests_state.dart';
 import 'package:dzevent/presentation/widgets/feed_event_card.dart';
@@ -10,16 +8,16 @@ import 'package:dzevent/presentation/widgets/main_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class InterestedEvents extends StatefulWidget {
+class InterestedEventsScreen extends StatefulWidget {
   static MaterialPageRoute route() =>
-      MaterialPageRoute(builder: (context) => InterestedEvents());
-  const InterestedEvents({super.key});
+      MaterialPageRoute(builder: (context) => InterestedEventsScreen());
+  const InterestedEventsScreen({super.key});
 
   @override
-  State<InterestedEvents> createState() => _InterestedEventsState();
+  State<InterestedEventsScreen> createState() => _InterestedEventsScreenState();
 }
 
-class _InterestedEventsState extends State<InterestedEvents> {
+class _InterestedEventsScreenState extends State<InterestedEventsScreen> {
   Future<List<EventModel>>? _eventsFuture; // <-- FIXED: Cache the future
 
   @override
@@ -35,30 +33,13 @@ class _InterestedEventsState extends State<InterestedEvents> {
     final authState = authCubit.state;
     if (authState is UserFetched) {
       final userId = authState.user.id;
-      print("Interested Events: user fetched ${authState.user.name}");
+      print("(InterestedEventsScreen): user fetched ${authState.user.name}");
 
       final interestsCubit = context.read<InterestsCubit>();
-      await interestsCubit.getUserInterests(userId: userId);
+      await interestsCubit.getUserInterestedEvents(userId: userId);
     } else {
-      print("Interested Events: user not fetched");
+      print("(InterestedEventsScreen): user not fetched");
     }
-  }
-
-  Future<List<EventModel>> fetchEvents(List<String> eventsIds) async {
-    final events = <EventModel>[];
-    final eventsCubit = context.read<EventsCubit>();
-
-    for (final eventId in eventsIds) {
-      await eventsCubit.getEvent(id: eventId);
-
-      final state = eventsCubit.state;
-      if (state is SingleEventFetched) {
-        events.add(state.event);
-      } else if (state is EventsError) {
-        print("Failed to fetch event $eventId: ${state.error}");
-      }
-    }
-    return events;
   }
 
   @override
@@ -75,42 +56,18 @@ class _InterestedEventsState extends State<InterestedEvents> {
             return Center(child: Text("Error: ${state.error}"));
           }
 
-          if (state is InterestsFetched) {
-            final eventsIds = state.interests
-                .map((interest) => interest.eventId)
-                .toList();
+          if (state is InterestedEventsFetched) {
+            final intrestedEvents = state.interestedEvents;
 
-            /// Only create the future once
-            _eventsFuture ??= fetchEvents(eventsIds);
-
-            return FutureBuilder<List<EventModel>>(
-              future: _eventsFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-
-                if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                }
-
-                if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(
-                    child: Text('No interested events found'),
-                  );
-                }
-
-                final events = snapshot.data!;
-
-                return ListView.builder(
-                  itemCount: events.length, // <-- FIXED
-                  itemBuilder: (context, index) =>
-                      FeedEventCard(event: events[index], isInterested: true),
-                );
-              },
+            return ListView.builder(
+              itemCount: intrestedEvents.length, // <-- FIXED
+              itemBuilder: (context, index) => FeedEventCard(
+                event: intrestedEvents[index],
+                isInterested: true,
+              ),
             );
           }
-
+          ;
           return Center(child: Text("Unexpected state: ${state.runtimeType}"));
         },
       ),

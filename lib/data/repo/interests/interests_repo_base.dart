@@ -1,17 +1,24 @@
+import 'package:dzevent/data/models/event_model.dart';
 import 'package:dzevent/data/models/interest_model.dart';
 
 import 'interests_repo.dart';
 
-abstract class InterestRepoBase {
+abstract class InterestsRepoBase {
   Future<List<InterestModel>> getAllUserInterests({required int userId});
+  Future<InterestModel?> getInterest({
+    required int userId,
+    required String eventId,
+  });
+  Future<List<EventModel>> getUserInterestedEvents({required int userId});
+
   // Future<List<InterestModel>> getEventInterests({required String eventId});
 
   Future<bool> createInterest({required InterestModel interest});
   Future<bool> deleteInterest({required int userId, required String eventId});
 
-  static InterestRepoBase? _instance;
+  static InterestsRepoBase? _instance;
 
-  static InterestRepoBase getInstance() {
+  static InterestsRepoBase getInstance() {
     _instance ??= InterestsRepo();
     return _instance!; // For backend data
   }

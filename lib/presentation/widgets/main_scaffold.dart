@@ -22,7 +22,7 @@ class MainScaffold extends StatelessWidget {
       {
         'label': "Interested",
         'icon': Icons.calendar_month,
-        'route': () => InterestedEvents.route(),
+        'route': () => InterestedEventsScreen.route(),
       },
       {'label': "Notifications", 'icon': Icons.notifications},
       {'label': "Followed Associations", 'icon': Icons.group},
