@@ -1,6 +1,5 @@
 import 'package:dzevent/data/models/assoc_model.dart';
 import 'package:dzevent/data/models/event_model.dart';
-import 'package:dzevent/data/models/user_model.dart';
 import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
 import 'package:dzevent/logic/cubits/auth/auth_states.dart';
 import 'package:dzevent/logic/cubits/events/events_cubit.dart';
@@ -46,7 +45,7 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
       isVerified: true,
     );
     debugPrint(_currentAssoc?.id.toString() ?? "no id");
-    context.read<EventsCubit>().getAllEventsByUser(_currentAssoc!.id);
+    context.read<EventsCubit>().getAllEventsByUser(_currentAssoc!.id!);
   }
 
   var logo =
@@ -84,7 +83,7 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Center(
-          child: CircleAvatar(backgroundImage: NetworkImage(logo), radius: 64),
+          child: CircleAvatar(backgroundImage: NetworkImage(assos.profilePicture), radius: 64),
         ),
         Text(
           assos.name,
@@ -143,6 +142,10 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
                     image: NetworkImage(event.imageUrl),
                     width: 120,
                     height: 120,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Icon(Icons.event,size: 48,);
+                    },
                   ),
                   SizedBox(width: 8),
                   Column(

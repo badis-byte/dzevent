@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 class AssociationModel {
-  int id;
+  int? id;
   String name;
   String email;
   String profilePicture;
@@ -10,7 +10,7 @@ class AssociationModel {
   bool isVerified;
 
   AssociationModel({
-    required this.id,
+    this.id,
     required this.name,
     required this.email,
     required this.profilePicture,
@@ -63,8 +63,69 @@ class AssociationModel {
     );
   }
 
+  factory AssociationModel.fromMapDynamic(Map<String, dynamic> map) {
+  // Make sure each field has a fallback value
+  final id = map['id'] is int
+      ? map['id'] as int
+      : int.tryParse(map['id']?.toString() ?? '') ?? 0;
+
+  final name = map['name']?.toString() ?? '';
+  final email = map['email']?.toString() ?? '';
+  final profilePicture = map['profilePicture']?.toString() ?? '';
+  final bio = map['bio']?.toString() ?? '';
+
+  // Handle createdAt as int (milliseconds) or string date
+  final createdAtValue = map['createdAt'];
+  final createdAt = createdAtValue is int
+      ? DateTime.fromMillisecondsSinceEpoch(createdAtValue)
+      : DateTime.tryParse(createdAtValue?.toString() ?? '') ?? DateTime.now();
+
+  // Convert 0/1 or string '0'/'1' to bool
+  final isVerifiedRaw = map['isVerified'] ?? 0;
+  final isVerified = isVerifiedRaw.toString() == '1';
+
+  return AssociationModel(
+    id: id,
+    name: name,
+    email: email,
+    profilePicture: profilePicture,
+    bio: bio,
+    createdAt: createdAt,
+    isVerified: isVerified,
+  );
+}
+
   String toJson() => json.encode(toMap());
 
   factory AssociationModel.fromJson(String source) =>
       AssociationModel.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
+  String toString() {
+    return 'AssociationModel(id: $id, name: $name, email: $email, profilePicture: $profilePicture, bio: $bio, createdAt: $createdAt, isVerified: $isVerified)';
+  }
+
+  @override
+  bool operator ==(covariant AssociationModel other) {
+    if (identical(this, other)) return true;
+
+    return other.id == id &&
+        other.name == name &&
+        other.email == email &&
+        other.profilePicture == profilePicture &&
+        other.bio == bio &&
+        other.createdAt == createdAt &&
+        other.isVerified == isVerified;
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode ^
+        name.hashCode ^
+        email.hashCode ^
+        profilePicture.hashCode ^
+        bio.hashCode ^
+        createdAt.hashCode ^
+        isVerified.hashCode;
+  }
 }
