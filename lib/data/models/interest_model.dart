@@ -55,4 +55,14 @@ class InterestModel {
 
   @override
   int get hashCode => userId.hashCode ^ eventId.hashCode ^ createdAt.hashCode;
+
+  InterestModel deepCopy() {
+    return InterestModel(
+      userId: userId,
+      eventId: eventId,
+      createdAt: DateTime.fromMillisecondsSinceEpoch(
+        createdAt.millisecondsSinceEpoch,
+      ),
+    );
+  }
 }

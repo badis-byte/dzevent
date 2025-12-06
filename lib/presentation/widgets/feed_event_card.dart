@@ -29,7 +29,10 @@ class FeedEventCard extends StatelessWidget {
       print("User not fetched. Cannot toggle interest");
       return;
     }
-    if (interestsState is! InterestsFetched) {
+
+    /// wait until interests are loaded
+    /// assume this is done by ancestors
+    if (interestsState is! InterestsCanToggle) {
       print("Interest are not fetched. Cannot toogle interest");
       return;
     }

@@ -12,12 +12,14 @@ class InterestsError extends InterestsState {
   InterestsError({required this.error});
 }
 
-class InterestsFetched extends InterestsState {
+sealed class InterestsCanToggle extends InterestsState {}
+
+class InterestsFetched extends InterestsCanToggle {
   final List<InterestModel> interests;
   InterestsFetched({required this.interests});
 }
 
-class InterestedEventsFetched extends InterestsState {
+class InterestedEventsFetched extends InterestsCanToggle {
   final List<EventModel> interestedEvents;
   InterestedEventsFetched({required this.interestedEvents});
 }
