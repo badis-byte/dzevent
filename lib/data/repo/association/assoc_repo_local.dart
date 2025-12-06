@@ -41,4 +41,39 @@ class AssocRepoLocal extends AssocRepoBase {
       rethrow;
     }
   }
+
+  @override
+  Future<List<AssociationModel>> getUnverifiedUser() async {
+    try {
+      final obj = await associatoinTable.getAssociationUnv();
+      print("size of object is ${obj.length}");
+      List<AssociationModel> result = [];
+      for (var item in obj) {
+        result.add(item);
+      }
+      return result;
+    } catch (e) {
+      throw Exception("something went wrong");
+    }
+  }
+
+  @override
+  Future<bool> verifyAssociation(int id) async {
+    try {
+      final obj = await associatoinTable.verifyAssociation(id);
+      return true;
+    } catch (e) {
+      throw Exception("something went wrong !");
+    }
+  }
+
+  @override
+  Future<bool> deleteAssociation(int id)async{
+    try {
+      final obj = await associatoinTable.deleteAssociation(id);
+      return true;
+    } catch (e) {
+      throw Exception("something went wrong !");
+    }
+  }
 }

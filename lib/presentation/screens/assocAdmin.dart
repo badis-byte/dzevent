@@ -1,6 +1,10 @@
+import 'package:dzevent/data/models/assoc_model.dart';
+import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
+import 'package:dzevent/logic/cubits/auth/auth_states.dart';
 import 'package:dzevent/presentation/screens/associationProfileTwo.dart';
 import 'package:dzevent/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
   runApp(const Assocadmin());
@@ -32,7 +36,7 @@ class _AssocadminState extends State<Assocadmin> {
     );
   }
 
-  Widget btn(String text, Color colorr) {
+  Widget btn(String text, Color colorr, int association_id) {
     return SizedBox(
       height: 40,
       child: ElevatedButton(
@@ -43,16 +47,29 @@ class _AssocadminState extends State<Assocadmin> {
           ),
           elevation: 4,
         ),
-        onPressed: () {},
+        onPressed: () {
+          if (text == AppLocalizations.of(context)!.accept) {
+            try {
+              context.read<AccountCubit>().verifyAccount(association_id);
+            } catch (e) {}
+          }else{
+            try {
+              context.read<AccountCubit>().deleteAccount(association_id);
+            } catch (e) {}
+          }
+        },
         child: Text(
           text,
-          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );
   }
 
-  Widget cardAssoc(String title, String description, String date) {
+  Widget cardAssoc(AssociationModel asso, int id) {
     final loc = AppLocalizations.of(context)!;
     return Card(
       elevation: 4,
@@ -65,25 +82,32 @@ class _AssocadminState extends State<Assocadmin> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                title,
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                asso.name,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24,
+                ),
               ),
               const SizedBox(height: 8),
               Text(
-                description,
-                style: const TextStyle(color: Color.fromARGB(255, 107, 107, 107)),
+                asso.bio,
+                style: const TextStyle(
+                  color: Color.fromARGB(255, 107, 107, 107),
+                ),
               ),
               Text(
-                loc.requestedOn(date),
-                style: const TextStyle(color: Color.fromARGB(255, 107, 107, 107)),
+                loc.requestedOn(asso.createdAt),
+                style: const TextStyle(
+                  color: Color.fromARGB(255, 107, 107, 107),
+                ),
               ),
               const SizedBox(height: 16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  btn(loc.reject, Colors.red),
+                  btn(loc.reject, Colors.red, id),
                   const SizedBox(width: 8),
-                  btn(loc.accept, Colors.green),
+                  btn(loc.accept, Colors.green, id),
                 ],
               ),
             ],
@@ -91,6 +115,14 @@ class _AssocadminState extends State<Assocadmin> {
         ),
       ),
     );
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    context.read<AccountCubit>().getUnvAssoc();
+    print("helloooo");
   }
 
   var Selected1 = true;
@@ -220,36 +252,31 @@ class _AssocadminState extends State<Assocadmin> {
                   ),
                   const SizedBox(height: 8),
                   Expanded(
-                    child: ListView(
-                      children: [
-                        // Dynamic association data — keep as is, don't translate
-                        cardAssoc(
-                          "Tech Innovators Society",
-                          "A community for tech enthusiasts and professionals",
-                          "2024-10-26",
-                        ),
-                        cardAssoc(
-                          "Future Leaders Initiative",
-                          "Empowering the next generation of innovators and leaders",
-                          "2024-10-25",
-                        ),
-                        cardAssoc(
-                          "AI Enthusiasts Club",
-                          "Learn, share, and explore AI technologies together",
-                          "2024-11-01",
-                        ),
-                        cardAssoc(
-                          "Open Source Developers",
-                          "Collaborate on open source projects and improve your skills",
-                          "2024-11-05",
-                        ),
-                        cardAssoc(
-                          "Cybersecurity Network",
-                          "Stay updated with the latest in cybersecurity and ethical hacking",
-                          "2024-11-10",
-                        ),
-                        const SizedBox(height: 16),
-                      ],
+                    child: BlocConsumer<AccountCubit, AccountState>(
+                      listener: (context, state) {
+                        if (state is AssociationsFetched) {
+                          print("data : ${state.association}");
+                        } else {
+                          print("state changed: $state");
+                        }
+                      },
+
+                      builder: (context, state) {
+                        if (state is AccountLoading) {
+                          print("fetching data");
+                          return Text("Fetching data ...");
+                        }
+                        if (state is AssociationsFetched) {
+                          return ListView(
+                            children: [
+                              for (var asso in state.association)
+                                cardAssoc(asso, asso.id),
+                              const SizedBox(height: 16),
+                            ],
+                          );
+                        }
+                        return Text("No data found");
+                      },
                     ),
                   ),
                 ],
@@ -261,4 +288,3 @@ class _AssocadminState extends State<Assocadmin> {
     );
   }
 }
-

@@ -1,3 +1,4 @@
+import 'package:dzevent/data/models/assoc_model.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'dbhelper.dart';
@@ -87,5 +88,58 @@ class DBBaseTable {
       print('$e --> $stacktrace');
       return false;
     }
+  }
+
+  Future<List<AssociationModel>> getAssociationUnv() async {
+    int unv = 0;
+    try {
+      final db = await DBHelper.getDatabase();
+      List<AssociationModel> result = [];
+      final associations = await db.rawQuery(
+        'SELECT * FROM associations WHERE isVerified = 0;',
+      );
+      print("fetched data : ${associations.toString()}");
+      if (associations.isNotEmpty) {
+        for (var asso in associations) {
+          var association = AssociationModel.fromMapDynamic(asso);
+          result.add(association);
+        }
+        return result;
+      } else {
+        print("result is empty");
+        return [];
+      }
+    } catch (e) {
+      print("catch bloc <db_base_file> : something went wrong ******* $e");
+      throw Exception("something went wrong !");
+    }
+  }
+
+  Future<bool> verifyAssociation(int id) async {
+    try {
+      final db = await DBHelper.getDatabase();
+
+      int updatedRows = await db.update(
+        "associations",
+        {"isVerified": 1},
+        where: "id = ?",
+        whereArgs: [id],
+      );
+
+      return updatedRows > 0;
+    } catch (e) {
+      print("verifyAssociation error: $e");
+      return false;
+    }
+  }
+  Future<bool> deleteAssociation(int id) async {
+    try {
+      final db = await DBHelper.getDatabase();
+      await db.delete("associations", where: 'id = ?', whereArgs: [id]);
+      return true;
+    } on Exception catch (e, stacktrace) {
+      print('$e --> $stacktrace');
+    }
+    return false;
   }
 }

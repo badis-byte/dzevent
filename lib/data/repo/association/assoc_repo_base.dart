@@ -7,7 +7,9 @@ abstract class AssocRepoBase {
   Future<bool> insertData(AssociationModel value);
   Future<bool> deleteAllData();
   Future<AssociationModel> login(String email, String password);
-
+  Future<List<AssociationModel>> getUnverifiedUser();
+  Future<bool> verifyAssociation(int id);
+  Future<bool> deleteAssociation(int id);
   static AssocRepoBase? _assocInstance;
 
   static AssocRepoBase getInstance() {
