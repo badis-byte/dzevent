@@ -16,6 +16,8 @@ class AccountError extends AccountState {
 
 class AccountNotVerified extends AccountState {}
 
+class AccountUpdated extends AccountState{}
+
 class UserFetched extends AccountState {
   UserModel user;
   UserFetched({required this.user});

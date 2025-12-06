@@ -1,5 +1,4 @@
 import 'package:dzevent/data/models/assoc_model.dart';
-import 'package:flutter/cupertino.dart';
 
 import '../../databases/db_association.dart';
 import '../../databases/db_auth.dart';
@@ -55,6 +54,26 @@ class AssocRepoLocal extends AssocRepoBase {
       return result;
     } catch (e) {
       throw Exception("something went wrong");
+    }
+  }
+
+  @override
+  Future<bool> verifyAssociation(int id) async {
+    try {
+      final obj = await associatoinTable.verifyAssociation(id);
+      return true;
+    } catch (e) {
+      throw Exception("something went wrong !");
+    }
+  }
+
+  @override
+  Future<bool> deleteAssociation(int id)async{
+    try {
+      final obj = await associatoinTable.deleteAssociation(id);
+      return true;
+    } catch (e) {
+      throw Exception("something went wrong !");
     }
   }
 }

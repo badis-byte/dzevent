@@ -128,12 +128,12 @@ class AccountCubit extends Cubit<AccountState> {
         return true;
       }
     } catch (e) {
-      emit(AccountError(error: "Failed to get user data. Error: ${e}"));
+      emit(AccountError(error: "Failed to get user data. Error: $e"));
       return false;
     }
   }
 
-  Future<bool> getUnvAssoc() async{
+  Future<bool> getUnvAssoc() async {
     try {
       emit(AccountLoading());
       final response = await localAssRepo.getUnverifiedUser();
@@ -145,8 +145,32 @@ class AccountCubit extends Cubit<AccountState> {
         return true;
       }
     } catch (e) {
-      emit(AccountError(error: "Failed to get user data. Error: ${e}"));
+      emit(AccountError(error: "Failed to get user data. Error: $e"));
       return false;
+    }
+  }
+
+  Future<bool> verifyAccount(int id) async {
+    try {
+      emit(AccountLoading());
+      final response = await localAssRepo.verifyAssociation(id);
+      emit(AccountUpdated());
+      return response;
+    } catch (e) {
+      emit(AccountError(error: "unable to update association -> $e"));
+      throw Exception("Something went wrong --> $e");
+    }
+  }
+
+  Future<bool> deleteAccount(int id) async {
+    try {
+      emit(AccountLoading());
+      final response = await localAssRepo.deleteAssociation(id);
+      emit(AccountUpdated());
+      return response;
+    } catch (e) {
+      emit(AccountError(error: "unable to delete association -> $e"));
+      throw Exception("Something went wrong --> $e");
     }
   }
 }

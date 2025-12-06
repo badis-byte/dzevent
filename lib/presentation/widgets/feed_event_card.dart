@@ -2,7 +2,6 @@ import 'package:dzevent/data/models/event_model.dart';
 import 'package:dzevent/l10n/app_localizations.dart';
 import 'package:dzevent/lib/styles.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 
 class FeedEventCard extends StatelessWidget {

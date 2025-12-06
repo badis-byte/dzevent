@@ -1,3 +1,4 @@
+import 'package:dzevent/data/models/assoc_model.dart';
 import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
 import 'package:dzevent/logic/cubits/auth/auth_states.dart';
 import 'package:dzevent/presentation/screens/associationProfileTwo.dart';
@@ -35,7 +36,7 @@ class _AssocadminState extends State<Assocadmin> {
     );
   }
 
-  Widget btn(String text, Color colorr) {
+  Widget btn(String text, Color colorr, int association_id) {
     return SizedBox(
       height: 40,
       child: ElevatedButton(
@@ -46,7 +47,17 @@ class _AssocadminState extends State<Assocadmin> {
           ),
           elevation: 4,
         ),
-        onPressed: () {},
+        onPressed: () {
+          if (text == AppLocalizations.of(context)!.accept) {
+            try {
+              context.read<AccountCubit>().verifyAccount(association_id);
+            } catch (e) {}
+          }else{
+            try {
+              context.read<AccountCubit>().deleteAccount(association_id);
+            } catch (e) {}
+          }
+        },
         child: Text(
           text,
           style: const TextStyle(
@@ -58,7 +69,7 @@ class _AssocadminState extends State<Assocadmin> {
     );
   }
 
-  Widget cardAssoc(String title, String description, String date) {
+  Widget cardAssoc(AssociationModel asso, int id) {
     final loc = AppLocalizations.of(context)!;
     return Card(
       elevation: 4,
@@ -71,7 +82,7 @@ class _AssocadminState extends State<Assocadmin> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                title,
+                asso.name,
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 24,
@@ -79,13 +90,13 @@ class _AssocadminState extends State<Assocadmin> {
               ),
               const SizedBox(height: 8),
               Text(
-                description,
+                asso.bio,
                 style: const TextStyle(
                   color: Color.fromARGB(255, 107, 107, 107),
                 ),
               ),
               Text(
-                loc.requestedOn(date),
+                loc.requestedOn(asso.createdAt),
                 style: const TextStyle(
                   color: Color.fromARGB(255, 107, 107, 107),
                 ),
@@ -94,9 +105,9 @@ class _AssocadminState extends State<Assocadmin> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  btn(loc.reject, Colors.red),
+                  btn(loc.reject, Colors.red, id),
                   const SizedBox(width: 8),
-                  btn(loc.accept, Colors.green),
+                  btn(loc.accept, Colors.green, id),
                 ],
               ),
             ],
@@ -241,46 +252,31 @@ class _AssocadminState extends State<Assocadmin> {
                   ),
                   const SizedBox(height: 8),
                   Expanded(
-                    child: BlocListener<AccountCubit, AccountState>(
+                    child: BlocConsumer<AccountCubit, AccountState>(
                       listener: (context, state) {
-                        print("hello inside");
                         if (state is AssociationsFetched) {
                           print("data : ${state.association}");
-                        } else if(state is AccountGuest){
-                          print("state changed: ${state}");
+                        } else {
+                          print("state changed: $state");
                         }
                       },
-                      child: ListView(
-                        children: [
-                          // Dynamic association data
-                          cardAssoc(
-                            "Tech Innovators Society",
-                            "A community for tech enthusiasts and professionals",
-                            "2024-10-26",
-                          ),
-                          cardAssoc(
-                            "Future Leaders Initiative",
-                            "Empowering the next generation of innovators and leaders",
-                            "2024-10-25",
-                          ),
-                          cardAssoc(
-                            "AI Enthusiasts Club",
-                            "Learn, share, and explore AI technologies together",
-                            "2024-11-01",
-                          ),
-                          cardAssoc(
-                            "Open Source Developers",
-                            "Collaborate on open source projects and improve your skills",
-                            "2024-11-05",
-                          ),
-                          cardAssoc(
-                            "Cybersecurity Network",
-                            "Stay updated with the latest in cybersecurity and ethical hacking",
-                            "2024-11-10",
-                          ),
-                          const SizedBox(height: 16),
-                        ],
-                      ),
+
+                      builder: (context, state) {
+                        if (state is AccountLoading) {
+                          print("fetching data");
+                          return Text("Fetching data ...");
+                        }
+                        if (state is AssociationsFetched) {
+                          return ListView(
+                            children: [
+                              for (var asso in state.association)
+                                cardAssoc(asso, asso.id),
+                              const SizedBox(height: 16),
+                            ],
+                          );
+                        }
+                        return Text("No data found");
+                      },
                     ),
                   ),
                 ],
