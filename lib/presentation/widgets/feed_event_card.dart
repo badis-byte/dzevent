@@ -1,13 +1,54 @@
 import 'package:dzevent/data/models/event_model.dart';
 import 'package:dzevent/l10n/app_localizations.dart';
 import 'package:dzevent/lib/styles.dart';
+import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
+import 'package:dzevent/logic/cubits/auth/auth_states.dart';
+import 'package:dzevent/logic/cubits/interests/interests_cubit.dart';
+import 'package:dzevent/logic/cubits/interests/interests_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 class FeedEventCard extends StatelessWidget {
   static const double _height = 400;
   final EventModel event;
-  const FeedEventCard({super.key, required this.event});
+  final bool isInterested;
+  const FeedEventCard({
+    super.key,
+    required this.event,
+    required this.isInterested,
+  });
+
+  Future<void> toggleInterest(BuildContext context) async {
+    final interestsCubit = context.read<InterestsCubit>();
+    final authCubit = context.read<AccountCubit>();
+    final authState = authCubit.state;
+    final interestsState = interestsCubit.state;
+
+    if (authState is! UserFetched) {
+      print("User not fetched. Cannot toggle interest");
+      return;
+    }
+
+    /// wait until interests are loaded
+    /// assume this is done by ancestors
+    if (interestsState is! InterestsCanToggle) {
+      print("Interest are not fetched. Cannot toogle interest");
+      return;
+    }
+
+    final toggled = await interestsCubit.toggle(
+      userId: authState.user.id,
+      eventId: event.id,
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(toggled ? "Toggled succefully" : "Failed to toggle"),
+        duration: Duration(seconds: 3),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,9 +118,15 @@ class FeedEventCard extends StatelessWidget {
                       Align(
                         alignment: Alignment.bottomRight,
                         child: ElevatedButton.icon(
-                          onPressed: () {},
+                          onPressed: () async {
+                            await toggleInterest(context);
+                          },
                           label: Text(loc.showInterest),
-                          icon: const Icon(Icons.favorite_border),
+                          icon: Icon(
+                            isInterested
+                                ? Icons.favorite
+                                : Icons.favorite_border,
+                          ),
                           iconAlignment: IconAlignment.end,
                           style: getPrimaryBtnStyle(
                             context: context,

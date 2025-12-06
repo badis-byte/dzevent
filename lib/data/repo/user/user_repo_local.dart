@@ -10,7 +10,7 @@ class UserRepoLocal extends UserRepoBase {
 
   @override
   Future<List<UserModel>> getData() async {
-    final obj = await userTable.getRecords();
+    final obj = await userTable.getAllRecords();
     List<UserModel> result = [];
     for (var item in obj) {
       result.add(UserModel.fromMap(item));

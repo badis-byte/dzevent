@@ -3,6 +3,7 @@ import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
 import 'dart:io';
 
 import 'package:dzevent/logic/cubits/events/events_cubit.dart';
+import 'package:dzevent/logic/cubits/interests/interests_cubit.dart';
 import 'package:dzevent/presentation/screens/event_feed.dart';
 import 'package:dzevent/presentation/screens/home.dart';
 import 'package:dzevent/presentation/screens/login.dart';
@@ -32,6 +33,7 @@ class MainApp extends StatelessWidget {
       providers: [
         BlocProvider(create: (context) => EventsCubit()),
         BlocProvider(create: (context) => AccountCubit()),
+        BlocProvider(create: (context) => InterestsCubit()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
