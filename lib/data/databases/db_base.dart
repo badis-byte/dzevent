@@ -37,7 +37,7 @@ class DBBaseTable {
       final database = await DBHelper.getDatabase();
       var data = await database.query(
         dbTable,
-        where: 'associationId = ?',
+        where: 'id = ?',
         whereArgs: [id],
       );
       return data;
@@ -118,7 +118,7 @@ class DBBaseTable {
       final db = await DBHelper.getDatabase();
 
       int updatedRows = await db.update(
-        "association",
+        "associations",
         {"isVerified": 1},
         where: "id = ?",
         whereArgs: [id],
@@ -133,7 +133,7 @@ class DBBaseTable {
   Future<bool> deleteAssociation(int id) async {
     try {
       final db = await DBHelper.getDatabase();
-      await db.delete("association", where: 'id = ?', whereArgs: [id]);
+      await db.delete("associations", where: 'id = ?', whereArgs: [id]);
       return true;
     } on Exception catch (e, stacktrace) {
       print('$e --> $stacktrace');
