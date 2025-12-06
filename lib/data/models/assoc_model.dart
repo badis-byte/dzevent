@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 class AssociationModel {
-  int id;
+  int? id;
   String name;
   String email;
   String profilePicture;
@@ -10,7 +10,7 @@ class AssociationModel {
   bool isVerified;
 
   AssociationModel({
-    required this.id,
+    this.id,
     required this.name,
     required this.email,
     required this.profilePicture,

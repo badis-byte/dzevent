@@ -45,7 +45,7 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
       isVerified: true,
     );
     debugPrint(_currentAssoc?.id.toString() ?? "no id");
-    context.read<EventsCubit>().getAllEventsByUser(_currentAssoc!.id);
+    context.read<EventsCubit>().getAllEventsByUser(_currentAssoc!.id!);
   }
 
   var logo =

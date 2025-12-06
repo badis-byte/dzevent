@@ -77,7 +77,7 @@ class AccountCubit extends Cubit<AccountState> {
       emit(AccountLoading());
       if (association) {
         AssociationModel assoc = AssociationModel(
-          id: 1,
+          // id: 1,
           name: name,
           email: email,
           profilePicture: "assets/images/users/association.png",
@@ -92,7 +92,7 @@ class AccountCubit extends Cubit<AccountState> {
         print(res);
       } else {
         UserModel user = UserModel(
-          id: 1,
+          // id: 1,
           name: name,
           email: email,
           profilePicture: "assets/images/users/guest.png",
