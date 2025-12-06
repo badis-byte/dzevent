@@ -49,6 +49,10 @@ class _EventFeedState extends State<EventFeed> {
     }
   }
 
+  Future<bool> refresh() async {
+    return await init();
+  }
+
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
@@ -80,6 +84,14 @@ class _EventFeedState extends State<EventFeed> {
                 loc.filterTech,
               ],
             ),
+            SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () async {
+                await refresh();
+              },
+              child: Text("Refresh"),
+            ),
+
             BlocBuilder<EventsCubit, EventsState>(
               builder: (context, state) {
                 if (state is EventsLoading) {
