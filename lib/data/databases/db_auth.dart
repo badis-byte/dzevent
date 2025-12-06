@@ -16,7 +16,7 @@ class DBAuth {
   ) async {
     final db = await DBHelper.getDatabase();
 
-try{
+
     final result = await db.query(
       'associations',
       where: 'email = ?',
@@ -33,10 +33,7 @@ try{
     }
 
     throw InvalidCredException();
-    }catch(e){
-  print(e);
-  rethrow;
-}
+
   }
 
   Future<UserModel> getUserByCredentials(String email, String password) async {
