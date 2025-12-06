@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 class AssociationModel {
@@ -48,7 +47,7 @@ class AssociationModel {
       'profilePicture': profilePicture,
       'bio': bio,
       'createdAt': createdAt.millisecondsSinceEpoch,
-      'isVerified': isVerified ? 0 : 1, // sqlite does not support boolean type
+      'isVerified': isVerified ? 1 : 0,  // <-- FIX: true→1, false→0
     };
   }
 
@@ -60,7 +59,7 @@ class AssociationModel {
       profilePicture: map['profilePicture'] as String,
       bio: map['bio'] as String,
       createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int),
-      isVerified: map['isVerified'] as bool,
+      isVerified: (map['isVerified'] ?? 0) == 1,  // <-- FIX: convert int→bool
     );
   }
 
@@ -68,33 +67,4 @@ class AssociationModel {
 
   factory AssociationModel.fromJson(String source) =>
       AssociationModel.fromMap(json.decode(source) as Map<String, dynamic>);
-
-  @override
-  String toString() {
-    return 'AssociationModel(id: $id, name: $name, email: $email, profilePicture: $profilePicture, bio: $bio, createdAt: $createdAt, isVerified: $isVerified)';
-  }
-
-  @override
-  bool operator ==(covariant AssociationModel other) {
-    if (identical(this, other)) return true;
-
-    return other.id == id &&
-        other.name == name &&
-        other.email == email &&
-        other.profilePicture == profilePicture &&
-        other.bio == bio &&
-        other.createdAt == createdAt &&
-        other.isVerified == isVerified;
-  }
-
-  @override
-  int get hashCode {
-    return id.hashCode ^
-        name.hashCode ^
-        email.hashCode ^
-        profilePicture.hashCode ^
-        bio.hashCode ^
-        createdAt.hashCode ^
-        isVerified.hashCode;
-  }
 }
