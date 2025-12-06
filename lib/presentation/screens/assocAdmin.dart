@@ -51,10 +51,12 @@ class _AssocadminState extends State<Assocadmin> {
           if (text == AppLocalizations.of(context)!.accept) {
             try {
               context.read<AccountCubit>().verifyAccount(association_id);
+              context.read<AccountCubit>().getUnvAssoc();
             } catch (e) {}
-          }else{
+          } else {
             try {
               context.read<AccountCubit>().deleteAccount(association_id);
+              context.read<AccountCubit>().getUnvAssoc();
             } catch (e) {}
           }
         },
