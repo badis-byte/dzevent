@@ -30,7 +30,7 @@ class AccountCubit extends Cubit<AccountState> {
         } catch (a) {
           if (a is InvalidCredException) {
             emit(AccountError(error: "Invalid Credentials"));
-          } else if (e is NotVerifiedException) {
+          } else if (a is NotVerifiedException) {
             emit(AccountNotVerified());
           } else {
             emit(AccountError(error: "An error occured1"));
@@ -84,11 +84,11 @@ class AccountCubit extends Cubit<AccountState> {
           createdAt: DateTime.now(),
           isVerified: false,
         );
-        localAssRepo.insertData(assoc);
+        var res = await localAssRepo.insertData(assoc);
         emit(AccountGuest());
         association = true;
         print("registered: ");
-        print(_currentAssociation.toString());
+        print(res);
       } else {
         UserModel user = UserModel(
           id: 1,
