@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 class AssociationModel {
@@ -60,7 +59,7 @@ class AssociationModel {
       profilePicture: map['profilePicture'] as String,
       bio: map['bio'] as String,
       createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int),
-      isVerified: (map['isVerified'] ?? 0) == 1 ,  // <-- FIX: convert int→bool
+      isVerified: (map['isVerified'] ?? 0) == 1,  // <-- FIX: convert int→bool
     );
   }
 

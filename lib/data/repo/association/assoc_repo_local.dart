@@ -20,8 +20,8 @@ class AssocRepoLocal extends AssocRepoBase {
 
   @override
   Future<bool> insertData(AssociationModel association) async {
-    associatoinTable.insertRecord(association.toMap());
-    return true;
+    final isInserted = await associatoinTable.insertRecord(association.toMap());
+    return isInserted;
   }
 
   @override

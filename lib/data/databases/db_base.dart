@@ -9,12 +9,14 @@ class DBBaseTable {
   Future<bool> insertRecord(Map<String, dynamic> data) async {
     try {
       final database = await DBHelper.getDatabase();
-      database.insert(
-        db_table,
-        data,
-        conflictAlgorithm: ConflictAlgorithm.replace,
-      );
-      return true;
+      final isInserted =
+          await database.insert(
+            db_table,
+            data,
+            conflictAlgorithm: ConflictAlgorithm.replace,
+          ) !=
+          0;
+      return isInserted;
     } catch (e, stacktrace) {
       print('$e --> $stacktrace');
     }
@@ -37,7 +39,7 @@ class DBBaseTable {
       final database = await DBHelper.getDatabase();
       var data = await database.query(
         db_table,
-        where: 'id = ?',
+        where: 'associationId = ?',
         whereArgs: [id],
       );
       return data;

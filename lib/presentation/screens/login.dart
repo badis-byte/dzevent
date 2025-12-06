@@ -24,6 +24,7 @@ class _LoginState extends State<Login> {
       body: Form(
         key: formkey,
         child: Container(
+          height: MediaQuery.of(context).size.height,
           color: Color.fromARGB(255, 240, 242, 245),
           //margin: EdgeInsets.all(10),
           padding: EdgeInsets.all(10),
@@ -92,13 +93,18 @@ class _LoginState extends State<Login> {
             decoration: TextDecoration.none,
           ),
         ),
-        Text(
-          " ${loc.signUp}",
-          textAlign: TextAlign.center,
-          style: const TextStyle(
-            color: Colors.blue,
-            fontSize: 15,
-            decoration: TextDecoration.none,
+        GestureDetector(
+          onTap: () => {
+            Navigator.pushNamed(context, "/signup")
+          },
+          child: Text(
+            " ${loc.signUp}",
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              color: Colors.blue,
+              fontSize: 15,
+              decoration: TextDecoration.none,
+            ),
           ),
         ),
       ],
@@ -173,6 +179,11 @@ class _LoginState extends State<Login> {
             ScaffoldMessenger.of(
               context,
             ).showSnackBar(SnackBar(content: Text(state.error)));
+          }
+          if (state is AccountNotVerified) {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text("Your account is not approved yet! Please try again later")));
           }
           if (state is UserFetched || state is AssociationFetched) {
             Navigator.pushReplacement(

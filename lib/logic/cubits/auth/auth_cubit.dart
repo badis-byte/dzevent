@@ -30,7 +30,7 @@ class AccountCubit extends Cubit<AccountState> {
         } catch (a) {
           if (a is InvalidCredException) {
             emit(AccountError(error: "Invalid Credentials"));
-          } else if (e is NotVerifiedException) {
+          } else if (a is NotVerifiedException) {
             emit(AccountNotVerified());
           } else {
             emit(AccountError(error: "An error occured1"));
@@ -80,22 +80,22 @@ class AccountCubit extends Cubit<AccountState> {
           id: 1,
           name: name,
           email: email,
-          profilePicture: "/picAssociation",
+          profilePicture: "assets/images/users/association.png",
           bio: "we're a new Associatoin to DZevent!",
           createdAt: DateTime.now(),
           isVerified: false,
         );
-        localAssRepo.insertData(assoc);
+        var res = await localAssRepo.insertData(assoc);
         emit(AccountGuest());
         association = true;
         print("registered: ");
-        print(_currentAssociation.toString());
+        print(res);
       } else {
         UserModel user = UserModel(
           id: 1,
           name: name,
           email: email,
-          profilePicture: "no image",
+          profilePicture: "assets/images/users/guest.png",
           createdAt: DateTime.now(),
         );
         localUserRepo.insertData(user);
