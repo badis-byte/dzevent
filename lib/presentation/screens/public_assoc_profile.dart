@@ -5,6 +5,7 @@ import 'package:dzevent/lib/defs.dart';
 import 'package:dzevent/lib/styles.dart';
 import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
 import 'package:dzevent/logic/cubits/events/events_cubit.dart';
+import 'package:dzevent/logic/cubits/events/events_state.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:dzevent/data/fake_data.dart' as DATA;
@@ -43,12 +44,12 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
         ContactInfo(type: ContactInfoType.web, address: "www.lorem.com"),
       ],
     );
-    
   }
 
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
+    context.read<EventsCubit>().getAllEventsByUser(widget.asso.id!);
 
     return Scaffold(
       appBar: AppBar(
@@ -151,11 +152,27 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
               height: 300,
               child: TabBarView(
                 children: [
-                  ListView.builder(
-                    itemCount: DATA.events.length,
-                    itemBuilder: (context, index) =>
-                        buildEventItem(context, event: DATA.events[index]),
+                  // First tab: events from Bloc
+                  BlocBuilder<EventsCubit, EventsState>(
+                    builder: (context, state) {
+                      if (state is EventsFetched) {
+                        return ListView.builder(
+                          itemCount: state.events.length,
+                          itemBuilder: (context, index) => buildEventItem(
+                            context,
+                            event: state.events[index],
+                          ),
+                        );
+                      } else if (state is EventsLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (state is EventsError) {
+                        return Center(child: Text("Error fetching events"));
+                      }
+                      return const SizedBox(); // fallback for other states
+                    },
                   ),
+
+                  // Second tab: static events
                   ListView.builder(
                     itemCount: DATA.events.length,
                     itemBuilder: (context, index) =>
@@ -202,4 +219,3 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
     );
   }
 }
-

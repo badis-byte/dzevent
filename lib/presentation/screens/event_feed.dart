@@ -1,4 +1,5 @@
 import 'package:dzevent/lib/styles.dart';
+import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
 import 'package:dzevent/logic/cubits/events/events_cubit.dart';
 import 'package:dzevent/logic/cubits/events/events_state.dart';
 import 'package:dzevent/presentation/screens/event_details.dart';
@@ -113,12 +114,15 @@ class Filters extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        for (final filter in filters)
-          OutlinedButton(onPressed: () {}, child: Text(filter)),
-      ],
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          for (final filter in filters)
+            OutlinedButton(onPressed: () {}, child: Text(filter)),
+        ],
+      ),
     );
   }
 }
