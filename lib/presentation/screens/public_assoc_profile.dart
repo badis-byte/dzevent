@@ -1,13 +1,19 @@
+import 'package:dzevent/data/models/assoc_model.dart';
 import 'package:dzevent/l10n/app_localizations.dart';
 import 'package:dzevent/data/models/event_model.dart';
 import 'package:dzevent/lib/defs.dart';
 import 'package:dzevent/lib/styles.dart';
+import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
+import 'package:dzevent/logic/cubits/events/events_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:dzevent/data/fake_data.dart' as DATA;
+import 'package:path/path.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PublicAssocProfile extends StatefulWidget {
-  const PublicAssocProfile({super.key});
+  final AssociationModel asso;
+  const PublicAssocProfile({super.key, required this.asso});
   static const contactIcon = {
     ContactInfoType.email: Icons.email_outlined,
     ContactInfoType.phone: Icons.phone,
@@ -20,25 +26,25 @@ class PublicAssocProfile extends StatefulWidget {
 
 class _PublicAssocProfileState extends State<PublicAssocProfile>
     with TickerProviderStateMixin {
-  final Association association = Association(
-    name: "Tech Innovators Alliance",
-    imageUrl: "assets/images/public_assoc_profile.png",
-    brief:
-        'Lorem ipsum dolor sit amet, jksjfdkljk consectetur adipiscing elit.'
-        'Nulla eget lectus augue. Etiam semper nibh vel felis dignissim vehicula. ',
-    aboutUs:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
-        'Nulla eget lectus augue. Etiam semper nibh vel felis dignissim vehicula. '
-        'Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere '
-        'cubilia curae; Maecenas finibus venenatis aliquam. Vivamus sit amet ',
-    contactInfo: [
-      ContactInfo(type: ContactInfoType.email, address: "lorem.gmail.com"),
-      ContactInfo(type: ContactInfoType.phone, address: "0695837395"),
-      ContactInfo(type: ContactInfoType.web, address: "www.lorem.com"),
-    ],
-  );
-
+  late final Association association;
   final imageSize = Size(150, 150);
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    association = Association(
+      name: widget.asso.name,
+      imageUrl: widget.asso.profilePicture,
+      brief: widget.asso.bio,
+      aboutUs: widget.asso.bio,
+      contactInfo: [
+        ContactInfo(type: ContactInfoType.email, address: widget.asso.email),
+        ContactInfo(type: ContactInfoType.phone, address: "0695837395"),
+        ContactInfo(type: ContactInfoType.web, address: "www.lorem.com"),
+      ],
+    );
+    
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +77,13 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
           clipBehavior: Clip.antiAlias,
           width: imageSize.width,
           height: imageSize.height,
-          child: Image.asset(association.imageUrl, fit: BoxFit.fill),
+          child: Image.network(
+            association.imageUrl,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return Icon(Icons.account_balance); // fallback image
+            },
+          ),
         ),
         Text(association.name, style: headingStyle),
         Text(
@@ -168,7 +180,13 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
           SizedBox(
             width: imageSize.width,
             height: imageSize.height,
-            child: Image.asset(event.imageUrl),
+            child: Image.network(
+              association.imageUrl,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Icon(Icons.account_balance); // fallback image
+              },
+            ),
           ),
           SizedBox(width: 20),
           Column(
@@ -184,3 +202,4 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
     );
   }
 }
+

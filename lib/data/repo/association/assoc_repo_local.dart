@@ -56,6 +56,20 @@ class AssocRepoLocal extends AssocRepoBase {
       throw Exception("something went wrong");
     }
   }
+  @override
+  Future<List<AssociationModel>> getAssociation(int id) async {
+    try {
+      final obj = await associatoinTable.getAssociation(id);
+      print("size of object is ${obj.length}");
+      List<AssociationModel> result = [];
+      for (var item in obj) {
+        result.add(item);
+      }
+      return result;
+    } catch (e) {
+      throw Exception("something went wrong");
+    }
+  }
 
   @override
   Future<bool> verifyAssociation(int id) async {

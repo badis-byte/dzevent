@@ -140,6 +140,32 @@ class DBBaseTable {
     }
   }
 
+  Future<List<AssociationModel>> getAssociation(int id) async {
+    int unv = 0;
+    try {
+      final db = await DBHelper.getDatabase();
+      List<AssociationModel> result = [];
+      final associations = await await db.rawQuery(
+        'SELECT * FROM associations WHERE id = ?',
+        [id],
+      );
+      print("fetched data : ${associations.toString()}");
+      if (associations.isNotEmpty) {
+        for (var asso in associations) {
+          var association = AssociationModel.fromMapDynamic(asso);
+          result.add(association);
+        }
+        return result;
+      } else {
+        print("result is empty");
+        return [];
+      }
+    } catch (e) {
+      print("catch bloc <db_base_file> : something went wrong ******* $e");
+      throw Exception("something went wrong !");
+    }
+  }
+
   Future<bool> verifyAssociation(int id) async {
     try {
       final db = await DBHelper.getDatabase();
@@ -157,6 +183,7 @@ class DBBaseTable {
       return false;
     }
   }
+
   Future<bool> deleteAssociation(int id) async {
     try {
       final db = await DBHelper.getDatabase();

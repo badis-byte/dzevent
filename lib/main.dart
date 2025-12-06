@@ -8,6 +8,7 @@ import 'package:dzevent/presentation/screens/event_feed.dart';
 import 'package:dzevent/presentation/screens/home.dart';
 import 'package:dzevent/presentation/screens/login.dart';
 import 'package:dzevent/presentation/screens/signup.dart';
+import 'package:dzevent/presentation/screens/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -47,7 +48,7 @@ class MainApp extends StatelessWidget {
         ],
         supportedLocales: [Locale('en'), Locale('ar'), Locale('fr')],
 
-        home: NavScreen(),
+        home: ImageCarousel(),
         routes: {
         '/signup': (_) => Signup(),
         '/login': (_) => Login(),

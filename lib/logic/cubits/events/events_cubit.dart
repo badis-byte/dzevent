@@ -101,4 +101,5 @@ class EventsCubit extends Cubit<EventsState> {
       return false;
     }
   }
+  
 }
