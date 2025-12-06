@@ -35,7 +35,7 @@ class _SignupState extends State<Signup> {
               crossAxisAlignment: CrossAxisAlignment.center,
               //mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(height: 15),
+                SizedBox(height: 50),
                 Text(
                   "Create New Account",
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
@@ -102,9 +102,9 @@ class _SignupState extends State<Signup> {
                   ],
                 ),
                 SizedBox(height: 30),
-                policy(loc),
-                SizedBox(height: 30),
                 yesAccount(loc),
+                SizedBox(height: 30),
+                policy(loc),
                 SizedBox(height: 30),
               ],
             ),
@@ -123,10 +123,15 @@ class _SignupState extends State<Signup> {
           textAlign: TextAlign.center,
           style: const TextStyle(color: Colors.black, fontSize: 15),
         ),
-        Text(
-          " ${loc.logIn}",
-          textAlign: TextAlign.center,
-          style: const TextStyle(color: Colors.blue, fontSize: 15),
+        GestureDetector(
+          onTap: () => {
+            Navigator.pushNamed(context, "/login")
+          },
+          child: Text(
+            " ${loc.logIn}",
+            textAlign: TextAlign.center,
+            style: const TextStyle(color: Colors.blue, fontSize: 15),
+          ),
         ),
       ],
     );

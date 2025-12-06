@@ -16,11 +16,13 @@ class DBAuth {
   ) async {
     final db = await DBHelper.getDatabase();
 
+
     final result = await db.query(
-      'association',
+      'associations',
       where: 'email = ?',
       whereArgs: [email],
     );
+
 
     if (result.isNotEmpty) {
       var association = AssociationModel.fromMap(result.first);
@@ -31,6 +33,7 @@ class DBAuth {
     }
 
     throw InvalidCredException();
+
   }
 
   Future<UserModel> getUserByCredentials(String email, String password) async {
@@ -69,7 +72,7 @@ class DBAuth {
     }
 
     final result2 = await db.query(
-      'association',
+      'associations',
       where: 'email = ?',
       whereArgs: [email],
     );

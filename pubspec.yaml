@@ -29,5 +29,6 @@ flutter:
     - assets/images/
     - assets/images/event_feed/
     - assets/images/event_details/
+    - assets/images/users/
   uses-material-design: true
   generate: true

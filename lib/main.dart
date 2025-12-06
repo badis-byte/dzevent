@@ -4,7 +4,10 @@ import 'dart:io';
 
 import 'package:dzevent/logic/cubits/events/events_cubit.dart';
 import 'package:dzevent/logic/cubits/interests/interests_cubit.dart';
+import 'package:dzevent/presentation/screens/event_feed.dart';
 import 'package:dzevent/presentation/screens/home.dart';
+import 'package:dzevent/presentation/screens/login.dart';
+import 'package:dzevent/presentation/screens/signup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -45,6 +48,12 @@ class MainApp extends StatelessWidget {
         supportedLocales: [Locale('en'), Locale('ar'), Locale('fr')],
 
         home: NavScreen(),
+        routes: {
+        '/signup': (_) => Signup(),
+        '/login': (_) => Login(),
+        '/event_feed': (_) => EventFeed(),
+        },
+
       ),
     );
   }
