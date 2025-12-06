@@ -42,7 +42,7 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
           "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBzkx9EjnTvs28LpVsnDW72jM0jNN-D4wOvw&s",
       bio: "meta",
       createdAt: DateTime(2000),
-      verified: 1,
+      isVerified: true,
     );
     debugPrint(_currentAssoc?.id.toString() ?? "no id");
     context.read<EventsCubit>().getAllEventsByUser(_currentAssoc!.id);

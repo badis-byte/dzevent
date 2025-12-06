@@ -8,7 +8,7 @@ class AssociationModel {
   String profilePicture;
   String bio;
   DateTime createdAt;
-  int verified = 0;
+  bool isVerified;
 
   AssociationModel({
     required this.id,
@@ -17,7 +17,7 @@ class AssociationModel {
     required this.profilePicture,
     required this.bio,
     required this.createdAt,
-    required this.verified,
+    required this.isVerified,
   });
 
   AssociationModel copyWith({
@@ -27,7 +27,7 @@ class AssociationModel {
     String? profilePicture,
     String? bio,
     DateTime? createdAt,
-    int? verified,
+    bool? isVerified,
   }) {
     return AssociationModel(
       id: id ?? this.id,
@@ -36,7 +36,7 @@ class AssociationModel {
       profilePicture: profilePicture ?? this.profilePicture,
       bio: bio ?? this.bio,
       createdAt: createdAt ?? this.createdAt,
-      verified: verified ?? this.verified,
+      isVerified: isVerified ?? this.isVerified,
     );
   }
 
@@ -48,42 +48,21 @@ class AssociationModel {
       'profilePicture': profilePicture,
       'bio': bio,
       'createdAt': createdAt.millisecondsSinceEpoch,
-      'verified': verified,
+      'isVerified': isVerified ? 1 : 0,  // <-- FIX: true→1, false→0
     };
   }
 
   factory AssociationModel.fromMap(Map<String, dynamic> map) {
-    int parseInt(dynamic value, [int defaultValue = 0]) {
-      if (value == null) return defaultValue;
-      if (value is int) return value;
-      try {
-        return int.parse(value.toString());
-      } catch (_) {
-        return defaultValue;
-      }
-    }
-
-    DateTime parseDate(dynamic value) {
-      if (value == null) return DateTime.now();
-      if (value is int) return DateTime.fromMillisecondsSinceEpoch(value);
-      try {
-        return DateTime.parse(value.toString());
-      } catch (_) {
-        return DateTime.now();
-      }
-    }
-
     return AssociationModel(
-      id: parseInt(map['id']),
-      name: map['name'] as String? ?? '',
-      email: map['email'] as String? ?? '',
-      profilePicture: map['profilePicture'] as String? ?? '',
-      bio: map['bio'] as String? ?? '',
-      createdAt: parseDate(map['createdAt']),
-      verified: parseInt(map['verified']),
+      id: map['id'] as int,
+      name: map['name'] as String,
+      email: map['email'] as String,
+      profilePicture: map['profilePicture'] as String,
+      bio: map['bio'] as String,
+      createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int),
+      isVerified: (map['isVerified'] ?? 0) == 1,  // <-- FIX: convert int→bool
     );
   }
-
   String toJson() => json.encode(toMap());
 
   factory AssociationModel.fromJson(String source) =>
@@ -91,7 +70,7 @@ class AssociationModel {
 
   @override
   String toString() {
-    return 'AssociationModel(id: $id, name: $name, email: $email, profilePicture: $profilePicture, bio: $bio, createdAt: $createdAt, verified: $verified)';
+    return 'AssociationModel(id: $id, name: $name, email: $email, profilePicture: $profilePicture, bio: $bio, createdAt: $createdAt, isVerified: $isVerified)';
   }
 
   @override
@@ -104,7 +83,7 @@ class AssociationModel {
         other.profilePicture == profilePicture &&
         other.bio == bio &&
         other.createdAt == createdAt &&
-        other.verified == verified;
+        other.isVerified == isVerified;
   }
 
   @override
@@ -115,6 +94,6 @@ class AssociationModel {
         profilePicture.hashCode ^
         bio.hashCode ^
         createdAt.hashCode ^
-        verified.hashCode;
+        isVerified.hashCode;
   }
 }

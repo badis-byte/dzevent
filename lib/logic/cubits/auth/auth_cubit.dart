@@ -63,7 +63,7 @@ class AccountCubit extends Cubit<AccountState> {
   ) async {
     emit(AccountLoading());
     try {
-      await authTable.checkUniqueEmail(email);
+      await authTable.checkUnique(email);
     } catch (e) {
       print("problem here");
       if (e is ExistingCredException) {
@@ -83,7 +83,7 @@ class AccountCubit extends Cubit<AccountState> {
           profilePicture: "/picAssociation",
           bio: "we're a new Associatoin to DZevent!",
           createdAt: DateTime.now(),
-          verified: 0,
+          isVerified: false,
         );
         localAssRepo.insertData(assoc);
         emit(AccountGuest());
