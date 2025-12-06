@@ -94,12 +94,12 @@ class DBBaseTable {
       final db = await DBHelper.getDatabase();
       List<AssociationModel> result = [];
       final associations = await db.rawQuery(
-        'SELECT * FROM association WHERE isVerified = 0;',
+        'SELECT * FROM associations WHERE isVerified = 0;',
       );
       print("fetched data : ${associations.toString()}");
       if (associations.isNotEmpty) {
         for (var asso in associations) {
-          var association = AssociationModel.fromMap(asso);
+          var association = AssociationModel.fromMapDynamic(asso);
           result.add(association);
         }
         return result;

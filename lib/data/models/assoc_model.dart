@@ -60,9 +60,42 @@ class AssociationModel {
       profilePicture: map['profilePicture'] as String,
       bio: map['bio'] as String,
       createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int),
-      isVerified: (map['isVerified'] ?? 0) == 1,  // <-- FIX: convert int→bool
+      isVerified: (map['isVerified'] ?? 0) == 1 ,  // <-- FIX: convert int→bool
     );
   }
+
+  factory AssociationModel.fromMapDynamic(Map<String, dynamic> map) {
+  // Make sure each field has a fallback value
+  final id = map['id'] is int
+      ? map['id'] as int
+      : int.tryParse(map['id']?.toString() ?? '') ?? 0;
+
+  final name = map['name']?.toString() ?? '';
+  final email = map['email']?.toString() ?? '';
+  final profilePicture = map['profilePicture']?.toString() ?? '';
+  final bio = map['bio']?.toString() ?? '';
+
+  // Handle createdAt as int (milliseconds) or string date
+  final createdAtValue = map['createdAt'];
+  final createdAt = createdAtValue is int
+      ? DateTime.fromMillisecondsSinceEpoch(createdAtValue)
+      : DateTime.tryParse(createdAtValue?.toString() ?? '') ?? DateTime.now();
+
+  // Convert 0/1 or string '0'/'1' to bool
+  final isVerifiedRaw = map['isVerified'] ?? 0;
+  final isVerified = isVerifiedRaw.toString() == '1';
+
+  return AssociationModel(
+    id: id,
+    name: name,
+    email: email,
+    profilePicture: profilePicture,
+    bio: bio,
+    createdAt: createdAt,
+    isVerified: isVerified,
+  );
+}
+
   String toJson() => json.encode(toMap());
 
   factory AssociationModel.fromJson(String source) =>
