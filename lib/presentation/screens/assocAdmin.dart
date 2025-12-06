@@ -270,7 +270,7 @@ class _AssocadminState extends State<Assocadmin> {
                           return ListView(
                             children: [
                               for (var asso in state.association)
-                                cardAssoc(asso, asso.id),
+                                cardAssoc(asso, asso.id!),
                               const SizedBox(height: 16),
                             ],
                           );

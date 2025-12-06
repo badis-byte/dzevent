@@ -77,7 +77,7 @@ class AccountCubit extends Cubit<AccountState> {
       emit(AccountLoading());
       if (association) {
         AssociationModel assoc = AssociationModel(
-          id: 1,
+          // id: 1,
           name: name,
           email: email,
           profilePicture: "/picAssociation",
