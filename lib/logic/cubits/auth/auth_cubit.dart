@@ -79,7 +79,7 @@ class AccountCubit extends Cubit<AccountState> {
           id: 1,
           name: name,
           email: email,
-          profilePicture: "/picAssociation",
+          profilePicture: "assets/images/users/association.png",
           bio: "we're a new Associatoin to DZevent!",
           createdAt: DateTime.now(),
           isVerified: false,
@@ -94,7 +94,7 @@ class AccountCubit extends Cubit<AccountState> {
           id: 1,
           name: name,
           email: email,
-          profilePicture: "no image",
+          profilePicture: "assets/images/users/guest.png",
           createdAt: DateTime.now(),
         );
         localUserRepo.insertData(user);
