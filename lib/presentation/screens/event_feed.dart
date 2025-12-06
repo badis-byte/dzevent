@@ -1,7 +1,11 @@
+import 'package:dzevent/data/models/event_model.dart';
 import 'package:dzevent/lib/styles.dart';
 import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
+import 'package:dzevent/logic/cubits/auth/auth_states.dart';
 import 'package:dzevent/logic/cubits/events/events_cubit.dart';
 import 'package:dzevent/logic/cubits/events/events_state.dart';
+import 'package:dzevent/logic/cubits/interests/interests_cubit.dart';
+import 'package:dzevent/logic/cubits/interests/interests_state.dart';
 import 'package:dzevent/presentation/screens/event_details.dart';
 import 'package:dzevent/presentation/widgets/feed_event_card.dart';
 import 'package:dzevent/presentation/widgets/main_scaffold.dart';
@@ -27,6 +31,27 @@ class _EventFeedState extends State<EventFeed> {
   void initState() {
     context.read<EventsCubit>().getAll();
     super.initState();
+    init();
+  }
+
+  Future<bool> init() async {
+    final authCubit = context.read<AccountCubit>();
+    await authCubit.getUserData();
+    final authState = authCubit.state;
+    if (authState is UserFetched) {
+      final userId = authState.user.id;
+      print("EventCard: user fetched ${authState.user.name} ");
+      final interestsCubit = context.read<InterestsCubit>();
+      await interestsCubit.getUserInterests(userId: userId);
+      return true;
+    } else {
+      print("Event Card: user not fetched");
+      return false;
+    }
+  }
+
+  Future<bool> refresh() async {
+    return await init();
   }
 
   @override
@@ -60,6 +85,14 @@ class _EventFeedState extends State<EventFeed> {
                 loc.filterTech,
               ],
             ),
+            SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () async {
+                await refresh();
+              },
+              child: Text("Refresh"),
+            ),
+
             BlocBuilder<EventsCubit, EventsState>(
               builder: (context, state) {
                 if (state is EventsLoading) {
@@ -73,29 +106,41 @@ class _EventFeedState extends State<EventFeed> {
                   if (events.isEmpty) {
                     return Text("No events found");
                   }
-                  return Expanded(
-                    child: ListView.builder(
-                      itemCount: events.length,
-                      itemBuilder: (context, index) {
-                        return Column(
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) =>
-                                        EventDetails(event: events[index]),
-                                  ),
-                                );
-                              },
-                              child: FeedEventCard(event: events[index]),
+                  return BlocBuilder<InterestsCubit, InterestsState>(
+                    builder: (context, state) {
+                      Map<EventModel, bool> interested = Map.fromEntries(
+                        events.map((event) => MapEntry(event, false)),
+                      );
+                      if (state is InterestsLoading) {
+                        print("loading interests");
+                      }
+                      if (state is InterestsError) {
+                        print("Failed to fetch interests: ${state.error}");
+                      }
+                      if (state is InterestsFetched) {
+                        print("Interests fetched");
+                        final interests = state.interests;
+                        interested = Map.fromEntries(
+                          events.map(
+                            (event) => MapEntry(
+                              event,
+                              interests.any(
+                                (interest) => interest.eventId == event.id,
+                              ),
                             ),
-                            const SizedBox(height: 16),
-                          ],
+                          ),
                         );
-                      },
-                    ),
+                      }
+                      return Expanded(
+                        child: ListView.builder(
+                          itemCount: events.length,
+                          itemBuilder: (context, index) => FeedEventCard(
+                            event: events[index],
+                            isInterested: interested[events[index]]!,
+                          ),
+                        ),
+                      );
+                    },
                   );
                 }
                 return const SizedBox();

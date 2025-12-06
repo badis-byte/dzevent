@@ -1,46 +1,98 @@
-import 'package:dzevent/logic/cubits/events/events_cubit.dart';
-import 'package:dzevent/logic/cubits/events/events_state.dart';
+import 'package:dzevent/data/models/event_model.dart';
+import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
+import 'package:dzevent/logic/cubits/auth/auth_states.dart';
+import 'package:dzevent/logic/cubits/interests/interests_cubit.dart';
+import 'package:dzevent/logic/cubits/interests/interests_state.dart';
 import 'package:dzevent/presentation/widgets/feed_event_card.dart';
 import 'package:dzevent/presentation/widgets/main_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class InterestedEvents extends StatefulWidget {
+class InterestedEventsScreen extends StatefulWidget {
   static MaterialPageRoute route() =>
-      MaterialPageRoute(builder: (context) => InterestedEvents());
-  const InterestedEvents({super.key});
+      MaterialPageRoute(builder: (context) => InterestedEventsScreen());
+  const InterestedEventsScreen({super.key});
 
   @override
-  State<InterestedEvents> createState() => _InterestedEventsState();
+  State<InterestedEventsScreen> createState() => _InterestedEventsScreenState();
 }
 
-class _InterestedEventsState extends State<InterestedEvents> {
+class _InterestedEventsScreenState extends State<InterestedEventsScreen> {
+  Future<List<EventModel>>? _eventsFuture; // <-- FIXED: Cache the future
+
   @override
   void initState() {
     super.initState();
-    context.read<EventsCubit>().getAll();
-    
+    init();
+  }
+
+  Future<bool> init() async {
+    final authCubit = context.read<AccountCubit>();
+    await authCubit.getUserData();
+
+    final authState = authCubit.state;
+    if (authState is UserFetched) {
+      final userId = authState.user.id;
+      print("(InterestedEventsScreen): user fetched ${authState.user.name}");
+
+      final interestsCubit = context.read<InterestsCubit>();
+      await interestsCubit.getUserInterestedEvents(userId: userId);
+
+      return true;
+    } else {
+      print("(InterestedEventsScreen): user not fetched");
+      return false;
+    }
+  }
+
+  Future<bool> refresh() async {
+    return await init();
   }
 
   @override
   Widget build(BuildContext context) {
     return MainScaffold(
-      title: Text("Interested Events"),
-      body: BlocBuilder<EventsCubit, EventsState>(
-        builder: (context, state) {
-          if (state is EventsLoading) {
-            return CircularProgressIndicator();
-          }
-          if (state is EventsFetched) {
-            final events = state.events;
-            return ListView.builder(
-              itemCount: events.length,
-              itemBuilder: (context, index) =>
-                  FeedEventCard(event: events[index]),
-            );
-          }
-          return Text("Unexpected state ${state.runtimeType}");
-        },
+      title: const Text("Interested Events"),
+      body: Column(
+        children: [
+          ElevatedButton(
+            onPressed: () async {
+              await refresh();
+            },
+            child: Text("Refresh"),
+          ),
+          SizedBox(height: 16),
+
+          BlocBuilder<InterestsCubit, InterestsState>(
+            builder: (context, state) {
+              if (state is InterestsLoading) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              if (state is InterestsError) {
+                return Center(child: Text("Error: ${state.error}"));
+              }
+
+              if (state is InterestedEventsFetched) {
+                final intrestedEvents = state.interestedEvents;
+
+                return Expanded(
+                  child: ListView.builder(
+                    itemCount: intrestedEvents.length, // <-- FIXED
+                    itemBuilder: (context, index) => FeedEventCard(
+                      event: intrestedEvents[index],
+                      isInterested: true,
+                    ),
+                  ),
+                );
+              }
+              ;
+              return Center(
+                child: Text("Unexpected state: ${state.runtimeType}"),
+              );
+            },
+          ),
+        ],
       ),
     );
   }
