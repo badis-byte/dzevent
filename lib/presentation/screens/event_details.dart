@@ -1,13 +1,33 @@
+import 'package:dzevent/data/models/assoc_model.dart';
 import 'package:dzevent/data/models/event_model.dart';
 import 'package:dzevent/lib/styles.dart';
 import 'package:dzevent/l10n/app_localizations.dart';
+import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
+import 'package:dzevent/logic/cubits/auth/auth_states.dart';
+import 'package:dzevent/logic/cubits/events/events_cubit.dart';
+import 'package:dzevent/presentation/screens/public_assoc_profile.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
-class EventDetails extends StatelessWidget {
-  final double _imageHeight = 270;
+class EventDetails extends StatefulWidget {
   final EventModel event;
   const EventDetails({super.key, required this.event});
+
+  @override
+  State<EventDetails> createState() => _EventDetailsState();
+}
+
+class _EventDetailsState extends State<EventDetails> {
+  final double _imageHeight = 270;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    context.read<AccountCubit>().getAssoc(widget.event.associationId);
+    
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +40,16 @@ class EventDetails extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             height: _imageHeight,
-            child: Image.asset(event.imageUrl, fit: BoxFit.fill),
+            child: Image.network(
+              widget.event.imageUrl,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Image.asset(
+                  widget.event.imageUrl, // fallback image
+                  fit: BoxFit.cover,
+                );
+              },
+            ),
           ),
           Expanded(
             child: Container(
@@ -38,7 +67,9 @@ class EventDetails extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        Flexible(child: Text(event.title, style: headingStyle)),
+                        Flexible(
+                          child: Text(widget.event.title, style: headingStyle),
+                        ),
                         IconButton(
                           onPressed: () {},
                           icon: const Icon(Icons.share),
@@ -55,7 +86,7 @@ class EventDetails extends StatelessWidget {
                         const Icon(Icons.calendar_today),
                         const SizedBox(width: 4),
                         Text(
-                          DateFormat.MMMEd().format(event.startDatetime),
+                          DateFormat.MMMEd().format(widget.event.startDatetime),
                           style: subtitleStyle,
                         ),
                       ],
@@ -65,15 +96,23 @@ class EventDetails extends StatelessWidget {
                       children: [
                         const Icon(Icons.location_on),
                         const SizedBox(width: 4),
-                        Text(event.location, style: subtitleStyle),
+                        Text(widget.event.location, style: subtitleStyle),
                       ],
                     ),
                     const Divider(),
-                    AssociatonLink(associatonId: event.associationId),
+                    BlocBuilder<AccountCubit, AccountState>(
+                      builder: (context, state) {
+                        if (state is AssociationFetched) {
+                          return AssociatonLink(association: state.association);
+                        }
+                        return Text("can't fetch association");
+                      },
+                    ),
+
                     const Divider(),
                     Text(loc.aboutThisEvent, style: subtitleStyle),
                     const SizedBox(height: 8),
-                    Text(event.description, textAlign: TextAlign.start),
+                    Text(widget.event.description, textAlign: TextAlign.start),
                     const SizedBox(height: 16),
                     SizedBox(
                       width: double.infinity,
@@ -95,10 +134,10 @@ class EventDetails extends StatelessWidget {
 }
 
 class AssociatonLink extends StatelessWidget {
-  final int associatonId;
+  final AssociationModel association;
   final double associationIconHeight = 70;
   final double associationIconWidth = 70;
-  const AssociatonLink({super.key, required this.associatonId});
+  const AssociatonLink({super.key, required this.association});
 
   @override
   Widget build(BuildContext context) {
@@ -112,17 +151,44 @@ class AssociatonLink extends StatelessWidget {
           decoration: const BoxDecoration(shape: BoxShape.circle),
           width: associationIconWidth,
           height: associationIconHeight,
-          // child: Image.asset(associaton.imageUrl, fit: BoxFit.fill),
+          child: Image.network(
+            association.profilePicture,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return Icon(Icons.account_balance); // fallback image
+            },
+          ),
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(associatonId.toString(), style: subtitleStyle),
+            Text(association.name, style: subtitleStyle),
             Text(loc.viewProfile, textAlign: TextAlign.start),
           ],
         ),
         const Spacer(),
-        IconButton(onPressed: () {}, icon: const Icon(Icons.arrow_forward)),
+        BlocBuilder<AccountCubit, AccountState>(
+          builder: (context, state) {
+            if (state is AssociationFetched) {
+              return IconButton(
+                icon: const Icon(Icons.arrow_forward),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          PublicAssocProfile(asso: state.association),
+                    ),
+                  );
+                },
+              );
+            }
+            return IconButton(
+              icon: const Icon(Icons.arrow_forward),
+              onPressed: null, 
+            );
+          },
+        ),
       ],
     );
   }
