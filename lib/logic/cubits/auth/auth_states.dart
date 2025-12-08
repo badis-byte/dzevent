@@ -16,7 +16,7 @@ class AccountError extends AccountState {
 
 class AccountNotVerified extends AccountState {}
 
-class AccountUpdated extends AccountState{}
+class AccountUpdated extends AccountState {}
 
 class UserFetched extends AccountState {
   UserModel user;
@@ -27,6 +27,7 @@ class AssociationFetched extends AccountState {
   AssociationModel association;
   AssociationFetched({required this.association});
 }
+
 class AssociationsFetched extends AccountState {
   final List<AssociationModel> association;
 

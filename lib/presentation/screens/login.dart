@@ -20,7 +20,6 @@ class _LoginState extends State<Login> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    
   }
 
   @override
@@ -101,9 +100,7 @@ class _LoginState extends State<Login> {
           ),
         ),
         GestureDetector(
-          onTap: () => {
-            Navigator.pushNamed(context, "/signup")
-          },
+          onTap: () => {Navigator.pushNamed(context, "/signup")},
           child: Text(
             " ${loc.signUp}",
             textAlign: TextAlign.center,
@@ -188,20 +185,21 @@ class _LoginState extends State<Login> {
             ).showSnackBar(SnackBar(content: Text(state.error)));
           }
           if (state is AccountNotVerified) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text("Your account is not approved yet! Please try again later")));
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  "Your account is not approved yet! Please try again later",
+                ),
+              ),
+            );
           }
           if (state is UserFetched || state is AssociationFetched) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (_) => EventFeed()),
-            );
+            Navigator.push(context, EventFeed.route());
           }
         },
         builder: (context, state) {
           if (state is AccountLoading) {
-            return SizedBox(width:20, child: CircularProgressIndicator());
+            return SizedBox(width: 20, child: CircularProgressIndicator());
           }
           return ElevatedButton(
             style: ElevatedButton.styleFrom(
