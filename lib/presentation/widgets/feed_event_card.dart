@@ -61,7 +61,6 @@ class FeedEventCard extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           Image.network(
-            
             event.imageUrl,
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) {

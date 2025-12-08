@@ -18,8 +18,6 @@ class InterestedEventsScreen extends StatefulWidget {
 }
 
 class _InterestedEventsScreenState extends State<InterestedEventsScreen> {
-  Future<List<EventModel>>? _eventsFuture; // <-- FIXED: Cache the future
-
   @override
   void initState() {
     super.initState();
@@ -78,7 +76,7 @@ class _InterestedEventsScreenState extends State<InterestedEventsScreen> {
 
                 return Expanded(
                   child: ListView.builder(
-                    itemCount: intrestedEvents.length, // <-- FIXED
+                    itemCount: intrestedEvents.length,
                     itemBuilder: (context, index) => FeedEventCard(
                       event: intrestedEvents[index],
                       isInterested: true,

@@ -36,12 +36,15 @@ class _EventFeedState extends State<EventFeed> {
 
   Future<bool> init() async {
     final authCubit = context.read<AccountCubit>();
-    await authCubit.getUserData();
     final authState = authCubit.state;
+    print("(EventFeed::init) authState= ${authState.runtimeType}");
     if (authState is UserFetched) {
       final userId = authState.user.id;
       print("EventCard: user fetched ${authState.user.name} ");
       final interestsCubit = context.read<InterestsCubit>();
+      print(
+        "(EventFeed::init) interestsState= ${interestsCubit.state.runtimeType}",
+      );
       await interestsCubit.getUserInterests(userId: userId!);
       return true;
     } else {
