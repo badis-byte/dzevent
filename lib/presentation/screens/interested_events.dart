@@ -26,8 +26,6 @@ class _InterestedEventsScreenState extends State<InterestedEventsScreen> {
 
   Future<bool> init() async {
     final authCubit = context.read<AccountCubit>();
-    await authCubit.getUserData();
-
     final authState = authCubit.state;
     if (authState is UserFetched) {
       final userId = authState.user.id;

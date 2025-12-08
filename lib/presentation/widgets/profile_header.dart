@@ -14,9 +14,7 @@ class ProfileHeader extends StatefulWidget {
 class _ProfileHeaderState extends State<ProfileHeader> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    context.read<AccountCubit>().getUserData();
   }
 
   @override
@@ -36,7 +34,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
           final user = state.user;
           return Column(
             children: [
-              SizedBox(height: 20,),
+              SizedBox(height: 20),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -53,26 +51,44 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                   IntrinsicHeight(
                     child: Column(
                       children: [
-                        Text(user.name, style: TextStyle(fontSize: 20, color: Colors.black, height: 1.0),),
-                        Text(user.email, style: TextStyle(fontSize: 15, color: Colors.blueGrey, height: 1.0),),
+                        Text(
+                          user.name,
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.black,
+                            height: 1.0,
+                          ),
+                        ),
+                        Text(
+                          user.email,
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.blueGrey,
+                            height: 1.0,
+                          ),
+                        ),
                         SizedBox(height: 8),
                       ],
                     ),
                   ),
                   SizedBox(width: 60),
                 ],
-                
               ),
               OutlinedButton(
                 style: OutlinedButton.styleFrom(
                   side: BorderSide(color: Colors.black87, width: 1.4),
-                  padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 22,
+                    vertical: 12,
+                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
                 onPressed: () {
-                  Navigator.of(context).pushReplacement(UserProfileScreen.route());
+                  Navigator.of(
+                    context,
+                  ).pushReplacement(UserProfileScreen.route());
                 },
                 child: Text(
                   "View Profile",
@@ -83,8 +99,6 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                   ),
                 ),
               ),
-
-
             ],
           );
         }
@@ -92,7 +106,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
           final user = state.user;
           return Column(
             children: [
-              SizedBox(height: 20,),
+              SizedBox(height: 20),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -109,26 +123,44 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                   IntrinsicHeight(
                     child: Column(
                       children: [
-                        Text(user.name, style: TextStyle(fontSize: 20, color: Colors.black, height: 1.0),),
-                        Text(user.email, style: TextStyle(fontSize: 15, color: Colors.blueGrey, height: 1.0),),
+                        Text(
+                          user.name,
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.black,
+                            height: 1.0,
+                          ),
+                        ),
+                        Text(
+                          user.email,
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.blueGrey,
+                            height: 1.0,
+                          ),
+                        ),
                         SizedBox(height: 8),
                       ],
                     ),
                   ),
                   SizedBox(width: 60),
                 ],
-                
               ),
               OutlinedButton(
                 style: OutlinedButton.styleFrom(
                   side: BorderSide(color: Colors.black87, width: 1.4),
-                  padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 22,
+                    vertical: 12,
+                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
                 onPressed: () {
-                  Navigator.of(context).pushReplacement(UserProfileScreen.route());
+                  Navigator.of(
+                    context,
+                  ).pushReplacement(UserProfileScreen.route());
                 },
                 child: Text(
                   "View Profile",
@@ -139,8 +171,6 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                   ),
                 ),
               ),
-
-
             ],
           );
         }
