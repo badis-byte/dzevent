@@ -29,9 +29,10 @@ class _EventFeedState extends State<EventFeed> {
 
   @override
   void initState() {
+    print("init exc");
     context.read<EventsCubit>().getAll();
     super.initState();
-    init();
+    // init();
   }
 
   Future<bool> init() async {
@@ -92,6 +93,74 @@ class _EventFeedState extends State<EventFeed> {
               },
               child: Text("Refresh"),
             ),
+            // BlocBuilder<EventsCubit, EventsState>(
+            //   builder: (context, state) {
+            //     if (state is EventsLoading) {
+            //       return const Center(child: CircularProgressIndicator());
+            //     }
+            //     if (state is EventsError) {
+            //       return Center(child: Text(loc.errorOccurred(state.error)));
+            //     }
+            //     if (state is EventsFetched) {
+            //       final events = state.events;
+            //       if (events.isEmpty) {
+            //         return Text("No events found");
+            //       }
+
+            //       return BlocBuilder<InterestsCubit, InterestsState>(
+            //         builder: (context, state) {
+            //           Map<EventModel, bool> interested = Map.fromEntries(
+            //             events.map((event) => MapEntry(event, false)),
+            //           );
+
+            //           if (state is InterestsFetched) {
+            //             final interests = state.interests;
+            //             interested = Map.fromEntries(
+            //               events.map(
+            //                 (event) => MapEntry(
+            //                   event,
+            //                   interests.any((i) => i.eventId == event.id),
+            //                 ),
+            //               ),
+            //             );
+            //           }
+
+            //           return Expanded(
+            //             child: ListView.builder(
+            //               itemCount: events.length,
+            //               itemBuilder: (context, index) {
+            //                 final event = events[index];
+
+            //                 return Column(
+            //                   children: [
+            //                     GestureDetector(
+            //                       onTap: () {
+            //                         Navigator.push(
+            //                           context,
+            //                           MaterialPageRoute(
+            //                             builder: (_) =>
+            //                                 EventDetails(event: event),
+            //                           ),
+            //                         );
+            //                       },
+            //                       child: FeedEventCard(
+            //                         event: event,
+            //                         isInterested: interested[event]!,
+            //                       ),
+            //                     ),
+            //                     const SizedBox(height: 16),
+            //                   ],
+            //                 );
+            //               },
+            //             ),
+            //           );
+            //         },
+            //       );
+
+            //     }
+            //     return const SizedBox();
+            //   },
+            // ),
             BlocBuilder<EventsCubit, EventsState>(
               builder: (context, state) {
                 if (state is EventsLoading) {
@@ -105,55 +174,35 @@ class _EventFeedState extends State<EventFeed> {
                   if (events.isEmpty) {
                     return Text("No events found");
                   }
-
-                  return BlocBuilder<InterestsCubit, InterestsState>(
-                    builder: (context, state) {
-                      Map<EventModel, bool> interested = Map.fromEntries(
-                        events.map((event) => MapEntry(event, false)),
-                      );
-
-                      if (state is InterestsFetched) {
-                        final interests = state.interests;
-                        interested = Map.fromEntries(
-                          events.map(
-                            (event) => MapEntry(
-                              event,
-                              interests.any((i) => i.eventId == event.id),
-                            ),
-                          ),
-                        );
-                      }
-
-                      return Expanded(
-                        child: ListView.builder(
-                          itemCount: events.length,
-                          itemBuilder: (context, index) {
-                            final event = events[index];
-
-                            return Column(
-                              children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (_) =>
-                                            EventDetails(event: event),
-                                      ),
-                                    );
-                                  },
-                                  child: FeedEventCard(
-                                    event: event,
-                                    isInterested: interested[event]!,
+                  return Expanded(
+                    child: ListView.builder(
+                      itemCount: events.length,
+                      itemBuilder: (context, index) {
+                        return Column(
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) =>
+                                        EventDetails(event: events[index]),
                                   ),
-                                ),
-                                const SizedBox(height: 16),
-                              ],
-                            );
-                          },
-                        ),
-                      );
-                    },
+                                ).then((_) {
+                                  // Refresh when coming back
+                                  context.read<EventsCubit>().getAll();
+                                });
+                              },
+                              child: FeedEventCard(
+                                event: events[index],
+                                isInterested: false,
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                          ],
+                        );
+                      },
+                    ),
                   );
                 }
                 return const SizedBox();
