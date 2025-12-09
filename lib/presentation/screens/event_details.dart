@@ -26,6 +26,7 @@ class _EventDetailsState extends State<EventDetails> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    
   }
 
   @override

@@ -8,7 +8,7 @@ class AccountGuest extends AccountState {}
 class AccountLoading extends AccountState {}
 
 class AccountExists extends AccountState {}
-
+class AccountLogout extends AccountState{}
 class AccountError extends AccountState {
   String error;
   AccountError({required this.error});

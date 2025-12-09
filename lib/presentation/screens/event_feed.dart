@@ -37,7 +37,7 @@ class _EventFeedState extends State<EventFeed> {
 
   Future<bool> init() async {
     final authCubit = context.read<AccountCubit>();
-    final authState = authCubit .state;
+    final authState = authCubit.state;
     print("(EventFeed::init) authState= ${authState.runtimeType}");
     if (authState is UserFetched) {
       final userId = authState.user.id;
@@ -148,13 +148,16 @@ class _EventFeedState extends State<EventFeed> {
                               children: [
                                 GestureDetector(
                                   onTap: () {
+                                    // context.read<AccountCubit>().getAssoc(event.associationId);
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                         builder: (_) =>
                                             EventDetails(event: event),
                                       ),
-                                    );
+                                    ).then((_) {
+                                      context.read<EventsCubit>().getAll();
+                                    });
                                   },
                                   child: FeedEventCard(
                                     event: event,

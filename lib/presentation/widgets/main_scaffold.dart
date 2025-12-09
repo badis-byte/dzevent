@@ -4,6 +4,7 @@ import 'package:dzevent/presentation/screens/add_event.dart';
 import 'package:dzevent/presentation/screens/associationProfileTwo.dart';
 import 'package:dzevent/presentation/screens/event_feed.dart';
 import 'package:dzevent/presentation/screens/interested_events.dart';
+import 'package:dzevent/presentation/screens/login.dart';
 import 'package:dzevent/presentation/widgets/profile_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -33,9 +34,9 @@ class MainScaffold extends StatelessWidget {
               onTap: item['route'] == null
                   ? null
                   : () {
-                      Navigator.of(context).push(
-                        (item['route'] as MaterialPageRoute Function())(),
-                      );
+                      Navigator.of(
+                        context,
+                      ).push((item['route'] as MaterialPageRoute Function())());
                     },
               hoverColor: Colors.grey.shade200,
               child: ListTile(
@@ -47,7 +48,15 @@ class MainScaffold extends StatelessWidget {
           Divider(),
           for (final item in drawerItemsBottom)
             InkWell(
-              onTap: () {},
+              onTap: () {
+                if (item['label'] == "Log Out") {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => Login()),
+                  );
+                  context.read<AccountCubit>().logout();
+                }
+              },
               hoverColor: Colors.grey.shade200,
               child: ListTile(
                 title: Text(item['label'] as String),
@@ -69,7 +78,11 @@ class MainScaffold extends StatelessWidget {
         'route': () => AssocProfTwo.route(),
       },
       {'label': "Notifications", 'icon': Icons.notifications},
-      {'label': "Add Event", 'icon': Icons.add,'route':()=>Addevent.route()},
+      {
+        'label': "Add Event",
+        'icon': Icons.add,
+        'route': () => Addevent.route(),
+      },
     ];
     final drawerItemsUpUser = [
       {'label': "Feed", 'icon': Icons.home, 'route': () => EventFeed.route()},
@@ -92,7 +105,7 @@ class MainScaffold extends StatelessWidget {
         builder: (context, state) {
           if (state is AssociationFetched) {
             return drawer(drawerItemsUpAssociation, drawerItemsBottom, context);
-          }else if(state is UserFetched){
+          } else if (state is UserFetched) {
             return drawer(drawerItemsUpUser, drawerItemsBottom, context);
           }
           return Text("User type is undifined we cant route you !");
