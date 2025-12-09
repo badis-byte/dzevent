@@ -36,7 +36,7 @@ class _AssocadminState extends State<Assocadmin> {
     );
   }
 
-  Widget btn(String text, Color colorr, int association_id) {
+  Widget btn(String text, Color colorr, int associationId) {
     return SizedBox(
       height: 40,
       child: ElevatedButton(
@@ -50,12 +50,12 @@ class _AssocadminState extends State<Assocadmin> {
         onPressed: () {
           if (text == AppLocalizations.of(context)!.accept) {
             try {
-              context.read<AccountCubit>().verifyAccount(association_id);
+              context.read<AccountCubit>().verifyAccount(associationId);
               context.read<AccountCubit>().getUnvAssoc();
             } catch (e) {}
           } else {
             try {
-              context.read<AccountCubit>().deleteAccount(association_id);
+              context.read<AccountCubit>().deleteAccount(associationId);
               context.read<AccountCubit>().getUnvAssoc();
             } catch (e) {}
           }

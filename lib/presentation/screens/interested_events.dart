@@ -82,7 +82,6 @@ class _InterestedEventsScreenState extends State<InterestedEventsScreen> {
                   ),
                 );
               }
-              ;
               return Center(
                 child: Text("Unexpected state: ${state.runtimeType}"),
               );

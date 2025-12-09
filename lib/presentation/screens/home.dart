@@ -2,7 +2,6 @@ import 'package:dzevent/presentation/screens/add_event.dart';
 import 'package:dzevent/presentation/screens/assocAdmin.dart';
 import 'package:dzevent/presentation/screens/associationProfileTwo.dart';
 import 'package:dzevent/presentation/screens/event_feed.dart';
-import 'package:dzevent/presentation/screens/public_assoc_profile.dart';
 import 'package:dzevent/presentation/screens/signup.dart';
 import 'package:dzevent/presentation/screens/welcome.dart';
 import 'package:flutter/material.dart';

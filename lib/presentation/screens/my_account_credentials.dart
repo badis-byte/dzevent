@@ -1,8 +1,5 @@
-import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
-import 'package:dzevent/logic/cubits/events/events_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:dzevent/l10n/app_localizations.dart';
-import 'package:path/path.dart';
 
 class Myaccountcredentials extends StatelessWidget {
   const Myaccountcredentials({super.key});

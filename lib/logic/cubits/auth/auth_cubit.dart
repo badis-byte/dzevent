@@ -191,9 +191,10 @@ class AccountCubit extends Cubit<AccountState> {
     }
   }
 
-  dynamic getcurrentAssociationId() {
+  dynamic getcurrentAssociation() {
     if (state is AssociationFetched) {
-      return association;
+      print("fetching association");
+      return _currentAssociation;
     } else {
       throw Exception("no user");
     }

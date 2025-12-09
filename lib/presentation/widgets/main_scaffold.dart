@@ -7,7 +7,6 @@ import 'package:dzevent/presentation/screens/interested_events.dart';
 import 'package:dzevent/presentation/widgets/profile_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:path/path.dart';
 
 class MainScaffold extends StatelessWidget {
   final Widget body;
@@ -34,7 +33,7 @@ class MainScaffold extends StatelessWidget {
               onTap: item['route'] == null
                   ? null
                   : () {
-                      Navigator.of(context).pushReplacement(
+                      Navigator.of(context).push(
                         (item['route'] as MaterialPageRoute Function())(),
                       );
                     },
