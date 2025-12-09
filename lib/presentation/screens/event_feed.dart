@@ -47,7 +47,17 @@ class _EventFeedState extends State<EventFeed> {
       );
       await interestsCubit.getUserInterests(userId: userId!);
       return true;
+    } else if (authState is AssociationFetched) {
+      final userId = authState.association.id;
+      print("EventCard: user fetched ${authState.association.name} ");
+      final interestsCubit = context.read<InterestsCubit>();
+      print(
+        "(EventFeed::init) interestsState= ${interestsCubit.state.runtimeType}",
+      );
+      await interestsCubit.getUserInterests(userId: userId!);
+      return true;
     } else {
+      print(authState);
       print("Event Card: user not fetched");
       return false;
     }

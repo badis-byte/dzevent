@@ -3,6 +3,7 @@ import 'package:dzevent/lib/utils.dart';
 import 'package:dzevent/logic/cubits/events/events_cubit.dart';
 import 'package:dzevent/logic/cubits/events/events_state.dart';
 import 'package:dzevent/presentation/screens/assocAdmin.dart';
+import 'package:dzevent/presentation/screens/event_feed.dart';
 import 'package:dzevent/presentation/widgets/input.dart';
 import 'package:dzevent/presentation/widgets/submit_button.dart';
 import 'package:dzevent/presentation/widgets/text_input.dart';
@@ -11,11 +12,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:uuid/uuid.dart';
 
-void main(List<String> args) {
-  runApp(Addevent());
-}
-
 class Addevent extends StatefulWidget {
+  static MaterialPageRoute route() =>
+      MaterialPageRoute(builder: (context) => Addevent());
   final EventModel? event;
 
   const Addevent({super.key, this.event});
@@ -52,9 +51,10 @@ class _AddeventState extends State<Addevent> {
             ),
           )
           .toList(),
+
     );
     _formKey = GlobalKey<FormState>();
-
+    
     if (widget.event != null) {
       _populateFormFields(widget.event!);
     }
@@ -149,9 +149,17 @@ class _AddeventState extends State<Addevent> {
       );
       if (widget.event != null) {
         await cubit.update(event);
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => EventFeed()),
+        );
         return;
       }
       await cubit.insert(event);
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => EventFeed()),
+      );
     }
   }
 

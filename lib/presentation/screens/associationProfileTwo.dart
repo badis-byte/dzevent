@@ -14,6 +14,8 @@ void main(List<String> args) {
 }
 
 class AssocProfTwo extends StatefulWidget {
+  static MaterialPageRoute route() =>
+      MaterialPageRoute(builder: (context) => AssocProfTwo());
   const AssocProfTwo({super.key});
 
   @override

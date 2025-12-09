@@ -190,4 +190,12 @@ class AccountCubit extends Cubit<AccountState> {
       throw Exception("Something went wrong --> $e");
     }
   }
+
+  dynamic getcurrentAssociationId() {
+    if (state is AssociationFetched) {
+      return association;
+    } else {
+      throw Exception("no user");
+    }
+  }
 }
