@@ -1,6 +1,3 @@
-import 'package:dzevent/data/models/assoc_model.dart';
-import 'dart:ui';
-
 import 'package:dzevent/data/models/event_model.dart';
 import 'package:dzevent/lib/styles.dart';
 import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
@@ -170,36 +167,37 @@ class _EventFeedState extends State<EventFeed> {
                               itemBuilder: (context, index) {
                                 final event = events[index];
 
-                              return Column(
-                                children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      context.read<AccountCubit>().getAssoc(
-                                        event.associationId,
-                                      );
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) =>
-                                              EventDetails(event: event),
-                                        ),
-                                      ).then((_) async {
-                                        // Refresh when coming back
-                                        context.read<EventsCubit>().getAll();
-                                        await context
-                                            .read<AccountCubit>()
-                                            .getcurrentAssociation(userId);
-                                      });
-                                    },
-                                    child: FeedEventCard(
-                                      event: event,
-                                      isInterested: interested[event]!,
+                                return Column(
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () {
+                                        context.read<AccountCubit>().getAssoc(
+                                          event.associationId,
+                                        );
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) =>
+                                                EventDetails(event: event),
+                                          ),
+                                        ).then((_) async {
+                                          // Refresh when coming back
+                                          context.read<EventsCubit>().getAll();
+                                          await context
+                                              .read<AccountCubit>()
+                                              .getcurrentAssociation(userId);
+                                        });
+                                      },
+                                      child: FeedEventCard(
+                                        event: event,
+                                        isInterested: interested[event]!,
+                                      ),
                                     ),
-                                  ),
-                                  const SizedBox(height: 16),
-                                ],
-                              );
-                            },
+                                    const SizedBox(height: 16),
+                                  ],
+                                );
+                              },
+                            ),
                           ),
                         );
                       },
