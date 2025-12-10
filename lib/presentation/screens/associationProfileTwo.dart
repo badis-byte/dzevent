@@ -31,17 +31,23 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
     super.initState();
     //store current user
     //fetch events
-    _currentAssoc = context.read<AccountCubit>().getcurrentAssociation();
-    // _currentAssoc ??= AssociationModel(
-    //   id: 2,
-    //   name: "Meta",
-    //   email: "Meta@gmail.com",
-    //   profilePicture:
-    //       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBzkx9EjnTvs28LpVsnDW72jM0jNN-D4wOvw&s",
-    //   bio: "meta",
-    //   createdAt: DateTime(2000),
-    //   isVerified: true,
-    // );
+    final state = context.read<AccountCubit>().association;
+        if (state == true) {
+          
+          final assoc = context.read<AccountCubit>().currentAssociation;
+          _currentAssoc = assoc;
+        }
+
+    _currentAssoc ??= AssociationModel(
+      id: 2,
+      name: "Meta",
+      email: "Meta@gmail.com",
+      profilePicture:
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBzkx9EjnTvs28LpVsnDW72jM0jNN-D4wOvw&s",
+      bio: "meta",
+      createdAt: DateTime(2000),
+      isVerified: true,
+    );
     debugPrint(_currentAssoc?.id.toString() ?? "no id");
     context.read<EventsCubit>().getAllEventsByUser(_currentAssoc!.id!);
   }

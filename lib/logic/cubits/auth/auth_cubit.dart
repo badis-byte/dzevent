@@ -10,23 +10,23 @@ class AccountCubit extends Cubit<AccountState> {
   AccountCubit() : super(AccountGuest());
   final localAssRepo = AssocRepoLocal();
   final localUserRepo = UserRepoLocal();
-  UserModel? _currentUser;
-  AssociationModel? _currentAssociation;
+  UserModel? currentUser;
+  AssociationModel? currentAssociation;
   bool association = false;
   var authTable = DBAuth();
 
   Future<bool> login(String email, String password) async {
     try {
       emit(AccountLoading());
-      _currentUser = await localUserRepo.login(email, password);
+      currentUser = await localUserRepo.login(email, password);
       association = false;
-      emit(UserFetched(user: _currentUser!));
+      emit(UserFetched(user: currentUser!));
     } catch (e) {
       if (e is InvalidCredException) {
         try {
-          _currentAssociation = await localAssRepo.login(email, password);
+          currentAssociation = await localAssRepo.login(email, password);
           association = true;
-          emit(AssociationFetched(association: _currentAssociation!));
+          emit(AssociationFetched(association: currentAssociation!));
         } catch (a) {
           if (a is InvalidCredException) {
             emit(AccountError(error: "Invalid Credentials"));
@@ -104,10 +104,10 @@ class AccountCubit extends Cubit<AccountState> {
         );
         localUserRepo.insertData(user);
         emit(UserFetched(user: user));
-        _currentUser = user;
+        currentUser = user;
         association = false;
         print("registered: ");
-        print(_currentUser.toString());
+        print(currentUser.toString());
       }
       return true;
     } catch (e) {

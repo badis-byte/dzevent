@@ -81,59 +81,114 @@ class _EventFeedState extends State<EventFeed> {
         IconButton(onPressed: () {}, icon: Icon(Icons.notifications_none)),
       ],
 
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          spacing: 16.0,
-          children: [
-            SearchAnchor.bar(
-              suggestionsBuilder: (context, controller) => [],
-              barHintText: loc.searchBarHint,
+      body: Container(
+        color: Color.fromARGB(255, 240, 242, 245),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            spacing: 16.0,
+            children: [
+              SearchBarTheme(
+              data: SearchBarThemeData(
+                backgroundColor: MaterialStateProperty.all(Colors.blue.shade50,),
+                elevation: MaterialStateProperty.all(1),
+                shadowColor: MaterialStateProperty.all(Colors.black12),
+                shape: MaterialStateProperty.all(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+                side: MaterialStateProperty.all(
+                  BorderSide(color: Colors.blue.shade200),
+                ),
+                hintStyle: MaterialStateProperty.all(
+                  TextStyle(color: Colors.grey.shade500),
+                ),
+                textStyle: MaterialStateProperty.all(
+                  TextStyle(color: Colors.black87),
+                ),
+              ),
+              child: SearchAnchor.bar(
+                suggestionsBuilder: (context, controller) => [],
+                barHintText: loc.searchBarHint,
+              ),
             ),
-            Filters(
-              filters: [
-                loc.filterAll,
-                loc.filterMusic,
-                loc.filterSports,
-                loc.filterArts,
-                loc.filterTech,
-              ],
-            ),
-            SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () async {
-                await refresh();
-              },
-              child: Text("Refresh"),
-            ),
-            BlocBuilder<EventsCubit, EventsState>(
-              builder: (context, state) {
-                if (state is EventsLoading) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                if (state is EventsError) {
-                  return Center(child: Text(loc.errorOccurred(state.error)));
-                }
-                if (state is EventsFetched) {
-                  final events = state.events;
-                  if (events.isEmpty) {
-                    return Text("No events found");
+
+              Filters(
+                filters: [
+                  loc.filterAll,
+                  loc.filterMusic,
+                  loc.filterSports,
+                  loc.filterArts,
+                  loc.filterTech,
+                ],
+              ),
+              SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () async {
+                  await refresh();
+                },
+                child: Text("Refresh"),
+              ),
+              BlocBuilder<EventsCubit, EventsState>(
+                builder: (context, state) {
+                  if (state is EventsLoading) {
+                    return const Center(child: CircularProgressIndicator());
                   }
-
-                  return BlocBuilder<InterestsCubit, InterestsState>(
-                    builder: (context, state) {
-                      Map<EventModel, bool> interested = Map.fromEntries(
-                        events.map((event) => MapEntry(event, false)),
-                      );
-
-                      if (state is InterestsFetched) {
-                        final interests = state.interests;
-                        interested = Map.fromEntries(
-                          events.map(
-                            (event) => MapEntry(
-                              event,
-                              interests.any((i) => i.eventId == event.id),
+                  if (state is EventsError) {
+                    return Center(child: Text(loc.errorOccurred(state.error)));
+                  }
+                  if (state is EventsFetched) {
+                    final events = state.events;
+                    if (events.isEmpty) {
+                      return Text("No events found");
+                    }
+        
+                    return BlocBuilder<InterestsCubit, InterestsState>(
+                      builder: (context, state) {
+                        Map<EventModel, bool> interested = Map.fromEntries(
+                          events.map((event) => MapEntry(event, false)),
+                        );
+        
+                        if (state is InterestsFetched) {
+                          final interests = state.interests;
+                          interested = Map.fromEntries(
+                            events.map(
+                              (event) => MapEntry(
+                                event,
+                                interests.any((i) => i.eventId == event.id),
+                              ),
                             ),
+                          );
+                        }
+        
+                        return Expanded(
+                          child: ListView.builder(
+                            itemCount: events.length,
+                            itemBuilder: (context, index) {
+                              final event = events[index];
+        
+                              return Column(
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) =>
+                                              EventDetails(event: event),
+                                        ),
+                                      );
+                                    },
+                                    child: FeedEventCard(
+                                      event: event,
+                                      isInterested: interested[event]!,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                ],
+                              );
+                            },
                           ),
                         );
                       }
@@ -192,12 +247,27 @@ class Filters extends StatelessWidget {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           for (final filter in filters)
-            OutlinedButton(onPressed: () {}, child: Text(filter)),
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  backgroundColor: Colors.blue.shade50,
+                  foregroundColor: Colors.blue.shade800,
+                  side: BorderSide(color: Colors.blue.shade200),
+                  padding: EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+                onPressed: () {},
+                child: Text(filter),
+              ),
+            ),
         ],
       ),
     );
   }
 }
+

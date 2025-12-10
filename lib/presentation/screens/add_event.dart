@@ -1,5 +1,6 @@
 import 'package:dzevent/data/models/event_model.dart';
 import 'package:dzevent/lib/utils.dart';
+import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
 import 'package:dzevent/logic/cubits/events/events_cubit.dart';
 import 'package:dzevent/logic/cubits/events/events_state.dart';
 import 'package:dzevent/presentation/screens/assocAdmin.dart';
@@ -132,8 +133,8 @@ class _AddeventState extends State<Addevent> {
       final location = controllers[_FormField.location]!.text;
       final createdAt = widget.event?.createdAt ?? DateTime.now();
       final category = controllers[_FormField.category]!.text;
-      final associationId =
-          widget.event?.associationId ?? 2; // TODO : this is dummy.
+      final asso = context.read<AccountCubit>().currentAssociation;
+      final associationId = asso!.id ?? 2;
 
       final event = EventModel(
         id: id,
