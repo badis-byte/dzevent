@@ -124,7 +124,6 @@ class _AssocadminState extends State<Assocadmin> {
     // TODO: implement initState
     super.initState();
     context.read<AccountCubit>().getUnvAssoc();
-    print("helloooo");
   }
 
   var Selected1 = true;

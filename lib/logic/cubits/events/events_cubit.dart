@@ -122,4 +122,20 @@ class EventsCubit extends Cubit<EventsState> {
       return false;
     }
   }
+
+  Future<bool> searchEvents({required String searchStr}) async {
+    try {
+      if (searchStr.isEmpty) {
+        await getAll();
+        return true;
+      }
+      emit(EventsLoading());
+      final response = await localRepo.searchEvents(searchStr: searchStr);
+      emit(EventsFetched(events: response));
+      return true;
+    } catch (e) {
+      emit(EventsError(error: e.toString()));
+      return false;
+    }
+  }
 }
