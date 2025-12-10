@@ -1,4 +1,3 @@
-import 'package:dzevent/data/models/event_model.dart';
 import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
 import 'package:dzevent/logic/cubits/auth/auth_states.dart';
 import 'package:dzevent/logic/cubits/interests/interests_cubit.dart';

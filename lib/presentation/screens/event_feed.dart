@@ -90,23 +90,23 @@ class _EventFeedState extends State<EventFeed> {
             children: [
               SearchBarTheme(
                 data: SearchBarThemeData(
-                  backgroundColor: MaterialStateProperty.all(
+                  backgroundColor: WidgetStateProperty.all(
                     Colors.blue.shade50,
                   ),
-                  elevation: MaterialStateProperty.all(1),
-                  shadowColor: MaterialStateProperty.all(Colors.black12),
-                  shape: MaterialStateProperty.all(
+                  elevation: WidgetStateProperty.all(1),
+                  shadowColor: WidgetStateProperty.all(Colors.black12),
+                  shape: WidgetStateProperty.all(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),
                   ),
-                  side: MaterialStateProperty.all(
+                  side: WidgetStateProperty.all(
                     BorderSide(color: Colors.blue.shade200),
                   ),
-                  hintStyle: MaterialStateProperty.all(
+                  hintStyle: WidgetStateProperty.all(
                     TextStyle(color: Colors.grey.shade500),
                   ),
-                  textStyle: MaterialStateProperty.all(
+                  textStyle: WidgetStateProperty.all(
                     TextStyle(color: Colors.black87),
                   ),
                 ),

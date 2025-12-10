@@ -1,11 +1,9 @@
-import 'package:dzevent/data/fake_data.dart';
 import 'package:dzevent/data/models/assoc_model.dart';
 import 'package:dzevent/data/models/event_model.dart';
 import 'package:dzevent/lib/styles.dart';
 import 'package:dzevent/l10n/app_localizations.dart';
 import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
 import 'package:dzevent/logic/cubits/auth/auth_states.dart';
-import 'package:dzevent/logic/cubits/events/events_cubit.dart';
 import 'package:dzevent/presentation/screens/public_assoc_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
