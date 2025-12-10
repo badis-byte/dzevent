@@ -46,22 +46,27 @@ Future<bool> seed() async {
     return false;
   }
 
-  final isEventInserted = await eventsRepo.insertData(
-    EventModel(
-      id: Uuid().v6(),
-      title: "event",
-      description: "no description",
-      startDatetime: DateTime.now(),
-      endDatetime: DateTime.now(),
-      imageUrl: "no image",
-      location: "no locatoin",
-      createdAt: DateTime.now(),
-      associationId: 1,
-      category: "Tech",
-    ),
-  );
-  if (!isEventInserted) {
-    return false;
+  final uuid = Uuid();
+  for (int i = 0; i < 5; ++i) {
+    final id = uuid.v4();
+    final isEventInserted = await eventsRepo.insertData(
+      EventModel(
+        id: id,
+        title: "event #$i",
+        description: "no description",
+        startDatetime: DateTime.now(),
+        endDatetime: DateTime.now(),
+        imageUrl: "no image",
+        location: "no locatoin",
+        createdAt: DateTime.now(),
+        associationId: 1,
+        category: "Tech",
+      ),
+    );
+    if (!isEventInserted) {
+      return false;
+    }
+    print("Evnet #${id} is inserted");
   }
 
   return true;
