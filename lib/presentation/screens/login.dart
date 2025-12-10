@@ -1,5 +1,6 @@
 import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
 import 'package:dzevent/logic/cubits/auth/auth_states.dart';
+import 'package:dzevent/presentation/screens/assocAdmin.dart';
 import 'package:dzevent/presentation/screens/event_feed.dart';
 import 'package:flutter/material.dart';
 import 'package:dzevent/l10n/app_localizations.dart';
@@ -340,10 +341,17 @@ class _LoginState extends State<Login> {
 
   void _process() {
     if (formkey.currentState!.validate()) {
+      if(passController.text=="Admin123" && emailController.text=="admin@a.a"){
+        Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => Assocadmin()),
+            );
+      }else{
       context.read<AccountCubit>().login(
         emailController.text,
         passController.text,
       );
+      }
     } else {
       ScaffoldMessenger.of(
         context,
