@@ -105,9 +105,13 @@ class MainScaffold extends StatelessWidget {
       appBar: AppBar(
         title: title,
         actions: actions,
-        backgroundColor: const Color.fromARGB(255, 161, 213, 255),
+        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       ),
-      drawer: BlocBuilder<AccountCubit, AccountState>(
+      drawer: BlocConsumer<AccountCubit, AccountState>(
+        listener: (context, state) => {
+          ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Please login to get routed!')))
+        },
         builder: (context, state) {
           if (state is AssociationFetched) {
             return drawer(drawerItemsUpAssociation, drawerItemsBottom, context);
