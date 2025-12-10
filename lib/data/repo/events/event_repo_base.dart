@@ -10,7 +10,7 @@ abstract class EventsRepoBase {
   Future<bool> updateRecord(EventModel value, String id);
   Future<bool> deleteRecord(String id);
   Future<EventModel?> getEvent({required String id});
-  Future<List<EventModel>> getEventByFilter({required String filter});
+  Future<List<EventModel>> getFilteredEvents({required List<String> filters});
   Future<List<EventModel>> searchEvents({required String searchStr});
 
   static EventsRepoBase? _historyInstance;

@@ -36,14 +36,14 @@ class EventsCubit extends Cubit<EventsState> {
     }
   }
 
-  Future<bool> getEventByType({required String filter}) async {
+  Future<bool> getFilteredEvents({required List<String> filters}) async {
     try {
       emit(EventsLoading());
-      final List<EventModel> response = await localRepo.getEventByFilter(
-        filter: filter,
+      final List<EventModel> response = await localRepo.getFilteredEvents(
+        filters: filters,
       );
       if (response == []) {
-        emit(EventsError(error: "(getEvent) event #$filter not found"));
+        emit(EventsError(error: "(getEvent) event #$filters not found"));
         return false;
       } else {
         print("response <inside event cubit>: ${response.toString()}");

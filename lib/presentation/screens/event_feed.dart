@@ -27,8 +27,14 @@ class EventFeed extends StatefulWidget {
 }
 
 class _EventFeedState extends State<EventFeed> {
-
-
+  final filters = [
+    "Tech",
+    "AI and Data Science",
+    "Business",
+    "Agriculture",
+    "Sociology",
+    "Meetup",
+  ];
   final searchController = TextEditingController();
 
   int userId = 2;
@@ -47,30 +53,22 @@ class _EventFeedState extends State<EventFeed> {
   Future<bool> init() async {
     final authCubit = context.read<AccountCubit>();
     final authState = authCubit.state;
-    print("(EventFeed::init) authState= ${authState.runtimeType}");
+    if (authState is! UserFetched && authState is! AssociationFetched) {
+      print("User / Association not fetched");
+      return false;
+    }
     if (authState is UserFetched) {
       userId = authState.user.id!;
-      print("EventCard: user fetched ${authState.user.name} ");
       final interestsCubit = context.read<InterestsCubit>();
-      print(
-        "(EventFeed::init) interestsState= ${interestsCubit.state.runtimeType}",
-      );
       await interestsCubit.getUserInterests(userId: userId!);
       return true;
     } else if (authState is AssociationFetched) {
       userId = authState.association.id!;
-      print("EventCard: user fetched ${authState.association.name} ");
       final interestsCubit = context.read<InterestsCubit>();
-      print(
-        "(EventFeed::init) interestsState= ${interestsCubit.state.runtimeType}",
-      );
       await interestsCubit.getUserInterests(userId: userId!);
       return true;
-    } else {
-      print(authState);
-      print("Event Card: user not fetched");
-      return false;
     }
+    return false;
   }
 
   Future<bool> refresh() async {
@@ -136,7 +134,6 @@ class _EventFeedState extends State<EventFeed> {
 
               Filters(
                 filters: [
-                  "All",
                   "Tech",
                   "AI and Data Science",
                   "Business",
@@ -161,8 +158,22 @@ class _EventFeedState extends State<EventFeed> {
                       return Text("No events found");
                     }
 
-                    return BlocBuilder<InterestsCubit, InterestsState>(
+                    return BlocConsumer<InterestsCubit, InterestsState>(
+                      listener: (context, state) async {
+                        final authCubit = context.read<AccountCubit>();
+                        final authState = authCubit.state;
+                        if (state is InterestsMutated) {
+                          if (authState is UserFetched) {
+                            await context
+                                .read<InterestsCubit>()
+                                .getUserInterests(userId: authState.user.id!);
+                          } else {
+                            debugPrint("User not fetched. Cannot refetch feed");
+                          }
+                        }
+                      },
                       builder: (context, state) {
+                        print("Interests State ${state.runtimeType}");
                         Map<EventModel, bool> interested = Map.fromEntries(
                           events.map((event) => MapEntry(event, false)),
                         );
@@ -261,9 +272,37 @@ class _EventFeedState extends State<EventFeed> {
   }
 }
 
-class Filters extends StatelessWidget {
+class Filters extends StatefulWidget {
   final List<String> filters;
   const Filters({super.key, required this.filters});
+
+  @override
+  State<Filters> createState() => _FiltersState();
+}
+
+class _FiltersState extends State<Filters> {
+  late Map<String, bool> filtersState;
+  @override
+  void initState() {
+    super.initState();
+    filtersState = Map.fromEntries(
+      widget.filters.map((filter) => MapEntry(filter, false)),
+    );
+  }
+
+  Future<bool> toggleFilter(String filter) async {
+    final prevState = filtersState[filter]!;
+    setState(() {
+      filtersState = {...filtersState, filter: !prevState};
+    });
+    await context.read<EventsCubit>().getFilteredEvents(
+      filters: filtersState.entries
+          .where((entry) => entry.value) // keep only true values
+          .map((entry) => entry.key) // take the key
+          .toList(),
+    );
+    return true;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -271,13 +310,15 @@ class Filters extends StatelessWidget {
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
-          for (final filter in filters)
+          for (final filter in widget.filters)
             Padding(
               padding: const EdgeInsets.only(right: 8.0),
               child: OutlinedButton(
                 style: OutlinedButton.styleFrom(
                   backgroundColor: Colors.blue.shade50,
-                  foregroundColor: Colors.blue.shade800,
+                  foregroundColor: filtersState[filter]!
+                      ? Colors.red
+                      : Colors.blue.shade800,
                   side: BorderSide(color: Colors.blue.shade200),
                   padding: EdgeInsets.symmetric(horizontal: 18, vertical: 12),
                   shape: RoundedRectangleBorder(
@@ -285,13 +326,7 @@ class Filters extends StatelessWidget {
                   ),
                 ),
                 onPressed: () async {
-                  if (filter == "All") {
-                    context.read<EventsCubit>().getAll();
-                  } else {
-                    await context.read<EventsCubit>().getEventByType(
-                      filter: filter,
-                    );
-                  }
+                  await toggleFilter(filter);
                 },
                 child: Text(filter),
               ),

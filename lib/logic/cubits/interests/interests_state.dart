@@ -24,6 +24,9 @@ class InterestedEventsFetched extends InterestsCanToggle {
   InterestedEventsFetched({required this.interestedEvents});
 }
 
-class InterestAdded extends InterestsState {}
+// -- Mutations
+class InterestsMutated extends InterestsState {}
 
-class InterestDeleted extends InterestsState {}
+class InterestAdded extends InterestsMutated {}
+
+class InterestDeleted extends InterestsMutated {}

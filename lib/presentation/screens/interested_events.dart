@@ -47,14 +47,26 @@ class _InterestedEventsScreenState extends State<InterestedEventsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint("building interests");
     return MainScaffold(
       title: const Text("Interested Events"),
       body: Column(
         children: [
           SizedBox(height: 16),
 
-          BlocBuilder<InterestsCubit, InterestsState>(
+          BlocConsumer<InterestsCubit, InterestsState>(
+            listener: (context, state) async {
+              final authCubit = context.read<AccountCubit>();
+              final authState = authCubit.state;
+              if (state is InterestsMutated) {
+                if (authState is UserFetched) {
+                  await context.read<InterestsCubit>().getUserInterests(
+                    userId: authState.user.id!,
+                  );
+                } else {
+                  debugPrint("User not fetched. Cannot refetch feed");
+                }
+              }
+            },
             builder: (context, state) {
               if (state is InterestsLoading) {
                 return const Center(child: CircularProgressIndicator());

@@ -96,7 +96,6 @@ class AccountCubit extends Cubit<AccountState> {
         print(res);
       } else {
         UserModel user = UserModel(
-          // id: 1,
           name: name,
           email: email,
           profilePicture: "assets/images/users/guest.png",

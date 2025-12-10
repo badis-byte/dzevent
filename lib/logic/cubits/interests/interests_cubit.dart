@@ -115,7 +115,6 @@ class InterestsCubit extends Cubit<InterestsState> {
     } else {
       isToggled = await delete(userId: userId, eventId: eventId);
     }
-    await getUserInterestedEvents(userId: userId);
     return isToggled;
   }
 }

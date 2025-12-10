@@ -57,10 +57,19 @@ class EventsRepo extends EventsRepoBase {
   }
 
   @override
-  Future<List<EventModel>> getEventByFilter({required String filter}) async {
+  Future<List<EventModel>> getFilteredEvents({
+    required List<String> filters,
+  }) async {
+    if (filters.isEmpty) {
+      return await getData();
+    }
+    final placeholders = List.filled(
+      filters.length,
+      '?',
+    ).join(' OR category = ');
     final obj = await eventsTable.getRecords(
-      where: 'category = ?',
-      whereArgs: [filter],
+      where: 'category = $placeholders',
+      whereArgs: filters,
     );
     // print(obj ?? "object is null");
     if (obj == null) {
