@@ -5,6 +5,7 @@ import 'package:dzevent/presentation/screens/associationProfileTwo.dart';
 import 'package:dzevent/presentation/screens/event_feed.dart';
 import 'package:dzevent/presentation/screens/interested_events.dart';
 import 'package:dzevent/presentation/screens/login.dart';
+import 'package:dzevent/presentation/screens/welcome.dart';
 import 'package:dzevent/presentation/widgets/profile_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -50,9 +51,10 @@ class MainScaffold extends StatelessWidget {
             InkWell(
               onTap: () {
                 if (item['label'] == "Log Out") {
+                  Navigator.pop(context);
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => Login()),
+                    MaterialPageRoute(builder: (_) => ImageCarousel()),
                   );
                   context.read<AccountCubit>().logout();
                 }
@@ -100,7 +102,11 @@ class MainScaffold extends StatelessWidget {
     ];
 
     return Scaffold(
-      appBar: AppBar(title: title, actions: actions, backgroundColor: const Color.fromARGB(255, 161, 213, 255),),
+      appBar: AppBar(
+        title: title,
+        actions: actions,
+        backgroundColor: const Color.fromARGB(255, 161, 213, 255),
+      ),
       drawer: BlocBuilder<AccountCubit, AccountState>(
         builder: (context, state) {
           if (state is AssociationFetched) {

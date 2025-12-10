@@ -64,10 +64,7 @@ class FeedEventCard extends StatelessWidget {
             event.imageUrl,
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) {
-              return Image.asset(
-                event.imageUrl, // fallback image
-                fit: BoxFit.cover,
-              );
+              return Icon(Icons.image);
             },
           ),
           Container(

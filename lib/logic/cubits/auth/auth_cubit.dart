@@ -156,13 +156,14 @@ class AccountCubit extends Cubit<AccountState> {
 
   Future<bool> getAssoc(int id) async {
     try {
+      print("fetching association by id");
       emit(AccountLoading());
       final response = await localAssRepo.getAssociation(id);
       if (response.isEmpty) {
         AccountError(error: "empty data");
         return false;
       } else {
-        emit(AssociationFetched(association: response.first));
+        emit(AssoicationDetailFetched(asso: response.first));
         return true;
       }
     } catch (e) {
@@ -195,12 +196,14 @@ class AccountCubit extends Cubit<AccountState> {
     }
   }
 
-  dynamic getcurrentAssociation() {
-    if (state is AssociationFetched) {
+  Future<dynamic> getcurrentAssociation(int id) async {
+    try {
+      var response = await localAssRepo.getAssociation(id);
+      emit(AssociationFetched(association: response.first));
       print("fetching association");
-      return currentAssociation;
-    } else {
-      throw Exception("no user");
+      return true;
+    } catch (e) {
+      print("error -> $e");
     }
   }
 }
