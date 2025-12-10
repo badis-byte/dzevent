@@ -55,4 +55,24 @@ class EventsRepo extends EventsRepoBase {
     }
     return EventModel.fromMap(obj);
   }
+
+  @override
+  Future<List<EventModel>> getEventByFilter({required String filter}) async {
+    final obj = await eventsTable.getRecords(
+      where: 'category = ?',
+      whereArgs: [filter],
+    );
+    // print(obj ?? "object is null");
+    if (obj == null) {
+      return [];
+    }
+    if (obj.isEmpty) {
+      return [];
+    }
+    List<EventModel> result = [];
+    for (var event in obj) {
+      result.add(EventModel.fromMap(event));
+    }
+    return result;
+  }
 }

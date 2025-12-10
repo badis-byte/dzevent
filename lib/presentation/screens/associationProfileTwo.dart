@@ -1,13 +1,11 @@
 import 'package:dzevent/data/models/assoc_model.dart';
 import 'package:dzevent/data/models/event_model.dart';
 import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
-import 'package:dzevent/logic/cubits/auth/auth_states.dart';
 import 'package:dzevent/logic/cubits/events/events_cubit.dart';
 import 'package:dzevent/logic/cubits/events/events_state.dart';
 import 'package:dzevent/presentation/screens/add_event.dart';
 import 'package:dzevent/l10n/app_localizations.dart';
 import 'package:dzevent/presentation/screens/event_feed.dart';
-import 'package:dzevent/presentation/screens/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -32,11 +30,10 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
     //store current user
     //fetch events
     final state = context.read<AccountCubit>().association;
-        if (state == true) {
-          
-          final assoc = context.read<AccountCubit>().currentAssociation;
-          _currentAssoc = assoc;
-        }
+    if (state == true) {
+      final assoc = context.read<AccountCubit>().currentAssociation;
+      _currentAssoc = assoc;
+    }
 
     _currentAssoc ??= AssociationModel(
       id: 2,
@@ -233,6 +230,7 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
                           final cubit = context.read<EventsCubit>();
                           try {
                             if (await cubit.deleteInstace(event.id)) {
+                              cubit.getAllEventsByUser(_currentAssoc!.id!);
                               print("Event deleted successfully");
                             }
                           } catch (e) {

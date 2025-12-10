@@ -1,11 +1,9 @@
-import 'package:dzevent/data/fake_data.dart';
 import 'package:dzevent/data/models/assoc_model.dart';
 import 'package:dzevent/data/models/event_model.dart';
 import 'package:dzevent/lib/styles.dart';
 import 'package:dzevent/l10n/app_localizations.dart';
 import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
 import 'package:dzevent/logic/cubits/auth/auth_states.dart';
-import 'package:dzevent/logic/cubits/events/events_cubit.dart';
 import 'package:dzevent/presentation/screens/public_assoc_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,7 +24,6 @@ class _EventDetailsState extends State<EventDetails> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    
   }
 
   @override
@@ -102,8 +99,8 @@ class _EventDetailsState extends State<EventDetails> {
                     const Divider(),
                     BlocBuilder<AccountCubit, AccountState>(
                       builder: (context, state) {
-                        if (state is AssociationFetched) {
-                          return AssociatonLink(association: state.association);
+                        if (state is AssoicationDetailFetched) {
+                          return AssociatonLink(association: state.asso);
                         }
                         return Text("can't fetch association");
                       },
@@ -142,7 +139,7 @@ class AssociatonLink extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
-
+    
     return Row(
       children: [
         Container(
