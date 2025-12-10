@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:dzevent/logic/cubits/events/events_cubit.dart';
 import 'package:dzevent/logic/cubits/interests/interests_cubit.dart';
 import 'package:dzevent/presentation/screens/assocAdmin.dart';
+import 'package:dzevent/presentation/screens/associationProfileTwo.dart';
 import 'package:dzevent/presentation/screens/event_feed.dart';
 import 'package:dzevent/presentation/screens/login.dart';
 import 'package:dzevent/presentation/screens/signup.dart';
@@ -54,6 +55,7 @@ class MainApp extends StatelessWidget {
           '/signup': (_) => Signup(),
           '/login': (_) => Login(),
           '/event_feed': (_) => EventFeed(),
+          '/assocownprofile': (_) => AssocProfTwo(),
         },
       ),
     );
