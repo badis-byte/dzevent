@@ -238,7 +238,15 @@ class Filters extends StatelessWidget {
                     borderRadius: BorderRadius.circular(20),
                   ),
                 ),
-                onPressed: () {},
+                onPressed: () async {
+                  if (filter == "All") {
+                    context.read<EventsCubit>().getAll();
+                  } else {
+                    await context.read<EventsCubit>().getEventByType(
+                      filter: filter,
+                    );
+                  }
+                },
                 child: Text(filter),
               ),
             ),

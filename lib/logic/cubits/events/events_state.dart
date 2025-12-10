@@ -21,6 +21,7 @@ class SingleEventFetched extends EventsState {
   SingleEventFetched({required this.event});
 }
 
+
 class AddNewEventSuccess extends EventsState {}
 
 class UpdateEventSuccess extends EventsState {}
