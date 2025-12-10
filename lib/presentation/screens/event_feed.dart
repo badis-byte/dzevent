@@ -26,7 +26,6 @@ class EventFeed extends StatefulWidget {
 }
 
 class _EventFeedState extends State<EventFeed> {
-
   final filters = [
     "Tech",
     "AI and Data Science",
@@ -53,30 +52,22 @@ class _EventFeedState extends State<EventFeed> {
   Future<bool> init() async {
     final authCubit = context.read<AccountCubit>();
     final authState = authCubit.state;
-    print("(EventFeed::init) authState= ${authState.runtimeType}");
+    if (authState is! UserFetched && authState is! AssociationFetched) {
+      print("User / Association not fetched");
+      return false;
+    }
     if (authState is UserFetched) {
       userId = authState.user.id!;
-      print("EventCard: user fetched ${authState.user.name} ");
       final interestsCubit = context.read<InterestsCubit>();
-      print(
-        "(EventFeed::init) interestsState= ${interestsCubit.state.runtimeType}",
-      );
       await interestsCubit.getUserInterests(userId: userId!);
       return true;
     } else if (authState is AssociationFetched) {
       userId = authState.association.id!;
-      print("EventCard: user fetched ${authState.association.name} ");
       final interestsCubit = context.read<InterestsCubit>();
-      print(
-        "(EventFeed::init) interestsState= ${interestsCubit.state.runtimeType}",
-      );
       await interestsCubit.getUserInterests(userId: userId!);
       return true;
-    } else {
-      print(authState);
-      print("Event Card: user not fetched");
-      return false;
     }
+    return false;
   }
 
   Future<bool> refresh() async {
@@ -159,8 +150,22 @@ class _EventFeedState extends State<EventFeed> {
                       return Text("No events found");
                     }
 
-                    return BlocBuilder<InterestsCubit, InterestsState>(
+                    return BlocConsumer<InterestsCubit, InterestsState>(
+                      listener: (context, state) async {
+                        final authCubit = context.read<AccountCubit>();
+                        final authState = authCubit.state;
+                        if (state is InterestsMutated) {
+                          if (authState is UserFetched) {
+                            await context
+                                .read<InterestsCubit>()
+                                .getUserInterests(userId: authState.user.id);
+                          } else {
+                            debugPrint("User not fetched. Cannot refetch feed");
+                          }
+                        }
+                      },
                       builder: (context, state) {
+                        print("Interests State ${state.runtimeType}");
                         Map<EventModel, bool> interested = Map.fromEntries(
                           events.map((event) => MapEntry(event, false)),
                         );

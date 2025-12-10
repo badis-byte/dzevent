@@ -2,14 +2,14 @@
 import 'dart:convert';
 
 class UserModel {
-  int? id;
+  int id;
   String name;
   String email;
   String profilePicture;
   DateTime createdAt;
 
   UserModel({
-    this.id,
+    required this.id,
     required this.name,
     required this.email,
     required this.profilePicture,
