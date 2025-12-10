@@ -8,7 +8,9 @@ import 'package:dzevent/presentation/screens/assocAdmin.dart';
 import 'package:dzevent/presentation/screens/associationProfileTwo.dart';
 import 'package:dzevent/presentation/screens/event_feed.dart';
 import 'package:dzevent/presentation/screens/login.dart';
+import 'package:dzevent/presentation/screens/my_account_credentials.dart';
 import 'package:dzevent/presentation/screens/signup.dart';
+import 'package:dzevent/presentation/screens/user_profile.dart';
 import 'package:dzevent/presentation/screens/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -56,6 +58,7 @@ class MainApp extends StatelessWidget {
           '/login': (_) => Login(),
           '/event_feed': (_) => EventFeed(),
           '/assocownprofile': (_) => AssocProfTwo(),
+          '/userprofile': (_) => Myaccountcredentials(),
         },
       ),
     );
