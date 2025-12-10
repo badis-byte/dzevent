@@ -5,6 +5,7 @@ import 'package:dzevent/lib/defs.dart';
 import 'package:dzevent/lib/styles.dart';
 import 'package:dzevent/logic/cubits/events/events_cubit.dart';
 import 'package:dzevent/logic/cubits/events/events_state.dart';
+import 'package:dzevent/presentation/screens/event_details.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:dzevent/data/fake_data.dart' as DATA;
@@ -156,9 +157,22 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
                       if (state is EventsFetched) {
                         return ListView.builder(
                           itemCount: state.events.length,
-                          itemBuilder: (context, index) => buildEventItem(
-                            context,
-                            event: state.events[index],
+                          itemBuilder: (context, index) => GestureDetector(
+                            onTap: () {
+                              debugPrint(
+                                "the event ${state.events[index].title} is printed ",
+                              );
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => EventDetails(event: state.events[index]),
+                                ),
+                              );
+                            },
+                            child: buildEventItem(
+                              context,
+                              event: state.events[index],
+                            ),
                           ),
                         );
                       } else if (state is EventsLoading) {
