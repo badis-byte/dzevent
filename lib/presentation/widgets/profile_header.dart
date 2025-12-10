@@ -89,7 +89,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                 onPressed: () {
                   Navigator.of(
                     context,
-                  ).pushReplacement(UserProfileScreen.route());
+                  ).pushNamed('/userprofile');
                 },
                 child: Text(
                   "View Profile",

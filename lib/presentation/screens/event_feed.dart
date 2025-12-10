@@ -143,6 +143,7 @@ class _EventFeedState extends State<EventFeed> {
                     if (events.isEmpty) {
                       return Text("No events found");
                     }
+                    
         
                     return BlocBuilder<InterestsCubit, InterestsState>(
                       builder: (context, state) {
@@ -192,47 +193,15 @@ class _EventFeedState extends State<EventFeed> {
                           ),
                         );
                       }
-
-                      return Expanded(
-                        child: ListView.builder(
-                          itemCount: events.length,
-                          itemBuilder: (context, index) {
-                            final event = events[index];
-
-                            return Column(
-                              children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    // context.read<AccountCubit>().getAssoc(event.associationId);
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (_) =>
-                                            EventDetails(event: event),
-                                      ),
-                                    ).then((_) {
-                                      context.read<EventsCubit>().getAll();
-                                    });
-                                  },
-                                  child: FeedEventCard(
-                                    event: event,
-                                    isInterested: interested[event]!,
-                                  ),
-                                ),
-                                const SizedBox(height: 16),
-                              ],
-                            );
-                          },
-                        ),
-                      );
-                    },
-                  );
-                }
+                    );
+                  
+                  }
                 return const SizedBox();
               },
             ),
           ],
         ),
+      ),
       ),
     );
   }
@@ -270,4 +239,3 @@ class Filters extends StatelessWidget {
     );
   }
 }
-
