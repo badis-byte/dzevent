@@ -1,3 +1,4 @@
+import 'package:dzevent/data/fake_data.dart';
 import 'package:dzevent/data/models/assoc_model.dart';
 import 'package:dzevent/data/models/event_model.dart';
 import 'package:dzevent/lib/styles.dart';
@@ -25,13 +26,11 @@ class _EventDetailsState extends State<EventDetails> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    context.read<AccountCubit>().getAssoc(widget.event.associationId);
     
   }
 
   @override
   Widget build(BuildContext context) {
-    
     final loc = AppLocalizations.of(context)!;
 
     return Scaffold(
@@ -168,25 +167,14 @@ class AssociatonLink extends StatelessWidget {
           ],
         ),
         const Spacer(),
-        BlocBuilder<AccountCubit, AccountState>(
-          builder: (context, state) {
-            if (state is AssociationFetched) {
-              return IconButton(
-                icon: const Icon(Icons.arrow_forward),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) =>
-                          PublicAssocProfile(asso: state.association),
-                    ),
-                  );
-                },
-              );
-            }
-            return IconButton(
-              icon: const Icon(Icons.arrow_forward),
-              onPressed: null, 
+        IconButton(
+          icon: const Icon(Icons.arrow_forward),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => PublicAssocProfile(asso: association),
+              ),
             );
           },
         ),

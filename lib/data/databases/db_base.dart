@@ -73,7 +73,7 @@ class DBBaseTable {
         where: where,
         whereArgs: whereArgs,
       );
-      if (data.length == 0) {
+      if (data.isEmpty) {
         // not found
         return null;
       }
@@ -145,7 +145,7 @@ class DBBaseTable {
     try {
       final db = await DBHelper.getDatabase();
       List<AssociationModel> result = [];
-      final associations = await await db.rawQuery(
+      final associations = await db.rawQuery(
         'SELECT * FROM associations WHERE id = ?',
         [id],
       );

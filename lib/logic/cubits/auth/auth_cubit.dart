@@ -44,6 +44,10 @@ class AccountCubit extends Cubit<AccountState> {
     return true;
   }
 
+  bool logout() {
+    emit(AccountLogout());
+    return true;
+  }
   // UserModel? getCurrentUser() {
   //   return _currentUser;
   // }
@@ -188,6 +192,15 @@ class AccountCubit extends Cubit<AccountState> {
     } catch (e) {
       emit(AccountError(error: "unable to delete association -> $e"));
       throw Exception("Something went wrong --> $e");
+    }
+  }
+
+  dynamic getcurrentAssociation() {
+    if (state is AssociationFetched) {
+      print("fetching association");
+      return _currentAssociation;
+    } else {
+      throw Exception("no user");
     }
   }
 }

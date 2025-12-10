@@ -3,13 +3,11 @@ import 'package:dzevent/l10n/app_localizations.dart';
 import 'package:dzevent/data/models/event_model.dart';
 import 'package:dzevent/lib/defs.dart';
 import 'package:dzevent/lib/styles.dart';
-import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
 import 'package:dzevent/logic/cubits/events/events_cubit.dart';
 import 'package:dzevent/logic/cubits/events/events_state.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:dzevent/data/fake_data.dart' as DATA;
-import 'package:path/path.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PublicAssocProfile extends StatefulWidget {

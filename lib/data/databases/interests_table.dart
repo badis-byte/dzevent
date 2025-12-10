@@ -3,6 +3,7 @@ import 'package:dzevent/data/databases/dbhelper.dart';
 import 'package:dzevent/data/models/interest_model.dart';
 
 class InterestsTable extends DBBaseTable {
+  @override
   var db_table = "interests";
 
   static var sql_code = """
@@ -66,7 +67,7 @@ class InterestsTable extends DBBaseTable {
         where: 'userId = ? AND eventId = ?',
         whereArgs: [userId, eventId],
       );
-      if (records.length == 0) {
+      if (records.isEmpty) {
         return null;
       } else if (records.length == 1) {
         return records[0];

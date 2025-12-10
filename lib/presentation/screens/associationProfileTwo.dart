@@ -6,6 +6,8 @@ import 'package:dzevent/logic/cubits/events/events_cubit.dart';
 import 'package:dzevent/logic/cubits/events/events_state.dart';
 import 'package:dzevent/presentation/screens/add_event.dart';
 import 'package:dzevent/l10n/app_localizations.dart';
+import 'package:dzevent/presentation/screens/event_feed.dart';
+import 'package:dzevent/presentation/screens/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -14,6 +16,8 @@ void main(List<String> args) {
 }
 
 class AssocProfTwo extends StatefulWidget {
+  static MaterialPageRoute route() =>
+      MaterialPageRoute(builder: (context) => AssocProfTwo());
   const AssocProfTwo({super.key});
 
   @override
@@ -83,7 +87,20 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Center(
-          child: CircleAvatar(backgroundImage: NetworkImage(assos.profilePicture), radius: 64),
+          child: CircleAvatar(
+            radius: 64,
+            child: ClipOval(
+              child: Image.network(
+                assos.profilePicture,
+                width: 128,
+                height: 128,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return const Icon(Icons.person, size: 64);
+                },
+              ),
+            ),
+          ),
         ),
         Text(
           assos.name,
@@ -144,7 +161,7 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
                     height: 120,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
-                      return Icon(Icons.event,size: 48,);
+                      return Icon(Icons.event, size: 48);
                     },
                   ),
                   SizedBox(width: 8),
@@ -239,99 +256,97 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
     // late final Map<_FormField, TextEditingController> controllers;
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
         backgroundColor: Colors.white,
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          leading: Builder(
-            builder: (context) {
-              return IconButton(
-                icon: const Icon(Icons.arrow_back),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const Addevent()),
-                  );
-                },
-              );
-            },
-          ),
+        leading: Builder(
+          builder: (context) {
+            return IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () {
+                debugPrint("routing to eventfeed");
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => EventFeed()),
+                );
+              },
+            );
+          },
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              headerOfPage(_currentAssoc!),
-              SizedBox(height: 32),
-              // title
-              SizedBox(
-                width: double.infinity,
-                child: Text(
-                  loc.eventsTitle,
-                  textAlign: TextAlign.start,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 24,
-                  ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            headerOfPage(_currentAssoc!),
+            SizedBox(height: 32),
+            // title
+            SizedBox(
+              width: double.infinity,
+              child: Text(
+                loc.eventsTitle,
+                textAlign: TextAlign.start,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24,
                 ),
               ),
-              _currentAssoc == null
-                  ? BlocBuilder<EventsCubit, EventsState>(
-                      builder: (context, state) {
-                        if (state is EventsLoading) {
-                          return Center(child: CircularProgressIndicator());
-                        }
-                        if (state is EventsError) {
-                          return Center(child: Text(state.error));
-                        }
-                        if (state is EventsFetched) {
-                          debugPrint(state.events.toString());
-                          return Expanded(
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.vertical,
-                              child: Column(
-                                children: [
-                                  for (final event in state.events)
-                                    eventCard(event),
-                                ],
-                              ),
+            ),
+            _currentAssoc == null
+                ? BlocBuilder<EventsCubit, EventsState>(
+                    builder: (context, state) {
+                      if (state is EventsLoading) {
+                        return Center(child: CircularProgressIndicator());
+                      }
+                      if (state is EventsError) {
+                        return Center(child: Text(state.error));
+                      }
+                      if (state is EventsFetched) {
+                        debugPrint(state.events.toString());
+                        return Expanded(
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.vertical,
+                            child: Column(
+                              children: [
+                                for (final event in state.events)
+                                  eventCard(event),
+                              ],
                             ),
-                          );
-                        }
-                        return Text("Unexpected state: ${state.runtimeType}");
-                      },
-                    )
-                  : BlocBuilder<EventsCubit, EventsState>(
-                      builder: (context, state) {
-                        if (state is EventsLoading) {
-                          return Center(child: CircularProgressIndicator());
-                        }
-                        if (state is EventsError) {
-                          return Center(child: Text(state.error));
-                        }
-                        if (state is EventsFetched) {
-                          debugPrint(state.events.toString());
-                          return Expanded(
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.vertical,
-                              child: Column(
-                                children: [
-                                  for (final event in state.events)
-                                    eventCard(event),
-                                ],
-                              ),
+                          ),
+                        );
+                      }
+                      return Text("Unexpected state: ${state.runtimeType}");
+                    },
+                  )
+                : BlocBuilder<EventsCubit, EventsState>(
+                    builder: (context, state) {
+                      if (state is EventsLoading) {
+                        return Center(child: CircularProgressIndicator());
+                      }
+                      if (state is EventsError) {
+                        return Center(child: Text(state.error));
+                      }
+                      if (state is EventsFetched) {
+                        debugPrint(state.events.toString());
+                        return Expanded(
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.vertical,
+                            child: Column(
+                              children: [
+                                for (final event in state.events)
+                                  eventCard(event),
+                              ],
                             ),
-                          );
-                        } else {
-                          debugPrint("no event fetched");
-                        }
-                        return Text("Unexpected state: ${state.runtimeType}");
-                      },
-                    ),
-            ],
-          ),
+                          ),
+                        );
+                      } else {
+                        debugPrint("no event fetched");
+                      }
+                      return Text("Unexpected state: ${state.runtimeType}");
+                    },
+                  ),
+          ],
         ),
       ),
     );

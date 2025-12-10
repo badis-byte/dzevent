@@ -6,6 +6,7 @@ import 'package:dzevent/logic/cubits/events/events_cubit.dart';
 import 'package:dzevent/logic/cubits/events/events_state.dart';
 import 'package:dzevent/logic/cubits/interests/interests_cubit.dart';
 import 'package:dzevent/logic/cubits/interests/interests_state.dart';
+import 'package:dzevent/presentation/screens/associationProfileTwo.dart';
 import 'package:dzevent/presentation/screens/event_details.dart';
 import 'package:dzevent/presentation/widgets/feed_event_card.dart';
 import 'package:dzevent/presentation/widgets/main_scaffold.dart';
@@ -47,7 +48,17 @@ class _EventFeedState extends State<EventFeed> {
       );
       await interestsCubit.getUserInterests(userId: userId!);
       return true;
+    } else if (authState is AssociationFetched) {
+      final userId = authState.association.id;
+      print("EventCard: user fetched ${authState.association.name} ");
+      final interestsCubit = context.read<InterestsCubit>();
+      print(
+        "(EventFeed::init) interestsState= ${interestsCubit.state.runtimeType}",
+      );
+      await interestsCubit.getUserInterests(userId: userId!);
+      return true;
     } else {
+      print(authState);
       print("Event Card: user not fetched");
       return false;
     }
@@ -180,14 +191,47 @@ class _EventFeedState extends State<EventFeed> {
                             },
                           ),
                         );
-                      },
-                    );
-                  }
-                  return const SizedBox();
-                },
-              ),
-            ],
-          ),
+                      }
+
+                      return Expanded(
+                        child: ListView.builder(
+                          itemCount: events.length,
+                          itemBuilder: (context, index) {
+                            final event = events[index];
+
+                            return Column(
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    // context.read<AccountCubit>().getAssoc(event.associationId);
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) =>
+                                            EventDetails(event: event),
+                                      ),
+                                    ).then((_) {
+                                      context.read<EventsCubit>().getAll();
+                                    });
+                                  },
+                                  child: FeedEventCard(
+                                    event: event,
+                                    isInterested: interested[event]!,
+                                  ),
+                                ),
+                                const SizedBox(height: 16),
+                              ],
+                            );
+                          },
+                        ),
+                      );
+                    },
+                  );
+                }
+                return const SizedBox();
+              },
+            ),
+          ],
         ),
       ),
     );
