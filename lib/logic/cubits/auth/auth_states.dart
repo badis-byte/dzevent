@@ -7,8 +7,15 @@ class AccountGuest extends AccountState {}
 
 class AccountLoading extends AccountState {}
 
+class AssoicationDetailFetched extends AccountState {
+  AssociationModel asso;
+  AssoicationDetailFetched({required this.asso});
+}
+
 class AccountExists extends AccountState {}
-class AccountLogout extends AccountState{}
+
+class AccountLogout extends AccountState {}
+
 class AccountError extends AccountState {
   String error;
   AccountError({required this.error});

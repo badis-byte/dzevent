@@ -24,7 +24,6 @@ class _EventDetailsState extends State<EventDetails> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    
   }
 
   @override
@@ -100,8 +99,8 @@ class _EventDetailsState extends State<EventDetails> {
                     const Divider(),
                     BlocBuilder<AccountCubit, AccountState>(
                       builder: (context, state) {
-                        if (state is AssociationFetched) {
-                          return AssociatonLink(association: state.association);
+                        if (state is AssoicationDetailFetched) {
+                          return AssociatonLink(association: state.asso);
                         }
                         return Text("can't fetch association");
                       },
@@ -140,7 +139,7 @@ class AssociatonLink extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
-
+    
     return Row(
       children: [
         Container(

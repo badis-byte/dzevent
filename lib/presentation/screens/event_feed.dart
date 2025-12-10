@@ -1,3 +1,4 @@
+import 'package:dzevent/data/models/assoc_model.dart';
 import 'package:dzevent/data/models/event_model.dart';
 import 'package:dzevent/lib/styles.dart';
 import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
@@ -27,7 +28,7 @@ class EventFeed extends StatefulWidget {
 
 class _EventFeedState extends State<EventFeed> {
   final filters = ["All", "Music", "Sports", "Arts", "Tech"];
-
+  int userId = 2;
   @override
   void initState() {
     context.read<EventsCubit>().getAll();
@@ -40,7 +41,7 @@ class _EventFeedState extends State<EventFeed> {
     final authState = authCubit.state;
     print("(EventFeed::init) authState= ${authState.runtimeType}");
     if (authState is UserFetched) {
-      final userId = authState.user.id;
+      userId = authState.user.id!;
       print("EventCard: user fetched ${authState.user.name} ");
       final interestsCubit = context.read<InterestsCubit>();
       print(
@@ -49,7 +50,7 @@ class _EventFeedState extends State<EventFeed> {
       await interestsCubit.getUserInterests(userId: userId!);
       return true;
     } else if (authState is AssociationFetched) {
-      final userId = authState.association.id;
+      userId = authState.association.id!;
       print("EventCard: user fetched ${authState.association.name} ");
       final interestsCubit = context.read<InterestsCubit>();
       print(
@@ -90,9 +91,7 @@ class _EventFeedState extends State<EventFeed> {
             children: [
               SearchBarTheme(
                 data: SearchBarThemeData(
-                  backgroundColor: WidgetStateProperty.all(
-                    Colors.blue.shade50,
-                  ),
+                  backgroundColor: WidgetStateProperty.all(Colors.blue.shade50),
                   elevation: WidgetStateProperty.all(1),
                   shadowColor: WidgetStateProperty.all(Colors.black12),
                   shape: WidgetStateProperty.all(
@@ -174,15 +173,21 @@ class _EventFeedState extends State<EventFeed> {
                                 children: [
                                   GestureDetector(
                                     onTap: () {
+                                      context.read<AccountCubit>().getAssoc(
+                                        event.associationId,
+                                      );
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                           builder: (_) =>
                                               EventDetails(event: event),
                                         ),
-                                      ).then((_) {
+                                      ).then((_) async {
                                         // Refresh when coming back
                                         context.read<EventsCubit>().getAll();
+                                        await context
+                                            .read<AccountCubit>()
+                                            .getcurrentAssociation(userId);
                                       });
                                     },
                                     child: FeedEventCard(
