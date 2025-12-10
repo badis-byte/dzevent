@@ -89,30 +89,32 @@ class _EventFeedState extends State<EventFeed> {
             spacing: 16.0,
             children: [
               SearchBarTheme(
-              data: SearchBarThemeData(
-                backgroundColor: MaterialStateProperty.all(Colors.blue.shade50,),
-                elevation: MaterialStateProperty.all(1),
-                shadowColor: MaterialStateProperty.all(Colors.black12),
-                shape: MaterialStateProperty.all(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
+                data: SearchBarThemeData(
+                  backgroundColor: MaterialStateProperty.all(
+                    Colors.blue.shade50,
+                  ),
+                  elevation: MaterialStateProperty.all(1),
+                  shadowColor: MaterialStateProperty.all(Colors.black12),
+                  shape: MaterialStateProperty.all(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                  side: MaterialStateProperty.all(
+                    BorderSide(color: Colors.blue.shade200),
+                  ),
+                  hintStyle: MaterialStateProperty.all(
+                    TextStyle(color: Colors.grey.shade500),
+                  ),
+                  textStyle: MaterialStateProperty.all(
+                    TextStyle(color: Colors.black87),
                   ),
                 ),
-                side: MaterialStateProperty.all(
-                  BorderSide(color: Colors.blue.shade200),
-                ),
-                hintStyle: MaterialStateProperty.all(
-                  TextStyle(color: Colors.grey.shade500),
-                ),
-                textStyle: MaterialStateProperty.all(
-                  TextStyle(color: Colors.black87),
+                child: SearchAnchor.bar(
+                  suggestionsBuilder: (context, controller) => [],
+                  barHintText: loc.searchBarHint,
                 ),
               ),
-              child: SearchAnchor.bar(
-                suggestionsBuilder: (context, controller) => [],
-                barHintText: loc.searchBarHint,
-              ),
-            ),
 
               Filters(
                 filters: [
@@ -143,14 +145,13 @@ class _EventFeedState extends State<EventFeed> {
                     if (events.isEmpty) {
                       return Text("No events found");
                     }
-                    
-        
+
                     return BlocBuilder<InterestsCubit, InterestsState>(
                       builder: (context, state) {
                         Map<EventModel, bool> interested = Map.fromEntries(
                           events.map((event) => MapEntry(event, false)),
                         );
-        
+
                         if (state is InterestsFetched) {
                           final interests = state.interests;
                           interested = Map.fromEntries(
@@ -162,13 +163,13 @@ class _EventFeedState extends State<EventFeed> {
                             ),
                           );
                         }
-        
+
                         return Expanded(
                           child: ListView.builder(
                             itemCount: events.length,
                             itemBuilder: (context, index) {
                               final event = events[index];
-        
+
                               return Column(
                                 children: [
                                   GestureDetector(
@@ -179,7 +180,10 @@ class _EventFeedState extends State<EventFeed> {
                                           builder: (_) =>
                                               EventDetails(event: event),
                                         ),
-                                      );
+                                      ).then((_) {
+                                        // Refresh when coming back
+                                        context.read<EventsCubit>().getAll();
+                                      });
                                     },
                                     child: FeedEventCard(
                                       event: event,
@@ -192,16 +196,15 @@ class _EventFeedState extends State<EventFeed> {
                             },
                           ),
                         );
-                      }
+                      },
                     );
-                  
                   }
-                return const SizedBox();
-              },
-            ),
-          ],
+                  return const SizedBox();
+                },
+              ),
+            ],
+          ),
         ),
-      ),
       ),
     );
   }
