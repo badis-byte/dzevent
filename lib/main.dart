@@ -53,7 +53,7 @@ class MainApp extends StatelessWidget {
 
         home: ImageCarousel(),
         routes: {
-          '/admin' : (_) => Assocadmin(),
+          '/admin': (_) => Assocadmin(),
           '/signup': (_) => Signup(),
           '/login': (_) => Login(),
           '/event_feed': (_) => EventFeed(),

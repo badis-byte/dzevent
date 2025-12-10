@@ -9,13 +9,12 @@ class DBBaseTable {
   Future<bool> insertRecord(Map<String, dynamic> data) async {
     try {
       final database = await DBHelper.getDatabase();
-      final isInserted =
-          await database.insert(
-            db_table,
-            data,
-            conflictAlgorithm: ConflictAlgorithm.replace,
-          ) !=
-          0;
+      final id = await database.insert(
+        db_table,
+        data,
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+      final isInserted = id != 0;
       return isInserted;
     } catch (e, stacktrace) {
       print('$e --> $stacktrace');
