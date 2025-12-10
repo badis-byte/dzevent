@@ -27,13 +27,13 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
     super.initState();
     //store current user
     //fetch events
-    BlocListener<AccountCubit, AccountState>(
-      listener: (context, state) {
-        if (state is AssociationFetched) {
-          _currentAssoc = state.association;
+    final state = context.read<AccountCubit>().association;
+        if (state == true) {
+          
+          final assoc = context.read<AccountCubit>().currentAssociation;
+          _currentAssoc = assoc;
         }
-      },
-    );
+
     _currentAssoc ??= AssociationModel(
       id: 2,
       name: "Meta",

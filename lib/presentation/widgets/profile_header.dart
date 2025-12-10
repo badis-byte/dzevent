@@ -74,6 +74,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                   SizedBox(width: 60),
                 ],
               ),
+              //SizedBox(height: 10),
               OutlinedButton(
                 style: OutlinedButton.styleFrom(
                   side: BorderSide(color: Colors.black87, width: 1.4),
@@ -102,8 +103,8 @@ class _ProfileHeaderState extends State<ProfileHeader> {
             ],
           );
         }
-        if (state is UserFetched) {
-          final user = state.user;
+        if (state is AssociationFetched) {
+          final user = state.association;
           return Column(
             children: [
               SizedBox(height: 20),
@@ -112,7 +113,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SizedBox(
-                    width: 61,
+                    width: 51,
                     child: Image.asset(
                       user.profilePicture,
                       errorBuilder: (context, error, stackTrace) =>
@@ -146,6 +147,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                   SizedBox(width: 60),
                 ],
               ),
+              SizedBox(height: 10),
               OutlinedButton(
                 style: OutlinedButton.styleFrom(
                   side: BorderSide(color: Colors.black87, width: 1.4),
@@ -160,7 +162,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                 onPressed: () {
                   Navigator.of(
                     context,
-                  ).pushReplacement(UserProfileScreen.route());
+                  ).pushNamed('/assocownprofile');
                 },
                 child: Text(
                   "View Profile",

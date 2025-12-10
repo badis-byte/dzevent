@@ -33,7 +33,7 @@ class MainScaffold extends StatelessWidget {
     ];
 
     return Scaffold(
-      appBar: AppBar(title: title, actions: actions),
+      appBar: AppBar(title: title, actions: actions, backgroundColor: const Color.fromARGB(255, 161, 213, 255),),
       drawer: Drawer(
         child: Column(
           children: [

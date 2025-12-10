@@ -26,7 +26,7 @@ class FeedEventCard extends StatelessWidget {
     final interestsState = interestsCubit.state;
 
     if (authState is! UserFetched) {
-      print("User not fetched. Cannot toggle interest");
+      print("Please Login. Cannot toggle interest");
       return;
     }
 
