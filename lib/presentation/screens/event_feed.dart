@@ -7,6 +7,7 @@ import 'package:dzevent/logic/cubits/events/events_state.dart';
 import 'package:dzevent/logic/cubits/interests/interests_cubit.dart';
 import 'package:dzevent/logic/cubits/interests/interests_state.dart';
 import 'package:dzevent/presentation/screens/event_details.dart';
+import 'package:dzevent/presentation/screens/notifications.dart';
 import 'package:dzevent/presentation/widgets/feed_event_card.dart';
 import 'package:dzevent/presentation/widgets/main_scaffold.dart';
 import 'package:dzevent/presentation/widgets/refreshable.dart';
@@ -86,7 +87,15 @@ class _EventFeedState extends State<EventFeed> {
         style: headingStyle,
       ),
       actions: [
-        IconButton(onPressed: () {}, icon: Icon(Icons.notifications_none)),
+        IconButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => NotificationScreen()),
+            );
+          },
+          icon: Icon(Icons.notifications_none),
+        ),
       ],
 
       body: Container(
