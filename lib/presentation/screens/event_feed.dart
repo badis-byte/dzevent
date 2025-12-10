@@ -185,45 +185,60 @@ class _EventFeedState extends State<EventFeed> {
                               itemBuilder: (context, index) {
                                 final event = events[index];
 
-                                return Column(
-                                  children: [
-                                    GestureDetector(
-                                      onTap: () {
-                                        BlocListener<
-                                          AccountCubit,
-                                          AccountState
-                                        >(
-                                          listener: (context, state) {
-                                            context
-                                                .read<AccountCubit>()
-                                                .getAssoc(event.associationId);
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (_) =>
-                                                    EventDetails(event: event),
-                                              ),
-                                            ).then((_) async {
-                                              // Refresh when coming back
+                                return BlocBuilder<AccountCubit, AccountState>(
+                                  builder: (context, state) {
+                                    if (state is! AccountGuest) {
+                                      print("state is : ${state.toString()}");
+                                      return Column(
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
                                               context
-                                                  .read<EventsCubit>()
-                                                  .getAll();
-                                              await context
                                                   .read<AccountCubit>()
-                                                  .getcurrentAssociation(
-                                                    userId,
+                                                  .getAssoc(
+                                                    event.associationId,
                                                   );
-                                            });
-                                          },
-                                        );
-                                      },
-                                      child: FeedEventCard(
-                                        event: event,
-                                        isInterested: interested[event]!,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 16),
-                                  ],
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (_) => EventDetails(
+                                                    event: event,
+                                                  ),
+                                                ),
+                                              ).then((_) async {
+                                                // Refresh when coming back
+                                                context
+                                                    .read<EventsCubit>()
+                                                    .getAll();
+                                                await context
+                                                    .read<AccountCubit>()
+                                                    .getcurrentAssociation(
+                                                      userId,
+                                                    );
+                                              });
+                                            },
+                                            child: FeedEventCard(
+                                              event: event,
+                                              isInterested: interested[event]!,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 16),
+                                        ],
+                                      );
+                                    }
+                                    return Column(
+                                      children: [
+                                        GestureDetector(
+                                          onTap: () {},
+                                          child: FeedEventCard(
+                                            event: event,
+                                            isInterested: interested[event]!,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 16),
+                                      ],
+                                    );
+                                  },
                                 );
                               },
                             ),
