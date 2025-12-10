@@ -60,7 +60,7 @@ class _InterestedEventsScreenState extends State<InterestedEventsScreen> {
               if (state is InterestsMutated) {
                 if (authState is UserFetched) {
                   await context.read<InterestsCubit>().getUserInterests(
-                    userId: authState.user.id,
+                    userId: authState.user.id!,
                   );
                 } else {
                   debugPrint("User not fetched. Cannot refetch feed");
