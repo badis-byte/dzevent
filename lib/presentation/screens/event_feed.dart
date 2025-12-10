@@ -8,11 +8,11 @@ import 'package:dzevent/logic/cubits/events/events_cubit.dart';
 import 'package:dzevent/logic/cubits/events/events_state.dart';
 import 'package:dzevent/logic/cubits/interests/interests_cubit.dart';
 import 'package:dzevent/logic/cubits/interests/interests_state.dart';
-import 'package:dzevent/presentation/screens/associationProfileTwo.dart';
 import 'package:dzevent/presentation/screens/event_details.dart';
 import 'package:dzevent/presentation/widgets/DesktopDraggableScroll.dart';
 import 'package:dzevent/presentation/widgets/feed_event_card.dart';
 import 'package:dzevent/presentation/widgets/main_scaffold.dart';
+import 'package:dzevent/presentation/widgets/refreshable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dzevent/l10n/app_localizations.dart';
@@ -164,42 +164,38 @@ class _EventFeedState extends State<EventFeed> {
                         }
 
                         return Expanded(
-                          child: RefreshIndicator(
-                            onRefresh: refresh,
-                            child: Desktopdraggablescroll(
-                              child: ListView.builder(
-                                physics: const AlwaysScrollableScrollPhysics(),
-                                itemCount: events.length,
-                                itemBuilder: (context, index) {
-                                  final event = events[index];
+                          child: Refreshable(
+                            refresh: refresh,
+                            child: ListView.builder(
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              itemCount: events.length,
+                              itemBuilder: (context, index) {
+                                final event = events[index];
 
-                                  return Column(
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (_) =>
-                                                  EventDetails(event: event),
-                                            ),
-                                          ).then((_) {
-                                            // Refresh when coming back
-                                            context
-                                                .read<EventsCubit>()
-                                                .getAll();
-                                          });
-                                        },
-                                        child: FeedEventCard(
-                                          event: event,
-                                          isInterested: interested[event]!,
-                                        ),
+                                return Column(
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) =>
+                                                EventDetails(event: event),
+                                          ),
+                                        ).then((_) {
+                                          // Refresh when coming back
+                                          context.read<EventsCubit>().getAll();
+                                        });
+                                      },
+                                      child: FeedEventCard(
+                                        event: event,
+                                        isInterested: interested[event]!,
                                       ),
-                                      const SizedBox(height: 16),
-                                    ],
-                                  );
-                                },
-                              ),
+                                    ),
+                                    const SizedBox(height: 16),
+                                  ],
+                                );
+                              },
                             ),
                           ),
                         );

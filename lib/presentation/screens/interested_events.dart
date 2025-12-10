@@ -5,6 +5,7 @@ import 'package:dzevent/logic/cubits/interests/interests_cubit.dart';
 import 'package:dzevent/logic/cubits/interests/interests_state.dart';
 import 'package:dzevent/presentation/widgets/feed_event_card.dart';
 import 'package:dzevent/presentation/widgets/main_scaffold.dart';
+import 'package:dzevent/presentation/widgets/refreshable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -47,16 +48,11 @@ class _InterestedEventsScreenState extends State<InterestedEventsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint("building interests");
     return MainScaffold(
       title: const Text("Interested Events"),
       body: Column(
         children: [
-          ElevatedButton(
-            onPressed: () async {
-              await refresh();
-            },
-            child: Text("Refresh"),
-          ),
           SizedBox(height: 16),
 
           BlocBuilder<InterestsCubit, InterestsState>(
@@ -73,11 +69,14 @@ class _InterestedEventsScreenState extends State<InterestedEventsScreen> {
                 final intrestedEvents = state.interestedEvents;
 
                 return Expanded(
-                  child: ListView.builder(
-                    itemCount: intrestedEvents.length,
-                    itemBuilder: (context, index) => FeedEventCard(
-                      event: intrestedEvents[index],
-                      isInterested: true,
+                  child: Refreshable(
+                    refresh: refresh,
+                    child: ListView.builder(
+                      itemCount: intrestedEvents.length,
+                      itemBuilder: (context, index) => FeedEventCard(
+                        event: intrestedEvents[index],
+                        isInterested: true,
+                      ),
                     ),
                   ),
                 );
