@@ -26,7 +26,14 @@ class EventFeed extends StatefulWidget {
 }
 
 class _EventFeedState extends State<EventFeed> {
-  final filters = ["All", "Music", "Sports", "Arts", "Tech"];
+  final filters = [
+    "Tech",
+    "AI and Data Science",
+    "Business",
+    "Agriculture",
+    "Sociology",
+    "Meetup",
+  ];
   int userId = 2;
   @override
   void initState() {
@@ -117,11 +124,13 @@ class _EventFeedState extends State<EventFeed> {
 
               Filters(
                 filters: [
-                  loc.filterAll,
-                  loc.filterMusic,
-                  loc.filterSports,
-                  loc.filterArts,
-                  loc.filterTech,
+                  "All",
+                  "Tech",
+                  "AI and Data Science",
+                  "Business",
+                  "Agriculture",
+                  "Sociology",
+                  "Meetup",
                 ],
               ),
               SizedBox(height: 16),

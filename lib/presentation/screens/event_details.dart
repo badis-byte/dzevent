@@ -41,10 +41,7 @@ class _EventDetailsState extends State<EventDetails> {
               widget.event.imageUrl,
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) {
-                return Image.asset(
-                  widget.event.imageUrl, // fallback image
-                  fit: BoxFit.cover,
-                );
+                return Icon(Icons.image);
               },
             ),
           ),
