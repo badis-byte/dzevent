@@ -101,10 +101,7 @@ class DBBaseTable {
         // not found
         return null;
       }
-      if (data.length == 1) {
-        return data;
-      }
-      throw Exception("(GET) multiple records with the same id");
+      return data;
     } catch (e, stacktrace) {
       print('$e --> $stacktrace');
       return null;

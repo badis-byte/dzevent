@@ -26,6 +26,7 @@ class EventFeed extends StatefulWidget {
 }
 
 class _EventFeedState extends State<EventFeed> {
+
   final filters = [
     "Tech",
     "AI and Data Science",
@@ -34,11 +35,18 @@ class _EventFeedState extends State<EventFeed> {
     "Sociology",
     "Meetup",
   ];
+  final searchController = TextEditingController();
+
   int userId = 2;
+
   @override
   void initState() {
-    context.read<EventsCubit>().getAll();
+    final eventsCubit = context.read<EventsCubit>();
+    eventsCubit.getAll();
     super.initState();
+    searchController.addListener(() async {
+      await eventsCubit.searchEvents(searchStr: searchController.text);
+    });
     init();
   }
 
@@ -96,29 +104,31 @@ class _EventFeedState extends State<EventFeed> {
           child: Column(
             spacing: 16.0,
             children: [
-              SearchBarTheme(
-                data: SearchBarThemeData(
-                  backgroundColor: WidgetStateProperty.all(Colors.blue.shade50),
-                  elevation: WidgetStateProperty.all(1),
-                  shadowColor: WidgetStateProperty.all(Colors.black12),
-                  shape: WidgetStateProperty.all(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8.0),
+                    color: Colors.grey,
                   ),
-                  side: WidgetStateProperty.all(
-                    BorderSide(color: Colors.blue.shade200),
+                  child: Row(
+                    children: [
+                      SizedBox(width: 8),
+                      Icon(Icons.search),
+                      SizedBox(width: 8),
+                      Expanded(
+                        child: TextFormField(
+                          controller: searchController,
+                          decoration: InputDecoration(
+                            hint: Text("Search for events"),
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  hintStyle: WidgetStateProperty.all(
-                    TextStyle(color: Colors.grey.shade500),
-                  ),
-                  textStyle: WidgetStateProperty.all(
-                    TextStyle(color: Colors.black87),
-                  ),
-                ),
-                child: SearchAnchor.bar(
-                  suggestionsBuilder: (context, controller) => [],
-                  barHintText: loc.searchBarHint,
                 ),
               ),
 

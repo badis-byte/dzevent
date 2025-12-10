@@ -75,4 +75,23 @@ class EventsRepo extends EventsRepoBase {
     }
     return result;
   }
+
+  @override
+  Future<List<EventModel>> searchEvents({required String searchStr}) async {
+    final obj = await eventsTable.getRecords(
+      where: "title LIKE ?",
+      whereArgs: ["%$searchStr%"],
+    );
+    if (obj == null) {
+      return [];
+    }
+    if (obj.isEmpty) {
+      return [];
+    }
+    List<EventModel> result = [];
+    for (var event in obj) {
+      result.add(EventModel.fromMap(event));
+    }
+    return result;
+  }
 }
