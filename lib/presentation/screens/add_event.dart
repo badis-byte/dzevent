@@ -4,6 +4,7 @@ import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
 import 'package:dzevent/logic/cubits/events/events_cubit.dart';
 import 'package:dzevent/logic/cubits/events/events_state.dart';
 import 'package:dzevent/presentation/screens/associationProfileTwo.dart';
+import 'package:dzevent/presentation/screens/event_feed.dart';
 import 'package:dzevent/presentation/widgets/input.dart';
 import 'package:dzevent/presentation/widgets/submit_button.dart';
 import 'package:dzevent/presentation/widgets/text_input.dart';
@@ -176,10 +177,7 @@ class _AddeventState extends State<Addevent> {
             return IconButton(
               icon: Icon(Icons.arrow_back),
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => AssocProfTwo()),
-                );
+                Navigator.pop(context);
               },
             );
           },

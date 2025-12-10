@@ -264,10 +264,7 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
               icon: const Icon(Icons.arrow_back),
               onPressed: () {
                 debugPrint("routing to eventfeed");
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => EventFeed()),
-                );
+                Navigator.pop(context);
               },
             );
           },

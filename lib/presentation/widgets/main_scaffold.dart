@@ -1,6 +1,7 @@
 import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
 import 'package:dzevent/logic/cubits/auth/auth_states.dart';
 import 'package:dzevent/presentation/screens/add_event.dart';
+import 'package:dzevent/presentation/screens/asosciationEventInterests.dart';
 import 'package:dzevent/presentation/screens/associationProfileTwo.dart';
 import 'package:dzevent/presentation/screens/event_feed.dart';
 import 'package:dzevent/presentation/screens/interested_events.dart';
@@ -90,6 +91,11 @@ class MainScaffold extends StatelessWidget {
         'icon': Icons.add,
         'route': () => Addevent.route(),
       },
+      {
+        'label': "Interested Users",
+        'icon': Icons.add_reaction,
+        'route': () => AssociationInterestRequestsPage.route(),
+      },
     ];
     final drawerItemsUpUser = [
       {'label': "Feed", 'icon': Icons.home, 'route': () => EventFeed.route()},
@@ -110,6 +116,10 @@ class MainScaffold extends StatelessWidget {
       {'label': "Log Out", 'icon': Icons.logout},
     ];
 
+    final drawerItemsBottomGuest = [
+      {'label': "Log Out", 'icon': Icons.logout},
+    ];
+
     return Scaffold(
       appBar: AppBar(
         title: title,
@@ -123,7 +133,7 @@ class MainScaffold extends StatelessWidget {
           } else if (state is UserFetched) {
             return drawer(drawerItemsUpUser, drawerItemsBottom, context);
           }
-          return Text("User type is undifined we cant route you !");
+          return drawer([], drawerItemsBottomGuest, context);
         },
       ),
       body: body,
