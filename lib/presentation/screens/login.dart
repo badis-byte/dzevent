@@ -28,6 +28,18 @@ class _LoginState extends State<Login> {
     final loc = AppLocalizations.of(context)!;
 
     return Scaffold(
+      appBar: AppBar(
+        leading: GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => Assocadmin()),
+            );
+          },
+          child: Icon(Icons.privacy_tip),
+        ),
+        backgroundColor: Colors.white,
+      ),
       body: Form(
         key: formkey,
         child: Container(
@@ -341,16 +353,17 @@ class _LoginState extends State<Login> {
 
   void _process() {
     if (formkey.currentState!.validate()) {
-      if(passController.text=="Admin123" && emailController.text=="admin@a.a"){
+      if (passController.text == "Admin123" &&
+          emailController.text == "admin@a.a") {
         Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (_) => Assocadmin()),
-            );
-      }else{
-      context.read<AccountCubit>().login(
-        emailController.text,
-        passController.text,
-      );
+          context,
+          MaterialPageRoute(builder: (_) => Assocadmin()),
+        );
+      } else {
+        context.read<AccountCubit>().login(
+          emailController.text,
+          passController.text,
+        );
       }
     } else {
       ScaffoldMessenger.of(

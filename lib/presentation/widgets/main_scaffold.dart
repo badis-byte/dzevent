@@ -5,6 +5,7 @@ import 'package:dzevent/presentation/screens/associationProfileTwo.dart';
 import 'package:dzevent/presentation/screens/event_feed.dart';
 import 'package:dzevent/presentation/screens/interested_events.dart';
 import 'package:dzevent/presentation/screens/login.dart';
+import 'package:dzevent/presentation/screens/notifications.dart';
 import 'package:dzevent/presentation/screens/welcome.dart';
 import 'package:dzevent/presentation/widgets/profile_header.dart';
 import 'package:flutter/material.dart';
@@ -79,7 +80,11 @@ class MainScaffold extends StatelessWidget {
         'icon': Icons.account_box,
         'route': () => AssocProfTwo.route(),
       },
-      {'label': "Notifications", 'icon': Icons.notifications},
+      {
+        'label': "Notifications",
+        'icon': Icons.notifications,
+        'route': () => NotificationScreen.route(),
+      },
       {
         'label': "Add Event",
         'icon': Icons.add,
@@ -93,7 +98,11 @@ class MainScaffold extends StatelessWidget {
         'icon': Icons.calendar_month,
         'route': () => InterestedEventsScreen.route(),
       },
-      {'label': "Notifications", 'icon': Icons.notifications},
+      {
+        'label': "Notifications",
+        'icon': Icons.notifications,
+        'route': () => NotificationScreen.route(),
+      },
       {'label': "Followed Associations", 'icon': Icons.group},
     ];
     final drawerItemsBottom = [

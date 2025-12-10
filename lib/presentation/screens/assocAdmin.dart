@@ -3,6 +3,7 @@ import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
 import 'package:dzevent/logic/cubits/auth/auth_states.dart';
 import 'package:dzevent/presentation/screens/associationProfileTwo.dart';
 import 'package:dzevent/l10n/app_localizations.dart';
+import 'package:dzevent/presentation/screens/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -150,21 +151,16 @@ class _AssocadminState extends State<Assocadmin> {
                     width: double.infinity,
                     child: Row(
                       children: [
-                        Builder(
-                          builder: (context) {
-                            return IconButton(
-                              icon: const Icon(Icons.arrow_back),
-                              onPressed: () {
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute<void>(
-                                    builder: (context) => const AssocProfTwo(),
-                                  ),
-                                );
-                              },
+                        IconButton(
+                          icon: const Icon(Icons.arrow_back),
+                          onPressed: () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(builder: (_) => Login()),
                             );
                           },
                         ),
+
                         Expanded(
                           child: Center(
                             child: Text(
