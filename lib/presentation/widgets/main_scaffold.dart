@@ -116,6 +116,10 @@ class MainScaffold extends StatelessWidget {
       {'label': "Log Out", 'icon': Icons.logout},
     ];
 
+    final drawerItemsBottomGuest = [
+      {'label': "Log Out", 'icon': Icons.logout},
+    ];
+
     return Scaffold(
       appBar: AppBar(
         title: title,
@@ -129,7 +133,7 @@ class MainScaffold extends StatelessWidget {
           } else if (state is UserFetched) {
             return drawer(drawerItemsUpUser, drawerItemsBottom, context);
           }
-          return Text("User type is undifined we cant route you !");
+          return drawer([], drawerItemsBottomGuest, context);
         },
       ),
       body: body,

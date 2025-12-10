@@ -189,22 +189,33 @@ class _EventFeedState extends State<EventFeed> {
                                   children: [
                                     GestureDetector(
                                       onTap: () {
-                                        context.read<AccountCubit>().getAssoc(
-                                          event.associationId,
+                                        BlocListener<
+                                          AccountCubit,
+                                          AccountState
+                                        >(
+                                          listener: (context, state) {
+                                            context
+                                                .read<AccountCubit>()
+                                                .getAssoc(event.associationId);
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (_) =>
+                                                    EventDetails(event: event),
+                                              ),
+                                            ).then((_) async {
+                                              // Refresh when coming back
+                                              context
+                                                  .read<EventsCubit>()
+                                                  .getAll();
+                                              await context
+                                                  .read<AccountCubit>()
+                                                  .getcurrentAssociation(
+                                                    userId,
+                                                  );
+                                            });
+                                          },
                                         );
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (_) =>
-                                                EventDetails(event: event),
-                                          ),
-                                        ).then((_) async {
-                                          // Refresh when coming back
-                                          context.read<EventsCubit>().getAll();
-                                          await context
-                                              .read<AccountCubit>()
-                                              .getcurrentAssociation(userId);
-                                        });
                                       },
                                       child: FeedEventCard(
                                         event: event,

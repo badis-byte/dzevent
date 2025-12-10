@@ -45,7 +45,7 @@ class AccountCubit extends Cubit<AccountState> {
   }
 
   bool logout() {
-    emit(AccountLogout());
+    emit(AccountGuest());
     return true;
   }
   // UserModel? getCurrentUser() {
