@@ -107,31 +107,38 @@ class FeedEventCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                Flexible(
-                  child: Column(
-                    children: [
-                      Spacer(),
-                      Align(
-                        alignment: Alignment.bottomRight,
-                        child: ElevatedButton.icon(
-                          onPressed: () async {
-                            await toggleInterest(context);
-                          },
-                          label: Text(loc.showInterest),
-                          icon: Icon(
-                            isInterested
-                                ? Icons.favorite
-                                : Icons.favorite_border,
-                          ),
-                          iconAlignment: IconAlignment.end,
-                          style: getPrimaryBtnStyle(
-                            context: context,
-                            raduis: 15,
-                          ),
+                BlocBuilder<AccountCubit, AccountState>(
+                  builder: (context, state) {
+                    if (state is UserFetched) {
+                      return Flexible(
+                        child: Column(
+                          children: [
+                            Spacer(),
+                            Align(
+                              alignment: Alignment.bottomRight,
+                              child: ElevatedButton.icon(
+                                onPressed: () async {
+                                  await toggleInterest(context);
+                                },
+                                label: Text(loc.showInterest),
+                                icon: Icon(
+                                  isInterested
+                                      ? Icons.favorite
+                                      : Icons.favorite_border,
+                                ),
+                                iconAlignment: IconAlignment.end,
+                                style: getPrimaryBtnStyle(
+                                  context: context,
+                                  raduis: 15,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
-                  ),
+                      );
+                    }
+                    return SizedBox();
+                  },
                 ),
               ],
             ),

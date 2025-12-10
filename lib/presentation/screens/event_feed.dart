@@ -7,6 +7,7 @@ import 'package:dzevent/logic/cubits/events/events_state.dart';
 import 'package:dzevent/logic/cubits/interests/interests_cubit.dart';
 import 'package:dzevent/logic/cubits/interests/interests_state.dart';
 import 'package:dzevent/presentation/screens/event_details.dart';
+import 'package:dzevent/presentation/screens/notifications.dart';
 import 'package:dzevent/presentation/widgets/feed_event_card.dart';
 import 'package:dzevent/presentation/widgets/main_scaffold.dart';
 import 'package:dzevent/presentation/widgets/refreshable.dart';
@@ -85,7 +86,15 @@ class _EventFeedState extends State<EventFeed> {
         style: headingStyle,
       ),
       actions: [
-        IconButton(onPressed: () {}, icon: Icon(Icons.notifications_none)),
+        IconButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => NotificationScreen()),
+            );
+          },
+          icon: Icon(Icons.notifications_none),
+        ),
       ],
 
       body: Container(
@@ -190,34 +199,60 @@ class _EventFeedState extends State<EventFeed> {
                               itemBuilder: (context, index) {
                                 final event = events[index];
 
-                                return Column(
-                                  children: [
-                                    GestureDetector(
-                                      onTap: () {
-                                        context.read<AccountCubit>().getAssoc(
-                                          event.associationId,
-                                        );
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (_) =>
-                                                EventDetails(event: event),
+                                return BlocBuilder<AccountCubit, AccountState>(
+                                  builder: (context, state) {
+                                    if (state is! AccountGuest) {
+                                      print("state is : ${state.toString()}");
+                                      return Column(
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                              context
+                                                  .read<AccountCubit>()
+                                                  .getAssoc(
+                                                    event.associationId,
+                                                  );
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (_) => EventDetails(
+                                                    event: event,
+                                                  ),
+                                                ),
+                                              ).then((_) async {
+                                                // Refresh when coming back
+                                                context
+                                                    .read<EventsCubit>()
+                                                    .getAll();
+                                                await context
+                                                    .read<AccountCubit>()
+                                                    .getcurrentAssociation(
+                                                      userId,
+                                                    );
+                                              });
+                                            },
+                                            child: FeedEventCard(
+                                              event: event,
+                                              isInterested: interested[event]!,
+                                            ),
                                           ),
-                                        ).then((_) async {
-                                          // Refresh when coming back
-                                          context.read<EventsCubit>().getAll();
-                                          await context
-                                              .read<AccountCubit>()
-                                              .getcurrentAssociation(userId);
-                                        });
-                                      },
-                                      child: FeedEventCard(
-                                        event: event,
-                                        isInterested: interested[event]!,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 16),
-                                  ],
+                                          const SizedBox(height: 16),
+                                        ],
+                                      );
+                                    }
+                                    return Column(
+                                      children: [
+                                        GestureDetector(
+                                          onTap: () {},
+                                          child: FeedEventCard(
+                                            event: event,
+                                            isInterested: interested[event]!,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 16),
+                                      ],
+                                    );
+                                  },
                                 );
                               },
                             ),
