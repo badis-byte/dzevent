@@ -36,14 +36,14 @@ class EventsCubit extends Cubit<EventsState> {
     }
   }
 
-  Future<bool> getEventByType({required String filter}) async {
+  Future<bool> getFilteredEvents({required List<String> filters}) async {
     try {
       emit(EventsLoading());
-      final List<EventModel> response = await localRepo.getEventByFilter(
-        filter: filter,
+      final List<EventModel> response = await localRepo.getFilteredEvents(
+        filters: filters,
       );
       if (response == []) {
-        emit(EventsError(error: "(getEvent) event #$filter not found"));
+        emit(EventsError(error: "(getEvent) event #$filters not found"));
         return false;
       } else {
         print("response <inside event cubit>: ${response.toString()}");
@@ -117,6 +117,22 @@ class EventsCubit extends Cubit<EventsState> {
         emit(EventsInitial());
         return true;
       }
+    } catch (e) {
+      emit(EventsError(error: e.toString()));
+      return false;
+    }
+  }
+
+  Future<bool> searchEvents({required String searchStr}) async {
+    try {
+      if (searchStr.isEmpty) {
+        await getAll();
+        return true;
+      }
+      emit(EventsLoading());
+      final response = await localRepo.searchEvents(searchStr: searchStr);
+      emit(EventsFetched(events: response));
+      return true;
     } catch (e) {
       emit(EventsError(error: e.toString()));
       return false;

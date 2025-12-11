@@ -6,7 +6,6 @@ import 'package:dzevent/presentation/screens/associationProfileTwo.dart';
 import 'package:dzevent/presentation/screens/event_feed.dart';
 import 'package:dzevent/presentation/screens/interested_events.dart';
 import 'package:dzevent/presentation/screens/login.dart';
-import 'package:dzevent/presentation/screens/notifications.dart';
 import 'package:dzevent/presentation/screens/welcome.dart';
 import 'package:dzevent/presentation/widgets/profile_header.dart';
 import 'package:flutter/material.dart';
@@ -84,7 +83,7 @@ class MainScaffold extends StatelessWidget {
       {
         'label': "Notifications",
         'icon': Icons.notifications,
-        'route': () => NotificationScreen.route(),
+        // 'route': () => Notification.route(),
       },
       {
         'label': "Add Event",
@@ -107,7 +106,7 @@ class MainScaffold extends StatelessWidget {
       {
         'label': "Notifications",
         'icon': Icons.notifications,
-        'route': () => NotificationScreen.route(),
+        // 'route': () => NotificationScreen.route(),
       },
       {'label': "Followed Associations", 'icon': Icons.group},
     ];
