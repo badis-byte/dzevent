@@ -38,4 +38,15 @@ class UserRepoLocal extends UserRepoBase {
       rethrow;
     }
   }
+
+  @override
+  Future<UserModel> getUserById(int id) async {
+    try {
+      final obj = await authTable.getUserById(id);
+      UserModel result = obj;
+      return result;
+    } catch (e) {
+      throw Exception("something went wrong");
+    }
+  }
 }

@@ -104,4 +104,26 @@ class DBAuth {
     }
     return true;
   }
+
+  Future<UserModel> getUserById(int id)async{
+    final db = await DBHelper.getDatabase();
+
+    final result = await db.query(
+      'user',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+
+    if (result.isNotEmpty) {
+      try {
+        var user = UserModel.fromMap(result.first);
+        return user;
+      } catch (e) {
+        print(e);
+        rethrow;
+      }
+    } else {
+      throw InvalidCredException();
+    }
+  }
 }
