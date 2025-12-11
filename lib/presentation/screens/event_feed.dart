@@ -99,7 +99,6 @@ class _EventFeedState extends State<EventFeed> {
           icon: Icon(Icons.notifications_none),
         ),
       ],
-
       body: Container(
         color: Color.fromARGB(255, 240, 242, 245),
         child: Padding(
@@ -112,7 +111,7 @@ class _EventFeedState extends State<EventFeed> {
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8.0),
-                    color: Colors.grey,
+                    color: Colors.white,
                   ),
                   child: Row(
                     children: [
@@ -331,8 +330,7 @@ class _FiltersState extends State<Filters> {
                   backgroundColor: Colors.blue.shade50,
                   foregroundColor: filtersState[filter]!
                       ? Colors.red
-                      : Colors.blue.shade800,
-                  side: BorderSide(color: Colors.blue.shade200),
+                      : Colors.black,
                   padding: EdgeInsets.symmetric(horizontal: 18, vertical: 12),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
