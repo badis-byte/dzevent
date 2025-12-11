@@ -38,6 +38,7 @@ class _EventFeedState extends State<EventFeed> {
   final searchController = TextEditingController();
 
   int userId = 2;
+  bool asso = false;
 
   @override
   void initState() {
@@ -64,6 +65,8 @@ class _EventFeedState extends State<EventFeed> {
       return true;
     } else if (authState is AssociationFetched) {
       userId = authState.association.id!;
+      asso = true;
+      print("EventCard: user fetched ${authState.association.name} ");
       final interestsCubit = context.read<InterestsCubit>();
       await interestsCubit.getUserInterests(userId: userId!);
       return true;
@@ -224,11 +227,21 @@ class _EventFeedState extends State<EventFeed> {
                                                 context
                                                     .read<EventsCubit>()
                                                     .getAll();
-                                                await context
-                                                    .read<AccountCubit>()
-                                                    .getcurrentAssociation(
-                                                      userId,
-                                                    );
+                                                print("${asso.toString()} ${state.toString()}");
+                                                if ((state
+                                                    is AssociationFetched || state is AssoicationDetailFetched) &&
+                                                    asso) {
+                                                  await context
+                                                      .read<AccountCubit>()
+                                                      .getcurrentAssociation(
+                                                        userId,
+                                                      );
+                                                } else if (state
+                                                    is UserFetched || state is AssoicationDetailFetched) {
+                                                  await context
+                                                      .read<AccountCubit>()
+                                                      .getcurrentUser(userId);
+                                                }
                                               });
                                             },
                                             child: FeedEventCard(

@@ -262,8 +262,9 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
           builder: (context) {
             return IconButton(
               icon: const Icon(Icons.arrow_back),
-              onPressed: () {
+              onPressed: () async {
                 debugPrint("routing to eventfeed");
+                await context.read<EventsCubit>().getAll();
                 Navigator.pop(context);
               },
             );
