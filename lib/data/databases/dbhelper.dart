@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:dzevent/data/databases/db_followers.dart';
 import 'package:dzevent/data/databases/db_user.dart';
 import 'package:dzevent/data/databases/db_association.dart';
 import 'package:dzevent/data/databases/interests_table.dart';
@@ -19,6 +20,7 @@ class DBHelper {
     UserTable.sql_code,
     AssociationTable.sql_code,
     InterestsTable.sql_code,
+    FollowersTable.sql_code,
   ];
 
   static Future<Database> getDatabase() async {

@@ -55,7 +55,7 @@ class NavScreen extends StatelessWidget {
       //   // page: PublicAssocProfile(),
       // ),
       Link(icon: Icons.add, label: loc.creds, page: Myaccountcredentials()),
-      Link(icon: Icons.add, label: loc.userRegs, page: UserProfileScreen()),
+      Link(icon: Icons.add, label: loc.userRegs, page: UserMenu()),
     ];
 
     return Scaffold(

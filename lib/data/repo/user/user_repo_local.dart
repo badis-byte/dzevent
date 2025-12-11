@@ -38,4 +38,15 @@ class UserRepoLocal extends UserRepoBase {
       rethrow;
     }
   }
+
+  @override
+  Future<bool> update(UserModel value, int id)async{
+    try{
+      var state = await userTable.updateUser(value.toMap(), id);
+      return state;
+    }catch(e){
+      rethrow;
+    }
+
+  }
 }

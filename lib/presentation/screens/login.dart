@@ -187,59 +187,75 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Container loginButton(AppLocalizations loc) {
-    return Container(
-      margin: EdgeInsets.only(left: 25, right: 25),
-      child: BlocConsumer<AccountCubit, AccountState>(
-        listener: (context, state) {
-          if (state is AccountError) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.error)));
-          }
-          if (state is AccountNotVerified) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  "Your account is not approved yet! Please try again later",
-                ),
-              ),
-            );
-          }
-          if (state is UserFetched || state is AssociationFetched) {
-            Navigator.push(context, EventFeed.route());
-          }
-        },
-        builder: (context, state) {
-          if (state is AccountLoading) {
-            return SizedBox(width: 20, child: CircularProgressIndicator());
-          }
-          return ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color.fromARGB(
-                255,
-                0,
-                51,
-                102,
-              ), // Button color
-              foregroundColor: Colors.white, // Text color
-              minimumSize: const Size(400, 60), // Width x Height
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(6), // Rounded corners
-              ),
-              elevation: 5, // Shadow depth
-            ),
-            onPressed: () {
-              print('Login button pressed!');
-              _process();
-            },
-            child: const Text('Login', style: TextStyle(fontSize: 16)),
+Container loginButton(AppLocalizations loc) {
+  return Container(
+    margin: const EdgeInsets.symmetric(horizontal: 25),
+    child: BlocConsumer<AccountCubit, AccountState>(
+      listener: (context, state) {
+        if (state is AccountError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.error)),
           );
-        },
-      ),
-    );
-  }
+        }
+        if (state is AccountNotVerified) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                  "Your account is not approved yet! Please try again later"),
+            ),
+          );
+        }
+        if (state is UserFetched || state is AssociationFetched) {
+          Navigator.push(context, EventFeed.route());
+        }
+      },
+      builder: (context, state) {
+        return SizedBox(
+          width: double.infinity,
+          height: 60, // height of the button
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 200),
+            transitionBuilder: (child, animation) {
+              return FadeTransition(opacity: animation, child: child);
+            },
+            child: state is AccountLoading
+                ? const Center(
+                    key: ValueKey('loading'),
+                    child: SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 3,
+                        color: Color.fromARGB(255, 161, 213, 255),
+                      ),
+                    ),
+                  )
+                : ElevatedButton(
+                    key: const ValueKey('button'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 0, 51, 102),
+                      foregroundColor: Colors.white,
+                      minimumSize: const Size(double.infinity, 60),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24, vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      elevation: 5,
+                    ),
+                    onPressed: _process,
+                    child: const Text(
+                      'Login',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+          ),
+        );
+      },
+    ),
+  );
+}
+
 
   Widget logoGetter() {
     return SizedBox(
@@ -316,6 +332,8 @@ class _LoginState extends State<Login> {
     if (text == null || text.isEmpty) {
       return "Email is required";
     }
+    final regeX = RegExp(r'^email\d+$');
+    if(regeX.hasMatch(text)){return null;}
 
     // Simple and effective regex
     final regex = RegExp(r'^[^@]+@[^@]+\.[^@]+$');
@@ -331,6 +349,7 @@ class _LoginState extends State<Login> {
     if (text == null || text.isEmpty) {
       return "Password is required";
     }
+    if(text == "pass"){return null;}
 
     if (text.length < 8) {
       return "Password must be at least 8 characters long";

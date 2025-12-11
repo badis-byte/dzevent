@@ -90,7 +90,7 @@ class _EventFeedState extends State<EventFeed> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => NotificationScreen()),
+              MaterialPageRoute(builder: (_) => NotificationsPage()),
             );
           },
           icon: Icon(Icons.notifications_none),
@@ -102,14 +102,15 @@ class _EventFeedState extends State<EventFeed> {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
-            spacing: 16.0,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 32.0),
                 child: Container(
                   decoration: BoxDecoration(
+                    border: Border.all( color: Colors.blue.shade200, width: 1),
                     borderRadius: BorderRadius.circular(8.0),
-                    color: Colors.grey,
+                    color: Colors.blue.shade50,
                   ),
                   child: Row(
                     children: [
@@ -117,12 +118,15 @@ class _EventFeedState extends State<EventFeed> {
                       Icon(Icons.search),
                       SizedBox(width: 8),
                       Expanded(
-                        child: TextFormField(
-                          controller: searchController,
-                          decoration: InputDecoration(
-                            hint: Text("Search for events"),
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide.none,
+                        child: SizedBox(
+                          height: 50,
+                          child: TextFormField(
+                            controller: searchController,
+                            decoration: InputDecoration(
+                              hint: Text("Search for events"),
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                              ),
                             ),
                           ),
                         ),
@@ -131,6 +135,7 @@ class _EventFeedState extends State<EventFeed> {
                   ),
                 ),
               ),
+              SizedBox(height: 5),
 
               Filters(
                 filters: [
@@ -142,95 +147,110 @@ class _EventFeedState extends State<EventFeed> {
                   "Meetup",
                 ],
               ),
-              SizedBox(height: 16),
+              SizedBox(height: 5),
+              
 
-              BlocBuilder<EventsCubit, EventsState>(
-                builder: (context, state) {
-                  if (state is EventsLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  if (state is EventsError) {
-                    return Center(child: Text(loc.errorOccurred(state.error)));
-                  }
-                  if (state is EventsFetched) {
-                    final events = state.events;
-                    if (events.isEmpty) {
-                      return Text("No events found");
+              Expanded(
+                child: BlocBuilder<EventsCubit, EventsState>(
+                  builder: (context, state) {
+                    if (state is EventsLoading) {
+                      return const Center(child: CircularProgressIndicator());
                     }
-
-                    return BlocConsumer<InterestsCubit, InterestsState>(
-                      listener: (context, state) async {
-                        final authCubit = context.read<AccountCubit>();
-                        final authState = authCubit.state;
-                        if (state is InterestsMutated) {
-                          if (authState is UserFetched) {
-                            await context
-                                .read<InterestsCubit>()
-                                .getUserInterests(userId: authState.user.id!);
-                          } else {
-                            debugPrint("User not fetched. Cannot refetch feed");
+                    if (state is EventsError) {
+                      return Center(child: Text(loc.errorOccurred(state.error)));
+                    }
+                    if (state is EventsFetched) {
+                      final events = state.events;
+                      if (events.isEmpty) {
+                        return Text("No events found");
+                      }
+                
+                      return BlocConsumer<InterestsCubit, InterestsState>(
+                        listener: (context, state) async {
+                          final authCubit = context.read<AccountCubit>();
+                          final authState = authCubit.state;
+                          if (state is InterestsMutated) {
+                            if (authState is UserFetched) {
+                              await context
+                                  .read<InterestsCubit>()
+                                  .getUserInterests(userId: authState.user.id!);
+                            } else {
+                              debugPrint("User not fetched. Cannot refetch feed");
+                            }
                           }
-                        }
-                      },
-                      builder: (context, state) {
-                        print("Interests State ${state.runtimeType}");
-                        Map<EventModel, bool> interested = Map.fromEntries(
-                          events.map((event) => MapEntry(event, false)),
-                        );
-
-                        if (state is InterestsFetched) {
-                          final interests = state.interests;
-                          interested = Map.fromEntries(
-                            events.map(
-                              (event) => MapEntry(
-                                event,
-                                interests.any((i) => i.eventId == event.id),
-                              ),
-                            ),
+                        },
+                        builder: (context, state) {
+                          print("Interests State ${state.runtimeType}");
+                          Map<EventModel, bool> interested = Map.fromEntries(
+                            events.map((event) => MapEntry(event, false)),
                           );
-                        }
-
-                        return Expanded(
-                          child: Refreshable(
-                            refresh: refresh,
-                            child: ListView.builder(
-                              physics: const AlwaysScrollableScrollPhysics(),
-                              itemCount: events.length,
-                              itemBuilder: (context, index) {
-                                final event = events[index];
-
-                                return BlocBuilder<AccountCubit, AccountState>(
-                                  builder: (context, state) {
-                                    if (state is! AccountGuest) {
-                                      print("state is : ${state.toString()}");
+                
+                          if (state is InterestsFetched) {
+                            final interests = state.interests;
+                            interested = Map.fromEntries(
+                              events.map(
+                                (event) => MapEntry(
+                                  event,
+                                  interests.any((i) => i.eventId == event.id),
+                                ),
+                              ),
+                            );
+                          }
+                
+                          return Expanded(
+                            child: Refreshable(
+                              refresh: refresh,
+                              child: ListView.builder(
+                                physics: const AlwaysScrollableScrollPhysics(),
+                                itemCount: events.length,
+                                itemBuilder: (context, index) {
+                                  final event = events[index];
+                
+                                  return BlocBuilder<AccountCubit, AccountState>(
+                                    builder: (context, state) {
+                                      if (state is! AccountGuest) {
+                                        print("state is : ${state.toString()}");
+                                        return Column(
+                                          children: [
+                                            GestureDetector(
+                                              onTap: () {
+                                                context
+                                                    .read<AccountCubit>()
+                                                    .getAssoc(
+                                                      event.associationId,
+                                                    );
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (_) => EventDetails(
+                                                      event: event,
+                                                    ),
+                                                  ),
+                                                ).then((_) async {
+                                                  // Refresh when coming back
+                                                  context
+                                                      .read<EventsCubit>()
+                                                      .getAll();
+                                                  await context
+                                                      .read<AccountCubit>()
+                                                      .getcurrentAssociation(
+                                                        userId,
+                                                      );
+                                                });
+                                              },
+                                              child: FeedEventCard(
+                                                event: event,
+                                                isInterested: interested[event]!,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 16),
+                                          ],
+                                        );
+                                      }
                                       return Column(
                                         children: [
                                           GestureDetector(
-                                            onTap: () {
-                                              context
-                                                  .read<AccountCubit>()
-                                                  .getAssoc(
-                                                    event.associationId,
-                                                  );
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (_) => EventDetails(
-                                                    event: event,
-                                                  ),
-                                                ),
-                                              ).then((_) async {
-                                                // Refresh when coming back
-                                                context
-                                                    .read<EventsCubit>()
-                                                    .getAll();
-                                                await context
-                                                    .read<AccountCubit>()
-                                                    .getcurrentAssociation(
-                                                      userId,
-                                                    );
-                                              });
-                                            },
+                                            onTap: () {},
                                             child: FeedEventCard(
                                               event: event,
                                               isInterested: interested[event]!,
@@ -239,30 +259,18 @@ class _EventFeedState extends State<EventFeed> {
                                           const SizedBox(height: 16),
                                         ],
                                       );
-                                    }
-                                    return Column(
-                                      children: [
-                                        GestureDetector(
-                                          onTap: () {},
-                                          child: FeedEventCard(
-                                            event: event,
-                                            isInterested: interested[event]!,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 16),
-                                      ],
-                                    );
-                                  },
-                                );
-                              },
+                                    },
+                                  );
+                                },
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                    );
-                  }
-                  return const SizedBox();
-                },
+                          );
+                        },
+                      );
+                    }
+                    return const SizedBox();
+                  },
+                ),
               ),
             ],
           ),

@@ -7,6 +7,7 @@ abstract class UserRepoBase {
   Future<bool> insertData(UserModel value);
   Future<bool> deleteAllData();
   Future<UserModel> login(String email, String password);
+  Future<bool> update(UserModel value, int id);
 
   static UserRepoBase? _userInstance;
 

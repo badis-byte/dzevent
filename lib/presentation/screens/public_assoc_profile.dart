@@ -3,8 +3,11 @@ import 'package:dzevent/l10n/app_localizations.dart';
 import 'package:dzevent/data/models/event_model.dart';
 import 'package:dzevent/lib/defs.dart';
 import 'package:dzevent/lib/styles.dart';
+import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
 import 'package:dzevent/logic/cubits/events/events_cubit.dart';
 import 'package:dzevent/logic/cubits/events/events_state.dart';
+import 'package:dzevent/logic/cubits/followers/followers_cubits.dart';
+import 'package:dzevent/logic/cubits/followers/followers_state.dart';
 import 'package:dzevent/presentation/screens/event_details.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -14,6 +17,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class PublicAssocProfile extends StatefulWidget {
   final AssociationModel asso;
   const PublicAssocProfile({super.key, required this.asso});
+
   static const contactIcon = {
     ContactInfoType.email: Icons.email_outlined,
     ContactInfoType.phone: Icons.phone,
@@ -27,11 +31,16 @@ class PublicAssocProfile extends StatefulWidget {
 class _PublicAssocProfileState extends State<PublicAssocProfile>
     with TickerProviderStateMixin {
   late final Association association;
+
   final imageSize = Size(150, 150);
+
+  int? loggedInId; // user OR association ID
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+
+    /// Prepare the Association object
     association = Association(
       name: widget.asso.name,
       imageUrl: widget.asso.profilePicture,
@@ -43,12 +52,24 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
         ContactInfo(type: ContactInfoType.web, address: "www.lorem.com"),
       ],
     );
+
+    /// Determine logged-in identity (user or association)
+    final acc = context.read<AccountCubit>();
+    if (acc.association == true) {
+      loggedInId = acc.currentAssociation!.id;
+    } else{
+      loggedInId = acc.currentUser!.id;
+    }
+
+    /// Load association's events ONCE
+    if (widget.asso.id != null) {
+      context.read<EventsCubit>().getAllEventsByUser(widget.asso.id!);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
-    context.read<EventsCubit>().getAllEventsByUser(widget.asso.id!);
 
     return Scaffold(
       appBar: AppBar(
@@ -72,58 +93,96 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
   Column buildInfo(BuildContext context, AppLocalizations loc) {
     return Column(
       children: [
+        /// Profile Image
         Container(
-          decoration: BoxDecoration(shape: BoxShape.circle),
-          clipBehavior: Clip.antiAlias,
           width: imageSize.width,
           height: imageSize.height,
+          clipBehavior: Clip.antiAlias,
+          decoration: BoxDecoration(shape: BoxShape.circle),
           child: Image.network(
             association.imageUrl,
             fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) {
-              return Icon(Icons.account_balance); // fallback image
-            },
+            errorBuilder: (context, error, stackTrace) =>
+                Icon(Icons.account_balance, size: 64),
           ),
         ),
+
+        SizedBox(height: 12),
         Text(association.name, style: headingStyle),
         Text(
           association.brief,
           style: subtitleStyle,
           textAlign: TextAlign.center,
         ),
+
         SizedBox(height: 16),
-        SizedBox(
-          width: double.infinity,
-          child: ElevatedButton(
-            onPressed: () {},
-            style: getPrimaryBtnStyle(context: context),
-            child: Text(loc.followAssociation),
-          ),
+
+        /// FOLLOW BUTTON
+        // FOLLOW BUTTON
+        // FOLLOW BUTTON
+BlocBuilder<FollowCubit, FollowState>(
+  builder: (context, state) {
+    final followCubit = context.read<FollowCubit>();
+    final assocId = widget.asso.id;
+
+    // Safety check
+    if (loggedInId == null || assocId == null) {
+      return SizedBox(
+        width: double.infinity,
+        child: ElevatedButton(
+          onPressed: null,
+          child: Text("Login required"),
         ),
+      );
+    }
+
+    // Determine if currently following
+    bool isFollowing = false;
+    if (state is FollowListFetched) {
+      isFollowing = state.followedAssociationIds.contains(assocId);
+    }
+
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        style: getPrimaryBtnStyle(context: context),
+        onPressed: () async {
+          // Toggle follow/unfollow
+          if (isFollowing) {
+            await followCubit.unfollow(loggedInId!, assocId);
+          } else {
+            await followCubit.follow(loggedInId!, assocId);
+          }
+        },
+        child: Text(isFollowing ? "Unfollow" : "Follow"),
+      ),
+    );
+  },
+),
+
         SizedBox(height: 16),
+
+        /// ABOUT
         SizedBox(
           width: double.infinity,
-          child: Text(
-            loc.aboutUs,
-            style: headingStyle,
-            textAlign: TextAlign.left,
-          ),
+          child: Text(loc.aboutUs, style: headingStyle),
         ),
         Text(association.aboutUs, style: bodyTextStyle),
+
         SizedBox(height: 16),
+
+        /// CONTACT INFO
         SizedBox(
           width: double.infinity,
-          child: Text(
-            loc.contactInformation,
-            style: headingStyle,
-            textAlign: TextAlign.left,
-          ),
+          child:
+              Text(loc.contactInformation, style: headingStyle, textAlign: TextAlign.left),
         ),
+
         for (final contact in association.contactInfo)
           ListTile(
-            contentPadding: EdgeInsets.all(0),
+            contentPadding: EdgeInsets.zero,
             leading: Container(
-              padding: EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(8),
               color: Theme.of(context).colorScheme.primaryContainer,
               child: Icon(PublicAssocProfile.contactIcon[contact.type]),
             ),
@@ -135,7 +194,6 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
 
   Widget buildEventTabBar(BuildContext context, AppLocalizations loc) {
     return DefaultTabController(
-      initialIndex: 0,
       length: 2,
       child: Container(
         color: Theme.of(context).colorScheme.surfaceContainer,
@@ -151,40 +209,44 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
               height: 300,
               child: TabBarView(
                 children: [
-                  // First tab: events from Bloc
+                  /// TAB 1 — Events from API
                   BlocBuilder<EventsCubit, EventsState>(
                     builder: (context, state) {
+                      if (state is EventsLoading) {
+                        return Center(child: CircularProgressIndicator());
+                      }
+                      if (state is EventsError) {
+                        return Center(child: Text("Error loading events"));
+                      }
                       if (state is EventsFetched) {
+                        if (state.events.isEmpty) {
+                          return Center(child: Text("No events"));
+                        }
+
                         return ListView.builder(
                           itemCount: state.events.length,
-                          itemBuilder: (context, index) => GestureDetector(
-                            onTap: () {
-                              debugPrint(
-                                "the event ${state.events[index].title} is printed ",
-                              );
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => EventDetails(event: state.events[index]),
-                                ),
-                              );
-                            },
-                            child: buildEventItem(
-                              context,
-                              event: state.events[index],
-                            ),
-                          ),
+                          itemBuilder: (context, index) {
+                            final event = state.events[index];
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) =>
+                                        EventDetails(event: event),
+                                  ),
+                                );
+                              },
+                              child: buildEventItem(context, event: event),
+                            );
+                          },
                         );
-                      } else if (state is EventsLoading) {
-                        return const Center(child: CircularProgressIndicator());
-                      } else if (state is EventsError) {
-                        return Center(child: Text("Error fetching events"));
                       }
-                      return const SizedBox(); // fallback for other states
+                      return SizedBox();
                     },
                   ),
 
-                  // Second tab: static events
+                  /// TAB 2 — Fake events
                   ListView.builder(
                     itemCount: DATA.events.length,
                     itemBuilder: (context, index) =>
@@ -199,29 +261,30 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
     );
   }
 
-  Widget buildEventItem(BuildContext context, {required EventModel event}) {
-    final imageSize = const Size(150, 150);
-
+  Widget buildEventItem(BuildContext context,
+      {required EventModel event}) {
     return Container(
+      padding: EdgeInsets.all(8),
       color: Theme.of(context).colorScheme.surface,
       child: Row(
         children: [
           SizedBox(
-            width: imageSize.width,
-            height: imageSize.height,
+            width: 150,
+            height: 150,
             child: Image.network(
               association.imageUrl,
               fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Icon(Icons.account_balance); // fallback image
-              },
+              errorBuilder: (context, error, stackTrace) =>
+                  Icon(Icons.account_balance),
             ),
           ),
           SizedBox(width: 20),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(DateFormat("E, MMMd.").add_j().format(event.startDatetime)),
+              Text(
+                DateFormat("E, MMM d · h:mm a").format(event.startDatetime),
+              ),
               Text(event.title, style: subtitleStyle),
               Text(event.location, style: bodyTextStyle),
             ],

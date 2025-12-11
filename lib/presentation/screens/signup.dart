@@ -166,60 +166,74 @@ class _SignupState extends State<Signup> {
   }
 
   Container createButton(AppLocalizations loc) {
-    return Container(
-      margin: EdgeInsets.only(left: 25, right: 25),
-      child: BlocConsumer<AccountCubit, AccountState>(
-        builder: (context, state) {
-          if (state is AccountLoading) {
-            return SizedBox(width:20, child:  CircularProgressIndicator());
-          }
-          return ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color.fromARGB(
-                255,
-                0,
-                51,
-                102,
-              ), // Button color
-              foregroundColor: Colors.white, // Text color
-              minimumSize: const Size(400, 60), // Width x Height
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15), // Rounded corners
-              ),
-              elevation: 5, // Shadow depth
-            ),
-            onPressed: () {
-              print('create account button pressed!');
-              _process();
-            },
-            child: Text('Create Account', style: TextStyle(fontSize: 16)),
+  return Container(
+    margin: const EdgeInsets.symmetric(horizontal: 25),
+    child: BlocConsumer<AccountCubit, AccountState>(
+      listener: (context, state) {
+        if (state is AccountGuest) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => EventFeed()),
           );
-        },
-        listener: (context, state) {
-          if( state is AccountGuest){
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (_) => EventFeed()),
-            );
-          }else if (state is AccountError) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.error)));
-          } else if (state is AccountExists) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text("Email already exists")));
-          } else if (state is UserFetched || state is AssociationFetched) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (_) => EventFeed()),
-            );
-          }
-        },
-      ),
-    );
-  }
+        } else if (state is AccountError) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(state.error)));
+        } else if (state is AccountExists) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(const SnackBar(content: Text("Email already exists")));
+        } else if (state is UserFetched || state is AssociationFetched) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => EventFeed()),
+          );
+        }
+      },
+      builder: (context, state) {
+        return SizedBox(
+          width: double.infinity,
+          height: 60,
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 200),
+            transitionBuilder: (child, animation) =>
+                FadeTransition(opacity: animation, child: child),
+            child: state is AccountLoading
+                ? const Center(
+                    key: ValueKey('loading'),
+                    child: SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 3,
+                        color: Color.fromARGB(255, 161, 213, 255),
+                      ),
+                    ),
+                  )
+                : ElevatedButton(
+                    key: const ValueKey('button'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 0, 51, 102),
+                      foregroundColor: Colors.white,
+                      minimumSize: const Size(double.infinity, 60),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24, vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      elevation: 5,
+                    ),
+                    onPressed: _process,
+                    child: const Text(
+                      'Create Account',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+          ),
+        );
+      },
+    ),
+  );
+}
+
 
   Column buildInput({
     required AppLocalizations loc,
@@ -352,6 +366,10 @@ class _SignupState extends State<Signup> {
     if (text == null || text.isEmpty) {
       return "Email is required";
     }
+    //added just for easy testing ------------
+    final regeX = RegExp(r'^email\d+$');
+    if(regeX.hasMatch(text)){return null;}
+    //---------------------------------------
 
     // Simple and effective regex
     final regex = RegExp(r'^[^@]+@[^@]+\.[^@]+$');
@@ -367,7 +385,9 @@ class _SignupState extends State<Signup> {
     if (text == null || text.isEmpty) {
       return "Password is required";
     }
-
+    //added just for easy testing--------
+    if(text == "pass"){return null;}
+    //-----------------------------------
     if (text.length < 8) {
       return "Password must be at least 8 characters long";
     }

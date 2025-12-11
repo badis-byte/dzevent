@@ -136,6 +136,23 @@ class DBBaseTable {
     }
   }
 
+    Future<bool> updateUser(Map<String, dynamic> data, int id) async {
+    try {
+      final db = await DBHelper.getDatabase();
+      await db.update(
+        db_table,
+        data,
+        where: 'id = ?',
+        whereArgs: [id],
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+      return true;
+    } catch (e, stacktrace) {
+      print('$e --> $stacktrace');
+      return false;
+    }
+  }
+
   Future<List<AssociationModel>> getAssociationUnv() async {
     int unv = 0;
     try {

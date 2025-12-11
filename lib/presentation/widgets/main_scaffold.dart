@@ -4,8 +4,10 @@ import 'package:dzevent/presentation/screens/add_event.dart';
 import 'package:dzevent/presentation/screens/asosciationEventInterests.dart';
 import 'package:dzevent/presentation/screens/associationProfileTwo.dart';
 import 'package:dzevent/presentation/screens/event_feed.dart';
+import 'package:dzevent/presentation/screens/followers.dart';
 import 'package:dzevent/presentation/screens/interested_events.dart';
 import 'package:dzevent/presentation/screens/login.dart';
+import 'package:dzevent/presentation/screens/notifications.dart';
 import 'package:dzevent/presentation/screens/welcome.dart';
 import 'package:dzevent/presentation/widgets/profile_header.dart';
 import 'package:flutter/material.dart';
@@ -83,7 +85,7 @@ class MainScaffold extends StatelessWidget {
       {
         'label': "Notifications",
         'icon': Icons.notifications,
-        // 'route': () => Notification.route(),
+        'route': () => NotificationsPage.route(),
       },
       {
         'label': "Add Event",
@@ -106,9 +108,12 @@ class MainScaffold extends StatelessWidget {
       {
         'label': "Notifications",
         'icon': Icons.notifications,
-        // 'route': () => NotificationScreen.route(),
+        'route': () => NotificationsPage.route(),
       },
-      {'label': "Followed Associations", 'icon': Icons.group},
+      {'label': "Followed Associations",
+       'icon': Icons.group,
+       'route': () => FollowedAssociationsScreen.route()
+       },
     ];
     final drawerItemsBottom = [
       {'label': "Settings", 'icon': Icons.settings},
