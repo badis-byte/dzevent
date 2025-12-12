@@ -31,17 +31,18 @@ class PublicAssocProfile extends StatefulWidget {
 class _PublicAssocProfileState extends State<PublicAssocProfile>
     with TickerProviderStateMixin {
   late final Association association;
-
+  bool isFollowing = false;
   final imageSize = Size(150, 150);
 
   int? loggedInId; // user OR association ID
 
   @override
-  void initState() {
+  void initState(){
     super.initState();
 
     /// Prepare the Association object
     association = Association(
+      id: widget.asso.id!,
       name: widget.asso.name,
       imageUrl: widget.asso.profilePicture,
       brief: widget.asso.bio,
@@ -53,6 +54,20 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
       ],
     );
 
+    // Future<void> getF(assocId)async{
+    //   var state= context.read<FollowCubit>().state;
+    //   // Determine if currently following
+    //   if (state is FollowListFetched) {
+    //     isFollowing = state.followedAssociationIds.contains(assocId);
+    //   }else{
+    //     await context.read<FollowCubit>().getFollowedAssociations(loggedInId!);
+    //     if (state is FollowListFetched) {
+    //     isFollowing = state.followedAssociationIds.contains(assocId);
+    //   }
+    //   }
+    // }
+    // getF(association.id);
+
     /// Determine logged-in identity (user or association)
     final acc = context.read<AccountCubit>();
     if (acc.association == true) {
@@ -60,6 +75,8 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
     } else{
       loggedInId = acc.currentUser!.id;
     }
+    //load followed associations
+    context.read<FollowCubit>().getFollowedAssociations(loggedInId!);
 
     /// Load association's events ONCE
     if (widget.asso.id != null) {
@@ -90,7 +107,7 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
     );
   }
 
-  Column buildInfo(BuildContext context, AppLocalizations loc) {
+  Column buildInfo(BuildContext context, AppLocalizations loc){
     return Column(
       children: [
         /// Profile Image
@@ -122,40 +139,22 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
         // FOLLOW BUTTON
 BlocBuilder<FollowCubit, FollowState>(
   builder: (context, state) {
-    final followCubit = context.read<FollowCubit>();
-    final assocId = widget.asso.id;
-
-    // Safety check
-    if (loggedInId == null || assocId == null) {
-      return SizedBox(
-        width: double.infinity,
-        child: ElevatedButton(
-          onPressed: null,
-          child: Text("Login required"),
-        ),
-      );
-    }
-
-    // Determine if currently following
     bool isFollowing = false;
+
     if (state is FollowListFetched) {
-      isFollowing = state.followedAssociationIds.contains(assocId);
+      isFollowing = state.followedAssociationIds.contains(widget.asso.id);
     }
 
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        style: getPrimaryBtnStyle(context: context),
-        onPressed: () async {
-          // Toggle follow/unfollow
-          if (isFollowing) {
-            await followCubit.unfollow(loggedInId!, assocId);
-          } else {
-            await followCubit.follow(loggedInId!, assocId);
-          }
-        },
-        child: Text(isFollowing ? "Unfollow" : "Follow"),
-      ),
+    return ElevatedButton(
+      onPressed: () {
+        final followCubit = context.read<FollowCubit>();
+        if (isFollowing) {
+          followCubit.unfollow(loggedInId!, widget.asso.id!);
+        } else {
+          followCubit.follow(loggedInId!, widget.asso.id!);
+        }
+      },
+      child: Text(isFollowing ? "Unfollow" : "Follow"),
     );
   },
 ),

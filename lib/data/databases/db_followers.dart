@@ -10,7 +10,7 @@ class FollowersTable extends DBBaseTable {
               id              INTEGER PRIMARY KEY AUTOINCREMENT,
               user_id         INTEGER NOT NULL,
               association_id  INTEGER NOT NULL,
-              notify          BOOLEAN DEFAULT 1,
+              notify          BOOLEAN DEFAULT 1
             );
         ''';
 
