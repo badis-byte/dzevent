@@ -146,6 +146,8 @@ BlocBuilder<FollowCubit, FollowState>(
     }
 
     return ElevatedButton(
+
+      style: getPrimaryBtnStyle(context: context),
       onPressed: () {
         final followCubit = context.read<FollowCubit>();
         if (isFollowing) {
