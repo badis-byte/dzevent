@@ -70,6 +70,7 @@ class AssocRepoLocal extends AssocRepoBase {
       throw Exception("something went wrong");
     }
   }
+  
 
   @override
   Future<bool> verifyAssociation(int id) async {

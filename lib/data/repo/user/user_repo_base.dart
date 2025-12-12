@@ -8,7 +8,7 @@ abstract class UserRepoBase {
   Future<bool> deleteAllData();
   Future<UserModel> login(String email, String password);
   Future<bool> update(UserModel value, int id);
-
+  Future<UserModel> getUserById(int id);
   static UserRepoBase? _userInstance;
 
   static UserRepoBase getInstance() {

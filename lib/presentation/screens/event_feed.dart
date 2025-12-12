@@ -38,6 +38,7 @@ class _EventFeedState extends State<EventFeed> {
   final searchController = TextEditingController();
 
   int userId = 2;
+  bool asso = false;
 
   @override
   void initState() {
@@ -64,6 +65,8 @@ class _EventFeedState extends State<EventFeed> {
       return true;
     } else if (authState is AssociationFetched) {
       userId = authState.association.id!;
+      asso = true;
+      print("EventCard: user fetched ${authState.association.name} ");
       final interestsCubit = context.read<InterestsCubit>();
       await interestsCubit.getUserInterests(userId: userId!);
       return true;
@@ -96,7 +99,6 @@ class _EventFeedState extends State<EventFeed> {
           icon: Icon(Icons.notifications_none),
         ),
       ],
-
       body: Container(
         color: Color.fromARGB(255, 240, 242, 245),
         child: Padding(
@@ -147,110 +149,105 @@ class _EventFeedState extends State<EventFeed> {
                   "Meetup",
                 ],
               ),
-              SizedBox(height: 5),
-              
+              SizedBox(height: 16),
 
-              Expanded(
-                child: BlocBuilder<EventsCubit, EventsState>(
-                  builder: (context, state) {
-                    if (state is EventsLoading) {
-                      return const Center(child: CircularProgressIndicator());
+              BlocBuilder<EventsCubit, EventsState>(
+                builder: (context, state) {
+                  if (state is EventsLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (state is EventsError) {
+                    return Center(child: Text(loc.errorOccurred(state.error)));
+                  }
+                  if (state is EventsFetched) {
+                    final events = state.events;
+                    if (events.isEmpty) {
+                      return Text("No events found");
                     }
-                    if (state is EventsError) {
-                      return Center(child: Text(loc.errorOccurred(state.error)));
-                    }
-                    if (state is EventsFetched) {
-                      final events = state.events;
-                      if (events.isEmpty) {
-                        return Text("No events found");
-                      }
-                
-                      return BlocConsumer<InterestsCubit, InterestsState>(
-                        listener: (context, state) async {
-                          final authCubit = context.read<AccountCubit>();
-                          final authState = authCubit.state;
-                          if (state is InterestsMutated) {
-                            if (authState is UserFetched) {
-                              await context
-                                  .read<InterestsCubit>()
-                                  .getUserInterests(userId: authState.user.id!);
-                            } else {
-                              debugPrint("User not fetched. Cannot refetch feed");
-                            }
+
+                    return BlocConsumer<InterestsCubit, InterestsState>(
+                      listener: (context, state) async {
+                        final authCubit = context.read<AccountCubit>();
+                        final authState = authCubit.state;
+                        if (state is InterestsMutated) {
+                          if (authState is UserFetched) {
+                            await context
+                                .read<InterestsCubit>()
+                                .getUserInterests(userId: authState.user.id!);
+                          } else {
+                            debugPrint("User not fetched. Cannot refetch feed");
                           }
-                        },
-                        builder: (context, state) {
-                          print("Interests State ${state.runtimeType}");
-                          Map<EventModel, bool> interested = Map.fromEntries(
-                            events.map((event) => MapEntry(event, false)),
-                          );
-                
-                          if (state is InterestsFetched) {
-                            final interests = state.interests;
-                            interested = Map.fromEntries(
-                              events.map(
-                                (event) => MapEntry(
-                                  event,
-                                  interests.any((i) => i.eventId == event.id),
-                                ),
+                        }
+                      },
+                      builder: (context, state) {
+                        print("Interests State ${state.runtimeType}");
+                        Map<EventModel, bool> interested = Map.fromEntries(
+                          events.map((event) => MapEntry(event, false)),
+                        );
+
+                        if (state is InterestsFetched) {
+                          final interests = state.interests;
+                          interested = Map.fromEntries(
+                            events.map(
+                              (event) => MapEntry(
+                                event,
+                                interests.any((i) => i.eventId == event.id),
                               ),
-                            );
-                          }
-                
-                          return Expanded(
-                            child: Refreshable(
-                              refresh: refresh,
-                              child: ListView.builder(
-                                physics: const AlwaysScrollableScrollPhysics(),
-                                itemCount: events.length,
-                                itemBuilder: (context, index) {
-                                  final event = events[index];
-                
-                                  return BlocBuilder<AccountCubit, AccountState>(
-                                    builder: (context, state) {
-                                      if (state is! AccountGuest) {
-                                        print("state is : ${state.toString()}");
-                                        return Column(
-                                          children: [
-                                            GestureDetector(
-                                              onTap: () {
-                                                context
-                                                    .read<AccountCubit>()
-                                                    .getAssoc(
-                                                      event.associationId,
-                                                    );
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (_) => EventDetails(
-                                                      event: event,
-                                                    ),
+                            ),
+                          );
+                        }
+
+                        return Expanded(
+                          child: Refreshable(
+                            refresh: refresh,
+                            child: ListView.builder(
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              itemCount: events.length,
+                              itemBuilder: (context, index) {
+                                final event = events[index];
+
+                                return BlocBuilder<AccountCubit, AccountState>(
+                                  builder: (context, state) {
+                                    if (state is! AccountGuest) {
+                                      print("state is : ${state.toString()}");
+                                      return Column(
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                              context
+                                                  .read<AccountCubit>()
+                                                  .getAssoc(
+                                                    event.associationId,
+                                                  );
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (_) => EventDetails(
+                                                    event: event,
                                                   ),
-                                                ).then((_) async {
-                                                  // Refresh when coming back
-                                                  context
-                                                      .read<EventsCubit>()
-                                                      .getAll();
+                                                ),
+                                              ).then((_) async {
+                                                // Refresh when coming back
+                                                context
+                                                    .read<EventsCubit>()
+                                                    .getAll();
+                                                print("${asso.toString()} ${state.toString()}");
+                                                if ((state
+                                                    is AssociationFetched || state is AssoicationDetailFetched) &&
+                                                    asso) {
                                                   await context
                                                       .read<AccountCubit>()
                                                       .getcurrentAssociation(
                                                         userId,
                                                       );
-                                                });
-                                              },
-                                              child: FeedEventCard(
-                                                event: event,
-                                                isInterested: interested[event]!,
-                                              ),
-                                            ),
-                                            const SizedBox(height: 16),
-                                          ],
-                                        );
-                                      }
-                                      return Column(
-                                        children: [
-                                          GestureDetector(
-                                            onTap: () {},
+                                                } else if (state
+                                                    is UserFetched || state is AssoicationDetailFetched) {
+                                                  await context
+                                                      .read<AccountCubit>()
+                                                      .getcurrentUser(userId);
+                                                }
+                                              });
+                                            },
                                             child: FeedEventCard(
                                               event: event,
                                               isInterested: interested[event]!,
@@ -259,18 +256,30 @@ class _EventFeedState extends State<EventFeed> {
                                           const SizedBox(height: 16),
                                         ],
                                       );
-                                    },
-                                  );
-                                },
-                              ),
+                                    }
+                                    return Column(
+                                      children: [
+                                        GestureDetector(
+                                          onTap: () {},
+                                          child: FeedEventCard(
+                                            event: event,
+                                            isInterested: interested[event]!,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 16),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
                             ),
-                          );
-                        },
-                      );
-                    }
-                    return const SizedBox();
-                  },
-                ),
+                          ),
+                        );
+                      },
+                    );
+                  }
+                  return const SizedBox();
+                },
               ),
             ],
           ),
@@ -326,8 +335,7 @@ class _FiltersState extends State<Filters> {
                   backgroundColor: Colors.blue.shade50,
                   foregroundColor: filtersState[filter]!
                       ? Colors.red
-                      : Colors.blue.shade800,
-                  side: BorderSide(color: Colors.blue.shade200),
+                      : Colors.black,
                   padding: EdgeInsets.symmetric(horizontal: 18, vertical: 12),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),

@@ -208,6 +208,17 @@ class AccountCubit extends Cubit<AccountState> {
     }
   }
 
+  Future<dynamic> getcurrentUser(int id) async {
+    try {
+      var response = await localUserRepo.getUserById(id);
+      emit(UserFetched(user: response));
+      print("fetching association");
+      return true;
+    } catch (e) {
+      print("error -> $e");
+    }
+  }
+
     Future<AssociationModel> getFollowedAssociation(int id) async {
     try {
       var response = await localAssRepo.getAssociation(id);
