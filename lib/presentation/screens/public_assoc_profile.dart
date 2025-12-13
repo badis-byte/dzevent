@@ -325,26 +325,35 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
 BlocBuilder<FollowCubit, FollowState>(
   builder: (context, state) {
     bool isFollowing = false;
+    bool isLoading = state is FollowLoading;
 
     if (state is FollowListFetched) {
       isFollowing = state.followedAssociationIds.contains(widget.asso.id);
     }
 
     return ElevatedButton(
+      onPressed: isLoading ? null : () {
+        final cubit = context.read<FollowCubit>();
+        final currentState = cubit.state;
 
-      style: getPrimaryBtnStyle(context: context),
-      onPressed: () {
-        final followCubit = context.read<FollowCubit>();
-        if (isFollowing) {
-          followCubit.unfollow(loggedInId!, widget.asso.id!);
+        bool followingNow = false;
+        if (currentState is FollowListFetched) {
+          followingNow = currentState.followedAssociationIds.contains(widget.asso.id);
+        }
+
+        if (followingNow) {
+          cubit.unfollow(loggedInId!, widget.asso.id!);
         } else {
-          followCubit.follow(loggedInId!, widget.asso.id!);
+          cubit.follow(loggedInId!, widget.asso.id!);
         }
       },
-      child: Text(isFollowing ? "Unfollow" : "Follow"),
+      child: isLoading
+          ? SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
+          : Text(isFollowing ? "Unfollow" : "Follow"),
     );
   },
 ),
+
 
         SizedBox(height: 16),
 

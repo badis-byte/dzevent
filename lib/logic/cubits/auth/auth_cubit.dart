@@ -1,8 +1,8 @@
 import 'package:dzevent/data/databases/db_auth.dart';
 import 'package:dzevent/data/models/assoc_model.dart';
 import 'package:dzevent/data/models/user_model.dart';
-import 'package:dzevent/data/repo/association/assoc_repo_local.dart';
-import 'package:dzevent/data/repo/user/user_repo_local.dart';
+import 'package:dzevent/data/remoteRepo/association/assoc_repo_local.dart';
+import 'package:dzevent/data/remoteRepo/user/user_repo_local.dart';
 import 'package:dzevent/logic/cubits/auth/auth_states.dart';
 import 'package:dzevent/logic/cubits/followers/followers_cubits.dart';
 import 'package:flutter/material.dart';
@@ -83,9 +83,10 @@ class AccountCubit extends Cubit<AccountState> {
       emit(AccountLoading());
       if (association) {
         AssociationModel assoc = AssociationModel(
-          // id: 1,
+          //id: 1,
           name: name,
           email: email,
+          password: password,
           profilePicture: "assets/images/users/association.png",
           bio: "we're a new Associatoin to DZevent!",
           createdAt: DateTime.now(),
@@ -98,8 +99,10 @@ class AccountCubit extends Cubit<AccountState> {
         print(res);
       } else {
         UserModel user = UserModel(
+          //id: 1,
           name: name,
           email: email,
+          password: password,
           profilePicture: "assets/images/users/guest.png",
           createdAt: DateTime.now(),
         );
@@ -114,7 +117,7 @@ class AccountCubit extends Cubit<AccountState> {
     } catch (e) {
       emit(
         AccountError(
-          error: "something weired happened.. Please try again later",
+          error: "$e",
         ),
       );
       return true;
@@ -151,6 +154,7 @@ class AccountCubit extends Cubit<AccountState> {
       }
     } catch (e) {
       emit(AccountError(error: "Failed to get user data. Error: $e"));
+      print('$e');
       return false;
     }
   }

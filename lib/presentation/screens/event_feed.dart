@@ -81,14 +81,14 @@ class _EventFeedState extends State<EventFeed> with SingleTickerProviderStateMix
     if (authState is UserFetched) {
       userId = authState.user.id!;
       final interestsCubit = context.read<InterestsCubit>();
-      await interestsCubit.getUserInterests(userId: userId!);
+      await interestsCubit.getUserInterests(userId: userId);
       return true;
     } else if (authState is AssociationFetched) {
       userId = authState.association.id!;
       asso = true;
       print("EventCard: user fetched ${authState.association.name} ");
       final interestsCubit = context.read<InterestsCubit>();
-      await interestsCubit.getUserInterests(userId: userId!);
+      await interestsCubit.getUserInterests(userId: userId);
       return true;
     }
     return false;

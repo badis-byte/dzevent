@@ -27,13 +27,40 @@ class InterestModel {
     };
   }
 
-  factory InterestModel.fromMap(Map<String, dynamic> map) {
-    return InterestModel(
-      userId: map['userId'] as int,
-      eventId: map['eventId'] as String,
-      createdAt: DateTime.parse(map['createdAt'] as String),
-    );
+factory InterestModel.fromMap(Map<String, dynamic> map) {
+  // Safely parse userId
+  int userId;
+  final userIdValue = map['userId'];
+  if (userIdValue is int) {
+    userId = userIdValue;
+  } else if (userIdValue is double) {
+    userId = userIdValue.toInt();
+  } else {
+    userId = int.tryParse(userIdValue.toString()) ?? 0;
   }
+
+  // Safely parse eventId
+  String eventId;
+  final eventIdValue = map['eventId'];
+  eventId = eventIdValue.toString();
+
+  // Safely parse createdAt
+  DateTime createdAt;
+  final createdAtValue = map['createdAt'];
+  if (createdAtValue is DateTime) {
+    createdAt = createdAtValue;
+  } else {
+    createdAt = DateTime.parse(createdAtValue.toString());
+  }
+
+  return InterestModel(
+    userId: userId,
+    eventId: eventId,
+    createdAt: createdAt,
+  );
+}
+
+
 
   String toJson() => json.encode(toMap());
 
