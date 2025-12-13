@@ -36,13 +36,31 @@ enum _FormField {
   category,
 }
 
-class _AddeventState extends State<Addevent> {
+class _AddeventState extends State<Addevent> with SingleTickerProviderStateMixin {
   late final Map<_FormField, TextEditingController> controllers;
   late final GlobalKey<FormState> _formKey;
+  late AnimationController _animController;
+  late Animation<double> _fadeAnimation;
+  late Animation<Offset> _slideAnimation;
 
   @override
   void initState() {
     super.initState();
+    
+    _animController = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 600),
+    )..forward();
+
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animController, curve: Curves.easeIn),
+    );
+
+    _slideAnimation = Tween<Offset>(
+      begin: Offset(0, 0.1),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _animController, curve: Curves.easeOut));
+
     controllers = Map.fromEntries(
       _FormField.values
           .map(
@@ -90,6 +108,7 @@ class _AddeventState extends State<Addevent> {
 
   @override
   void dispose() {
+    _animController.dispose();
     for (final controller in controllers.values) {
       controller.dispose();
     }
@@ -163,172 +182,404 @@ class _AddeventState extends State<Addevent> {
     }
   }
 
+  Widget _buildSectionHeader(String title, IconData icon) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        children: [
+          Container(
+            padding: EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primaryContainer,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Icon(
+              icon,
+              size: 20,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+          ),
+          SizedBox(width: 12),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCard({required Widget child}) {
+    return Container(
+      padding: EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: Theme.of(context).colorScheme.outline.withOpacity(0.1),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.03),
+            blurRadius: 10,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      child: child,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final isEditing = widget.event != null;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      extendBodyBehindAppBar: false,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.white,
-        leading: Builder(
-          builder: (context) {
-            return IconButton(
-              icon: Icon(Icons.arrow_back),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            );
-          },
-        ),
-        shape: Border(bottom: BorderSide(color: Colors.grey, width: 0.1)),
-        title: Center(
-          child: Text(
-            isEditing ? "Edit Event" : "Create New Event",
-            style: TextStyle(fontWeight: FontWeight.bold),
+        backgroundColor: Colors.transparent,
+        leading: Container(
+          margin: EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surface,
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 8,
+              ),
+            ],
+          ),
+          child: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context);
+            },
           ),
         ),
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primaryContainer,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(
+                isEditing ? Icons.edit_note : Icons.add_circle_outline,
+                color: Theme.of(context).colorScheme.primary,
+                size: 24,
+              ),
+            ),
+            SizedBox(width: 12),
+            Text(
+              isEditing ? "Edit Event" : "Create New Event",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+              ),
+            ),
+          ],
+        ),
+        centerTitle: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: BlocListener<EventsCubit, EventsState>(
-          listener: (context, state) {
-            if (state is EventsError) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    "Failed to ${isEditing ? 'update' : 'add'} the event. Error: \n ${state.error}",
-                  ),
-                  duration: Duration(seconds: 3),
-                ),
-              );
-            }
-            if (state is AddNewEventSuccess) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    "Event ${isEditing ? 'Updated' : 'Added'} Successfully.",
-                  ),
-                  duration: Duration(seconds: 3),
-                ),
-              );
-            }
-          },
-          child: SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: 8),
-                  TextInput(
-                    title: "Event Title",
-                    maximumLength: 100,
-                    label: "Annual Tech Conference",
-                    expand: false,
-                    controller: controllers[_FormField.title]!,
-                  ),
-                  SizedBox(height: 16),
-                  SizedBox(
-                    height: 200,
-                    child: TextInput(
-                      title: "Description",
-                      maximumLength: 500,
-                      label: "Join us for a day of insightful talks...",
-                      expand: true,
-                      controller: controllers[_FormField.description]!,
-                    ),
-                  ),
-                  SizedBox(height: 16),
-                  DatetimeInput(
-                    label: "Start Datetime",
-                    timeController: controllers[_FormField.startTime]!,
-                    dateController: controllers[_FormField.startDate]!,
-                  ),
-                  SizedBox(height: 16),
-                  DatetimeInput(
-                    label: " End Datetime",
-                    timeController: controllers[_FormField.endTime]!,
-                    dateController: controllers[_FormField.endDate]!,
-                  ),
-                  SizedBox(height: 16),
-                  Input(
-                    controller: controllers[_FormField.location]!,
-                    label: "Location",
-                    hint: "123Main Street,Anytown",
-                    icon: Icons.location_on_outlined,
-                  ),
-                  SizedBox(height: 16),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("Event Category"),
-                      SizedBox(height: 8),
-                      DropdownButtonFormField<String>(
-                        initialValue: widget.event?.category,
-                        validator: getIsRequiredValidator(isRequired: true),
-                        decoration: InputDecoration(
-                          labelText: "Select a category",
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.black,
-                              width: 2,
-                            ),
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                        ),
-                        items:
-                            [
-                                  "Tech",
-                                  "AI and Data Science",
-                                  "Business",
-                                  "Agriculture",
-                                  "Sociology",
-                                  "Meetup",
-                                ]
-                                .map(
-                                  (e) => DropdownMenuItem(
-                                    value: e,
-                                    child: Text(e),
-                                  ),
-                                )
-                                .toList(),
-                        onChanged: (value) {
-                          controllers[_FormField.category]!.text = value!;
-                        },
-                      ),
-                      SizedBox(height: 8),
-                      ImageInput(
-                        label: "image",
-                        hint: "",
-                        icon: null,
-                        controller: controllers[_FormField.imageUrl]!,
-                      ),
-                      SizedBox(height: 8),
-                      Column(
+      body: FadeTransition(
+        opacity: _fadeAnimation,
+        child: SlideTransition(
+          position: _slideAnimation,
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: BlocListener<EventsCubit, EventsState>(
+              listener: (context, state) {
+                if (state is EventsError) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Row(
                         children: [
-                          Button(
-                            title: "Preview Event",
-                            bgColor: Colors.grey.shade100,
-                            textColor: Colors.black,
-                          ),
-                          SizedBox(height: 8),
-                          Button(
-                            title: isEditing ? "Update Event" : "Post Event",
-                            bgColor: Colors.blue,
-                            textColor: Colors.white,
-                            onPressed: submit,
+                          Icon(Icons.error_outline, color: Colors.white),
+                          SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              "Failed to ${isEditing ? 'update' : 'add'} the event. Error: \n ${state.error}",
+                            ),
                           ),
                         ],
                       ),
+                      backgroundColor: Theme.of(context).colorScheme.error,
+                      behavior: SnackBarBehavior.floating,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      duration: Duration(seconds: 3),
+                    ),
+                  );
+                }
+                if (state is AddNewEventSuccess) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Row(
+                        children: [
+                          Icon(Icons.check_circle_outline, color: Colors.white),
+                          SizedBox(width: 12),
+                          Text(
+                            "Event ${isEditing ? 'Updated' : 'Added'} Successfully.",
+                          ),
+                        ],
+                      ),
+                      backgroundColor: Colors.green,
+                      behavior: SnackBarBehavior.floating,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      duration: Duration(seconds: 3),
+                    ),
+                  );
+                }
+              },
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Basic Information Section
+                      _buildSectionHeader("Basic Information", Icons.info_outline),
+                      _buildCard(
+                        child: Column(
+                          children: [
+                            TextInput(
+                              title: "Event Title",
+                              maximumLength: 100,
+                              label: "Annual Tech Conference",
+                              expand: false,
+                              controller: controllers[_FormField.title]!,
+                            ),
+                            SizedBox(height: 16),
+                            SizedBox(
+                              height: 200,
+                              child: TextInput(
+                                title: "Description",
+                                maximumLength: 500,
+                                label: "Join us for a day of insightful talks...",
+                                expand: true,
+                                controller: controllers[_FormField.description]!,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 24),
+
+                      // Date & Time Section
+                      _buildSectionHeader("Date & Time", Icons.calendar_today),
+                      _buildCard(
+                        child: Column(
+                          children: [
+                            DatetimeInput(
+                              label: "Start Datetime",
+                              timeController: controllers[_FormField.startTime]!,
+                              dateController: controllers[_FormField.startDate]!,
+                            ),
+                            SizedBox(height: 16),
+                            DatetimeInput(
+                              label: "End Datetime",
+                              timeController: controllers[_FormField.endTime]!,
+                              dateController: controllers[_FormField.endDate]!,
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 24),
+
+                      // Location & Category Section
+                      _buildSectionHeader("Details", Icons.location_on_outlined),
+                      _buildCard(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Input(
+                              controller: controllers[_FormField.location]!,
+                              label: "Location",
+                              hint: "123 Main Street, Anytown",
+                              icon: Icons.location_on_outlined,
+                            ),
+                            SizedBox(height: 16),
+                            Text(
+                              "Event Category",
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: Theme.of(context).colorScheme.onSurface,
+                              ),
+                            ),
+                            SizedBox(height: 8),
+                            DropdownButtonFormField<String>(
+                              initialValue: widget.event?.category,
+                              validator: getIsRequiredValidator(isRequired: true),
+                              decoration: InputDecoration(
+                                labelText: "Select a category",
+                                prefixIcon: Icon(Icons.category_outlined),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(
+                                    color: Theme.of(context).colorScheme.outline,
+                                  ),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(
+                                    color: Theme.of(context).colorScheme.outline.withOpacity(0.3),
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Theme.of(context).colorScheme.primary,
+                                    width: 2,
+                                  ),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                filled: true,
+                                fillColor: Theme.of(context).colorScheme.surface,
+                              ),
+                              items: [
+                                "Tech",
+                                "AI and Data Science",
+                                "Business",
+                                "Agriculture",
+                                "Sociology",
+                                "Meetup",
+                              ]
+                                  .map(
+                                    (e) => DropdownMenuItem(
+                                      value: e,
+                                      child: Text(e),
+                                    ),
+                                  )
+                                  .toList(),
+                              onChanged: (value) {
+                                controllers[_FormField.category]!.text = value!;
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 24),
+
+                      // Media Section
+                      _buildSectionHeader("Media", Icons.image_outlined),
+                      _buildCard(
+                        child: ImageInput(
+                          label: "Event Image URL",
+                          hint: "https://example.com/image.jpg",
+                          icon: Icons.add_photo_alternate_outlined,
+                          controller: controllers[_FormField.imageUrl]!,
+                        ),
+                      ),
+                      SizedBox(height: 32),
+
+                      // Action Buttons
+                      Column(
+                        children: [
+                          SizedBox(
+                            width: double.infinity,
+                            height: 54,
+                            child: OutlinedButton(
+                              onPressed: () {},
+                              style: OutlinedButton.styleFrom(
+                                side: BorderSide(
+                                  color: Theme.of(context).colorScheme.outline,
+                                  width: 1.5,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.visibility_outlined,
+                                    size: 22,
+                                  ),
+                                  SizedBox(width: 8),
+                                  Text(
+                                    "Preview Event",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 12),
+                          SizedBox(
+                            width: double.infinity,
+                            height: 54,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Theme.of(context).colorScheme.primary,
+                                    Theme.of(context).colorScheme.primary.withOpacity(0.8),
+                                  ],
+                                ),
+                                borderRadius: BorderRadius.circular(16),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                                    blurRadius: 12,
+                                    offset: Offset(0, 6),
+                                  ),
+                                ],
+                              ),
+                              child: ElevatedButton(
+                                onPressed: submit,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.transparent,
+                                  foregroundColor: Colors.white,
+                                  shadowColor: Colors.transparent,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      isEditing ? Icons.update : Icons.publish,
+                                      size: 22,
+                                      color: Colors.white,
+                                    ),
+                                    SizedBox(width: 8),
+                                    Text(
+                                      isEditing ? "Update Event" : "Post Event",
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 24),
                     ],
                   ),
-                ],
+                ),
               ),
             ),
           ),
