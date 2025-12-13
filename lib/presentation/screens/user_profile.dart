@@ -12,55 +12,247 @@ class UserProfileScreen extends StatefulWidget {
   State<UserProfileScreen> createState() => _UserProfileScreenState();
 }
 
-class _UserProfileScreenState extends State<UserProfileScreen> {
+class _UserProfileScreenState extends State<UserProfileScreen> with SingleTickerProviderStateMixin {
+  late AnimationController _animController;
+  late Animation<double> _fadeAnimation;
+  late Animation<Offset> _slideAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animController = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 600),
+    )..forward();
+
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animController, curve: Curves.easeIn),
+    );
+
+    _slideAnimation = Tween<Offset>(
+      begin: Offset(0, 0.1),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _animController, curve: Curves.easeOut));
+  }
+
+  @override
+  void dispose() {
+    _animController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(backgroundColor: Colors.white, title: Text(loc.profile)),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(vertical: 20),
-        child: Column(
-          children: [
-            const ProfilePic(),
-            const SizedBox(height: 20),
-            ProfileMenu(
-              text: loc.myAccount,
-              icon: "assets/icons/User Icon.svg",
-              press: () => {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute<void>(
-                    builder: (context) => const Myaccountcredentials(),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      body: CustomScrollView(
+        slivers: [
+          // Modern App Bar with gradient
+          SliverAppBar(
+            expandedHeight: 280,
+            pinned: true,
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            flexibleSpace: FlexibleSpaceBar(
+              background: Stack(
+                children: [
+                  // Gradient Background
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Theme.of(context).colorScheme.primary,
+                          Theme.of(context).colorScheme.primary.withOpacity(0.8),
+                          Theme.of(context).colorScheme.primaryContainer,
+                        ],
+                      ),
+                    ),
+                  ),
+                  // Decorative circles
+                  Positioned(
+                    top: -50,
+                    right: -50,
+                    child: Container(
+                      width: 200,
+                      height: 200,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white.withOpacity(0.1),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    bottom: -30,
+                    left: -30,
+                    child: Container(
+                      width: 150,
+                      height: 150,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white.withOpacity(0.05),
+                      ),
+                    ),
+                  ),
+                  // Profile Content
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: FadeTransition(
+                      opacity: _fadeAnimation,
+                      child: Column(
+                        children: [
+                          const ProfilePic(),
+                          SizedBox(height: 12),
+                          Text(
+                            "John Doe",
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            "john.doe@example.com",
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.white.withOpacity(0.9),
+                            ),
+                          ),
+                          SizedBox(height: 20),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            leading: Container(
+              margin: EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.2),
+                shape: BoxShape.circle,
+              ),
+              child: IconButton(
+                icon: Icon(Icons.arrow_back, color: Colors.white),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ),
+          ),
+
+          // Menu Items
+          SliverToBoxAdapter(
+            child: SlideTransition(
+              position: _slideAnimation,
+              child: FadeTransition(
+                opacity: _fadeAnimation,
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    children: [
+                      // Account Section
+                      _buildSectionHeader(context, "Account", Icons.person_outline),
+                      SizedBox(height: 12),
+                      ProfileMenu(
+                        text: loc.myAccount,
+                        icon: "assets/icons/User Icon.svg",
+                        menuIcon: Icons.account_circle_outlined,
+                        press: () => {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute<void>(
+                              builder: (context) => const Myaccountcredentials(),
+                            ),
+                          ),
+                        },
+                      ),
+                      ProfileMenu(
+                        text: loc.notifications,
+                        icon: "assets/icons/Bell.svg",
+                        menuIcon: Icons.notifications_outlined,
+                        press: () {},
+                      ),
+                      
+                      SizedBox(height: 24),
+                      
+                      // Preferences Section
+                      _buildSectionHeader(context, "Preferences", Icons.tune),
+                      SizedBox(height: 12),
+                      ProfileMenu(
+                        text: loc.settings,
+                        icon: "assets/icons/Settings.svg",
+                        menuIcon: Icons.settings_outlined,
+                        press: () {},
+                      ),
+                      ProfileMenu(
+                        text: loc.helpCenter,
+                        icon: "assets/icons/Question mark.svg",
+                        menuIcon: Icons.help_outline,
+                        press: () {},
+                      ),
+                      
+                      SizedBox(height: 24),
+                      
+                      // Logout
+                      ProfileMenu(
+                        text: loc.logOut,
+                        icon: "assets/icons/Log out.svg",
+                        menuIcon: Icons.logout,
+                        isDestructive: true,
+                        press: () {},
+                      ),
+                      
+                      SizedBox(height: 40),
+                      
+                      // App Version
+                      Text(
+                        "Version 1.0.0",
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                          fontSize: 12,
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                    ],
                   ),
                 ),
-              },
+              ),
             ),
-            ProfileMenu(
-              text: loc.notifications,
-              icon: "assets/icons/Bell.svg",
-              press: () {},
-            ),
-            ProfileMenu(
-              text: loc.settings,
-              icon: "assets/icons/Settings.svg",
-              press: () {},
-            ),
-            ProfileMenu(
-              text: loc.helpCenter,
-              icon: "assets/icons/Question mark.svg",
-              press: () {},
-            ),
-            ProfileMenu(
-              text: loc.logOut,
-              icon: "assets/icons/Log out.svg",
-              press: () {},
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
+    );
+  }
+
+  Widget _buildSectionHeader(BuildContext context, String title, IconData icon) {
+    return Row(
+      children: [
+        Container(
+          padding: EdgeInsets.all(6),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.primaryContainer,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(
+            icon,
+            size: 16,
+            color: Theme.of(context).colorScheme.primary,
+          ),
+        ),
+        SizedBox(width: 10),
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).colorScheme.onSurface,
+          ),
+        ),
+      ],
     );
   }
 }
@@ -77,28 +269,54 @@ class ProfilePic extends StatelessWidget {
         fit: StackFit.expand,
         clipBehavior: Clip.none,
         children: [
-          const CircleAvatar(
-            backgroundImage: NetworkImage(
-              "https://i.postimg.cc/0jqKB6mS/Profile-Image.png",
+          Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: Colors.white,
+                width: 4,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  blurRadius: 20,
+                  offset: Offset(0, 8),
+                ),
+              ],
+            ),
+            child: CircleAvatar(
+              backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+              backgroundImage: const NetworkImage(
+                "https://i.postimg.cc/0jqKB6mS/Profile-Image.png",
+              ),
             ),
           ),
           Positioned(
-            right: -16,
+            right: -5,
             bottom: 0,
-            child: SizedBox(
-              height: 46,
-              width: 46,
-              child: TextButton(
-                style: TextButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(50),
-                    side: const BorderSide(color: Colors.white),
+            child: Container(
+              height: 42,
+              width: 42,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Theme.of(context).colorScheme.primary,
+                border: Border.all(color: Colors.white, width: 3),
+                boxShadow: [
+                  BoxShadow(
+                    color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                    blurRadius: 8,
+                    offset: Offset(0, 4),
                   ),
-                  backgroundColor: const Color(0xFFF5F6F9),
-                ),
+                ],
+              ),
+              child: IconButton(
+                padding: EdgeInsets.zero,
                 onPressed: () {},
-                child: SvgPicture.string(cameraIcon),
+                icon: Icon(
+                  Icons.camera_alt,
+                  color: Colors.white,
+                  size: 20,
+                ),
               ),
             ),
           ),
@@ -113,45 +331,82 @@ class ProfileMenu extends StatelessWidget {
     super.key,
     required this.text,
     required this.icon,
+    required this.menuIcon,
     this.press,
+    this.isDestructive = false,
   });
 
   final String text, icon;
+  final IconData menuIcon;
   final VoidCallback? press;
+  final bool isDestructive;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      child: TextButton(
-        style: TextButton.styleFrom(
-          foregroundColor: const Color(0xFFFF7643),
-          padding: const EdgeInsets.all(20),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
-          backgroundColor: const Color(0xFFF5F6F9),
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: isDestructive 
+              ? Theme.of(context).colorScheme.error.withOpacity(0.2)
+              : Theme.of(context).colorScheme.outline.withOpacity(0.1),
         ),
-        onPressed: press,
-        child: Row(
-          children: [
-            SvgPicture.asset(
-              icon,
-              colorFilter: const ColorFilter.mode(
-                Color(0xFFFF7643),
-                BlendMode.srcIn,
-              ),
-              width: 22,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.03),
+            blurRadius: 8,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: press,
+          borderRadius: BorderRadius.circular(16),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            child: Row(
+              children: [
+                Container(
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: isDestructive
+                        ? Theme.of(context).colorScheme.error.withOpacity(0.1)
+                        : Theme.of(context).colorScheme.primaryContainer,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    menuIcon,
+                    color: isDestructive
+                        ? Theme.of(context).colorScheme.error
+                        : Theme.of(context).colorScheme.primary,
+                    size: 22,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Text(
+                    text,
+                    style: TextStyle(
+                      color: isDestructive
+                          ? Theme.of(context).colorScheme.error
+                          : Theme.of(context).colorScheme.onSurface,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+                Icon(
+                  Icons.arrow_forward_ios,
+                  color: Theme.of(context).colorScheme.outline,
+                  size: 16,
+                ),
+              ],
             ),
-            const SizedBox(width: 20),
-            Expanded(
-              child: Text(
-                text,
-                style: const TextStyle(color: Color(0xFF757575)),
-              ),
-            ),
-            const Icon(Icons.arrow_forward_ios, color: Color(0xFF757575)),
-          ],
+          ),
         ),
       ),
     );
