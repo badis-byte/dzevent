@@ -4,8 +4,10 @@ import 'package:dzevent/presentation/screens/add_event.dart';
 import 'package:dzevent/presentation/screens/asosciationEventInterests.dart';
 import 'package:dzevent/presentation/screens/associationProfileTwo.dart';
 import 'package:dzevent/presentation/screens/event_feed.dart';
+import 'package:dzevent/presentation/screens/followers.dart';
 import 'package:dzevent/presentation/screens/interested_events.dart';
 import 'package:dzevent/presentation/screens/login.dart';
+import 'package:dzevent/presentation/screens/notifications.dart';
 import 'package:dzevent/presentation/screens/notifications.dart';
 import 'package:dzevent/presentation/screens/user_profile.dart';
 import 'package:dzevent/presentation/screens/welcome.dart';
@@ -399,7 +401,7 @@ class MainScaffold extends StatelessWidget {
       {
         'label': "Notifications",
         'icon': Icons.notifications,
-        'route': () => NotificationScreen.route(),
+        'route': () => NotificationsPage.route(),
       },
       {
         'label': "Add Event",
@@ -422,8 +424,12 @@ class MainScaffold extends StatelessWidget {
       {
         'label': "Notifications",
         'icon': Icons.notifications,
-        'route': () => NotificationScreen.route(),
+        'route': () => NotificationsPage.route(),
       },
+      {'label': "Followed Associations",
+       'icon': Icons.group,
+       'route': () => FollowedAssociationsScreen.route()
+       },
       {
         'label': "Profile",
         'icon': Icons.account_box,

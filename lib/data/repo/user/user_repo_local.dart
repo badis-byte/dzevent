@@ -40,6 +40,17 @@ class UserRepoLocal extends UserRepoBase {
   }
 
   @override
+  Future<bool> update(UserModel value, int id)async{
+    try{
+      var state = await userTable.updateUser(value.toMap(), id);
+      return state;
+    }catch(e){
+      rethrow;
+    }
+
+  }
+
+  @override
   Future<UserModel> getUserById(int id) async {
     try {
       final obj = await authTable.getUserById(id);

@@ -123,7 +123,7 @@ class _EventFeedState extends State<EventFeed> with SingleTickerProviderStateMix
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => NotificationScreen()),
+                MaterialPageRoute(builder: (_) => NotificationPage()),
               );
             },
             icon: const Icon(
@@ -207,6 +207,7 @@ class _EventFeedState extends State<EventFeed> with SingleTickerProviderStateMix
                   ),
                 ),
               ),
+              SizedBox(height: 5),
 
               // Filters Section
               Container(

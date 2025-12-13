@@ -4,6 +4,8 @@ import 'package:dzevent/data/models/user_model.dart';
 import 'package:dzevent/data/repo/association/assoc_repo_local.dart';
 import 'package:dzevent/data/repo/user/user_repo_local.dart';
 import 'package:dzevent/logic/cubits/auth/auth_states.dart';
+import 'package:dzevent/logic/cubits/followers/followers_cubits.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AccountCubit extends Cubit<AccountState> {
@@ -216,4 +218,32 @@ class AccountCubit extends Cubit<AccountState> {
       print("error -> $e");
     }
   }
+
+    Future<AssociationModel> getFollowedAssociation(int id) async {
+    try {
+      var response = await localAssRepo.getAssociation(id);
+      return response[0];
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<bool> update(UserModel user, int id)async{
+    try{
+      var response = await localUserRepo.update(user, id);
+      emit(UserFetched(user: user));
+      return response;
+    }catch(e){
+      print("error -> $e");
+      return true;
+    }
+  }
+
+  bool setUser(UserModel user){
+  currentUser= user;
+  return true;
+  }
 }
+
+
+

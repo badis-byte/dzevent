@@ -3,8 +3,11 @@ import 'package:dzevent/l10n/app_localizations.dart';
 import 'package:dzevent/data/models/event_model.dart';
 import 'package:dzevent/lib/defs.dart';
 import 'package:dzevent/lib/styles.dart';
+import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
 import 'package:dzevent/logic/cubits/events/events_cubit.dart';
 import 'package:dzevent/logic/cubits/events/events_state.dart';
+import 'package:dzevent/logic/cubits/followers/followers_cubits.dart';
+import 'package:dzevent/logic/cubits/followers/followers_state.dart';
 import 'package:dzevent/presentation/screens/event_details.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -14,6 +17,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class PublicAssocProfile extends StatefulWidget {
   final AssociationModel asso;
   const PublicAssocProfile({super.key, required this.asso});
+
   static const contactIcon = {
     ContactInfoType.email: Icons.email_outlined,
     ContactInfoType.phone: Icons.phone,
@@ -27,7 +31,9 @@ class PublicAssocProfile extends StatefulWidget {
 class _PublicAssocProfileState extends State<PublicAssocProfile>
     with TickerProviderStateMixin {
   late final Association association;
+  bool isFollowing = false;
   final imageSize = Size(150, 150);
+  int? loggedInId;
   late AnimationController _headerController;
   late AnimationController _fadeController;
   late Animation<double> _fadeAnimation;
@@ -37,7 +43,10 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
   @override
   void initState() {
     super.initState();
+
+    /// Prepare the Association object
     association = Association(
+      id: widget.asso.id!,
       name: widget.asso.name,
       imageUrl: widget.asso.profilePicture,
       brief: widget.asso.bio,
@@ -49,6 +58,34 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
       ],
     );
 
+    // Future<void> getF(assocId)async{
+    //   var state= context.read<FollowCubit>().state;
+    //   // Determine if currently following
+    //   if (state is FollowListFetched) {
+    //     isFollowing = state.followedAssociationIds.contains(assocId);
+    //   }else{
+    //     await context.read<FollowCubit>().getFollowedAssociations(loggedInId!);
+    //     if (state is FollowListFetched) {
+    //     isFollowing = state.followedAssociationIds.contains(assocId);
+    //   }
+    //   }
+    // }
+    // getF(association.id);
+
+    /// Determine logged-in identity (user or association)
+    final acc = context.read<AccountCubit>();
+    if (acc.association == true) {
+      loggedInId = acc.currentAssociation!.id;
+    } else{
+      loggedInId = acc.currentUser!.id;
+    }
+    //load followed associations
+    context.read<FollowCubit>().getFollowedAssociations(loggedInId!);
+
+    /// Load association's events ONCE
+    if (widget.asso.id != null) {
+      context.read<EventsCubit>().getAllEventsByUser(widget.asso.id!);
+    }
     _headerController = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 800),
@@ -81,7 +118,6 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
-    context.read<EventsCubit>().getAllEventsByUser(widget.asso.id!);
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -256,6 +292,87 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
     );
   }
 
+  Column buildInfo(BuildContext context, AppLocalizations loc){
+    return Column(
+      children: [
+        /// Profile Image
+        Container(
+          width: imageSize.width,
+          height: imageSize.height,
+          clipBehavior: Clip.antiAlias,
+          decoration: BoxDecoration(shape: BoxShape.circle),
+          child: Image.network(
+            association.imageUrl,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) =>
+                Icon(Icons.account_balance, size: 64),
+          ),
+        ),
+
+        SizedBox(height: 12),
+        Text(association.name, style: headingStyle),
+        Text(
+          association.brief,
+          style: subtitleStyle,
+          textAlign: TextAlign.center,
+        ),
+
+        SizedBox(height: 16),
+
+        /// FOLLOW BUTTON
+        // FOLLOW BUTTON
+        // FOLLOW BUTTON
+BlocBuilder<FollowCubit, FollowState>(
+  builder: (context, state) {
+    bool isFollowing = false;
+
+    if (state is FollowListFetched) {
+      isFollowing = state.followedAssociationIds.contains(widget.asso.id);
+    }
+
+    return ElevatedButton(
+
+      style: getPrimaryBtnStyle(context: context),
+      onPressed: () {
+        final followCubit = context.read<FollowCubit>();
+        if (isFollowing) {
+          followCubit.unfollow(loggedInId!, widget.asso.id!);
+        } else {
+          followCubit.follow(loggedInId!, widget.asso.id!);
+        }
+      },
+      child: Text(isFollowing ? "Unfollow" : "Follow"),
+    );
+  },
+),
+
+        SizedBox(height: 16),
+
+        /// ABOUT
+        SizedBox(
+          width: double.infinity,
+          child: Text(loc.aboutUs, style: headingStyle),
+        ),
+        Text(association.aboutUs, style: bodyTextStyle),
+
+        SizedBox(height: 16),
+
+        /// CONTACT INFO
+        SizedBox(
+          width: double.infinity,
+          child:
+              Text(loc.contactInformation, style: headingStyle, textAlign: TextAlign.left),
+        ),
+
+        for (final contact in association.contactInfo)
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: Container(
+              padding: EdgeInsets.all(8),
+              color: Theme.of(context).colorScheme.primaryContainer,
+              child: Icon(PublicAssocProfile.contactIcon[contact.type]),
+            ),
+            title: Text(contact.address),
   Widget _buildActionButtons(BuildContext context, AppLocalizations loc) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Row(
@@ -408,7 +525,6 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
 
   Widget buildEventTabBar(BuildContext context, AppLocalizations loc) {
     return DefaultTabController(
-      initialIndex: 0,
       length: 2,
       child: Column(
         children: [

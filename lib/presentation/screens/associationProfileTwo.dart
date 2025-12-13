@@ -3,6 +3,7 @@ import 'package:dzevent/data/models/event_model.dart';
 import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
 import 'package:dzevent/logic/cubits/events/events_cubit.dart';
 import 'package:dzevent/logic/cubits/events/events_state.dart';
+import 'package:dzevent/logic/cubits/followers/followers_cubits.dart';
 import 'package:dzevent/presentation/screens/add_event.dart';
 import 'package:dzevent/l10n/app_localizations.dart';
 import 'package:dzevent/presentation/screens/event_feed.dart';
@@ -253,10 +254,32 @@ class _AssocProfTwoState extends State<AssocProfTwo> with TickerProviderStateMix
             position: _slideAnimation,
             child: FadeTransition(
               opacity: _fadeAnimation,
-              child: Row(
+              child: 
+              Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  getStatCard("1.2K", loc.subscribers),
+          Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            FutureBuilder(
+              future: context.read<FollowCubit>().getFollowers(_currentAssoc!.id!),   // The future you want to wait for
+              initialData: null,              // Optional: data to show before the future completes
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();  // loading state
+                }
+
+                if (snapshot.hasError) {
+                  return Text("N/A");
+                }
+
+                if (snapshot.hasData) {
+                  return getStatCard("${snapshot.data}", loc.subscribers);              
+                }
+
+                return Text("N/A");
+              },
+            ),
                   SizedBox(width: 12),
                   BlocBuilder<EventsCubit, EventsState>(
                     builder: (context, state) {

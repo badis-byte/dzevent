@@ -1,13 +1,18 @@
+import 'package:dzevent/logic/notifications/notifications_cubits.dart';
+import 'package:dzevent/logic/notifications/notifications_state.dart';
+import 'package:dzevent/presentation/widgets/notificationCard.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class NotificationScreen extends StatefulWidget {
-  const NotificationScreen({super.key});
-  
+class NotificationsPage extends StatefulWidget {
   static MaterialPageRoute route() =>
-      MaterialPageRoute(builder: (context) => NotificationScreen());
+      MaterialPageRoute(builder: (context) => NotificationsPage());
+  static const String pageRoute = "notifications";
+
+  const NotificationsPage({super.key});
 
   @override
-  State<NotificationScreen> createState() => _NotificationScreenState();
+  State<NotificationsPage> createState() => _NotificationsPageState();
 }
 
 class _NotificationScreenState extends State<NotificationScreen> 
@@ -40,6 +45,7 @@ class _NotificationScreenState extends State<NotificationScreen>
   @override
   void initState() {
     super.initState();
+  context.read<NotificationsCubit>().load();
     _animController = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 600),
@@ -90,168 +96,60 @@ class _NotificationScreenState extends State<NotificationScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: Container(
-          margin: EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
-            shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 8,
-              ),
-            ],
-          ),
-          child: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () => Navigator.pop(context),
-          ),
-        ),
-        title: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              padding: EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primaryContainer,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(
-                Icons.notifications,
-                color: Theme.of(context).colorScheme.primary,
-                size: 22,
-              ),
-            ),
-            SizedBox(width: 12),
-            Text(
-              "Notifications",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
+        title: const Text("Notifications"),
         centerTitle: true,
-        actions: [
-          Container(
-            margin: EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surface,
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 8,
-                ),
-              ],
-            ),
-            child: IconButton(
-              icon: Icon(Icons.done_all),
-              onPressed: () {},
-              tooltip: "Mark all as read",
-            ),
-          ),
-        ],
+        elevation: 0,
       ),
-      body: FadeTransition(
-        opacity: _fadeAnimation,
-        child: Column(
-          children: [
-            // Header Card
-            Container(
-              margin: EdgeInsets.all(20),
-              padding: EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Theme.of(context).colorScheme.primaryContainer,
-                    Theme.of(context).colorScheme.primaryContainer.withOpacity(0.6),
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-                    blurRadius: 12,
-                    offset: Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: Row(
-                children: [
-                  Container(
-                    padding: EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primary,
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
-                          blurRadius: 8,
-                          offset: Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Icon(
-                      Icons.notifications_active,
-                      color: Colors.white,
-                      size: 28,
-                    ),
-                  ),
-                  SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "${notifications.length} New Notifications",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).colorScheme.onPrimaryContainer,
-                          ),
-                        ),
-                        SizedBox(height: 4),
-                        Text(
-                          "Stay updated with your events",
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.8),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
+      body: BlocBuilder<NotificationsCubit, NotificationsState>(
+        builder: (context, state) {
+          if (state is NotificationsLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-            // Notifications List
-            Expanded(
-              child: notifications.isEmpty
-                  ? _buildEmptyState()
-                  : SlideTransition(
-                      position: _slideAnimation,
-                      child: ListView.builder(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        itemCount: notifications.length,
-                        itemBuilder: (context, index) {
-                          final item = notifications[index];
-                          return AnimatedOpacity(
-                            opacity: 1.0,
-                            duration: Duration(milliseconds: 300 + (index * 100)),
-                            child: _buildNotificationCard(context, item, index),
-                          );
-                        },
-                      ),
+          if (state is NotificationsLoaded) {
+            if (state.notifications.isEmpty) {
+              return const Center(
+                child: Text(
+                  "No notifications yet",
+                  style: TextStyle(fontSize: 16),
+                ),
+              );
+            }
+
+            return ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: state.notifications.length,
+              itemBuilder: (_, i) {
+                final n = state.notifications[i];
+                return Dismissible(
+                  key: Key(n.id),
+                  direction: DismissDirection.endToStart,
+                  background: Container(
+                    alignment: Alignment.centerRight,
+                    padding: const EdgeInsets.only(right: 20),
+                    margin: const EdgeInsets.symmetric(vertical: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.red.shade400,
+                      borderRadius: BorderRadius.circular(20),
                     ),
-            ),
-          ],
-        ),
+                    child: const Icon(Icons.delete, color: Colors.white),
+                  ),
+                  onDismissed: (_) => context.read<NotificationsCubit>().delete(n.id),
+                  child: NotificationCard(
+                    notification: n,
+                    onTap: () {
+                      context.read<NotificationsCubit>().markRead(n.id);
+                      // handle tap action → open post/event/etc
+                    },
+                  ),
+                );
+              },
+            );
+          }
+
+          return const Center(child: Text("Failed to load notifications"));
+        },
       ),
     );
   }

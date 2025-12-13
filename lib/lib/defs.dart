@@ -1,10 +1,12 @@
 class Association {
+  final int id;
   final String name;
   final String imageUrl;
   final String brief;
   final String aboutUs;
   final List<ContactInfo> contactInfo;
   const Association({
+    required this.id,
     required this.name,
     required this.imageUrl,
     this.brief = "",

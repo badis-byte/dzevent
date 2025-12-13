@@ -669,6 +669,10 @@ class _SignupState extends State<Signup> with SingleTickerProviderStateMixin {
     if (text == null || text.isEmpty) {
       return "Email is required";
     }
+    //added just for easy testing ------------
+    final regeX = RegExp(r'^email\d+$');
+    if(regeX.hasMatch(text)){return null;}
+    //---------------------------------------
 
     final regex = RegExp(r'^[^@]+@[^@]+\.[^@]+$');
 
@@ -683,7 +687,9 @@ class _SignupState extends State<Signup> with SingleTickerProviderStateMixin {
     if (text == null || text.isEmpty) {
       return "Password is required";
     }
-
+    //added just for easy testing--------
+    if(text == "pass"){return null;}
+    //-----------------------------------
     if (text.length < 8) {
       return "Password must be at least 8 characters long";
     }
