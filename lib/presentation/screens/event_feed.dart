@@ -26,7 +26,7 @@ class EventFeed extends StatefulWidget {
   State<EventFeed> createState() => _EventFeedState();
 }
 
-class _EventFeedState extends State<EventFeed> {
+class _EventFeedState extends State<EventFeed> with SingleTickerProviderStateMixin {
   final filters = [
     "Tech",
     "AI and Data Science",
@@ -36,9 +36,13 @@ class _EventFeedState extends State<EventFeed> {
     "Meetup",
   ];
   final searchController = TextEditingController();
+  final FocusNode _searchFocusNode = FocusNode();
 
   int userId = 2;
   bool asso = false;
+  
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
 
   @override
   void initState() {
@@ -49,6 +53,22 @@ class _EventFeedState extends State<EventFeed> {
       await eventsCubit.searchEvents(searchStr: searchController.text);
     });
     init();
+    
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600),
+    );
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeIn),
+    );
+    _animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _searchFocusNode.dispose();
+    _animationController.dispose();
+    super.dispose();
   }
 
   Future<bool> init() async {
@@ -86,122 +106,274 @@ class _EventFeedState extends State<EventFeed> {
       title: Text(
         loc.upcomingEvents,
         textAlign: TextAlign.center,
-        style: headingStyle,
+        style: headingStyle.copyWith(
+          fontSize: 20,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 0.3,
+        ),
       ),
       actions: [
-        IconButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => NotificationsPage()),
-            );
-          },
-          icon: Icon(Icons.notifications_none),
+        Container(
+          margin: const EdgeInsets.only(right: 8),
+          decoration: BoxDecoration(
+            color: const Color(0xFF667EEA).withOpacity(0.1),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => NotificationPage()),
+              );
+            },
+            icon: const Icon(
+              Icons.notifications_none_rounded,
+              color: Color(0xFF667EEA),
+              size: 24,
+            ),
+          ),
         ),
       ],
       body: Container(
-        color: Color.fromARGB(255, 240, 242, 245),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              const Color(0xFFF8F9FC),
+              const Color(0xFFFFFFFF),
+            ],
+          ),
+        ),
+        child: FadeTransition(
+          opacity: _fadeAnimation,
           child: Column(
-            mainAxisSize: MainAxisSize.min,
             children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 32.0),
+              // Search Bar Section
+              Container(
+                padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
                 child: Container(
+                  height: 56,
                   decoration: BoxDecoration(
-                    border: Border.all( color: Colors.blue.shade200, width: 1),
-                    borderRadius: BorderRadius.circular(8.0),
-                    color: Colors.blue.shade50,
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.06),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
                   ),
                   child: Row(
                     children: [
-                      SizedBox(width: 8),
-                      Icon(Icons.search),
-                      SizedBox(width: 8),
+                      const SizedBox(width: 16),
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF667EEA).withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: const Icon(
+                          Icons.search_rounded,
+                          color: Color(0xFF667EEA),
+                          size: 20,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
                       Expanded(
-                        child: SizedBox(
-                          height: 50,
-                          child: TextFormField(
-                            controller: searchController,
-                            decoration: InputDecoration(
-                              hint: Text("Search for events"),
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide.none,
-                              ),
+                        child: TextFormField(
+                          controller: searchController,
+                          focusNode: _searchFocusNode,
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500,
+                            color: Color(0xFF2D3748),
+                          ),
+                          decoration: InputDecoration(
+                            hintText: "Search for events",
+                            hintStyle: TextStyle(
+                              color: Colors.grey[400],
+                              fontSize: 15,
+                              fontWeight: FontWeight.w400,
                             ),
+                            border: InputBorder.none,
+                            contentPadding: const EdgeInsets.symmetric(vertical: 16),
                           ),
                         ),
                       ),
+                      const SizedBox(width: 12),
                     ],
                   ),
                 ),
               ),
               SizedBox(height: 5),
 
-              Filters(
-                filters: [
-                  "Tech",
-                  "AI and Data Science",
-                  "Business",
-                  "Agriculture",
-                  "Sociology",
-                  "Meetup",
-                ],
+              // Filters Section
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Filters(
+                  filters: [
+                    "Tech",
+                    "AI and Data Science",
+                    "Business",
+                    "Agriculture",
+                    "Sociology",
+                    "Meetup",
+                  ],
+                ),
               ),
-              SizedBox(height: 16),
 
-              BlocBuilder<EventsCubit, EventsState>(
-                builder: (context, state) {
-                  if (state is EventsLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  if (state is EventsError) {
-                    return Center(child: Text(loc.errorOccurred(state.error)));
-                  }
-                  if (state is EventsFetched) {
-                    final events = state.events;
-                    if (events.isEmpty) {
-                      return Text("No events found");
-                    }
+              const SizedBox(height: 20),
 
-                    return BlocConsumer<InterestsCubit, InterestsState>(
-                      listener: (context, state) async {
-                        final authCubit = context.read<AccountCubit>();
-                        final authState = authCubit.state;
-                        if (state is InterestsMutated) {
-                          if (authState is UserFetched) {
-                            await context
-                                .read<InterestsCubit>()
-                                .getUserInterests(userId: authState.user.id!);
-                          } else {
-                            debugPrint("User not fetched. Cannot refetch feed");
-                          }
-                        }
-                      },
-                      builder: (context, state) {
-                        print("Interests State ${state.runtimeType}");
-                        Map<EventModel, bool> interested = Map.fromEntries(
-                          events.map((event) => MapEntry(event, false)),
-                        );
-
-                        if (state is InterestsFetched) {
-                          final interests = state.interests;
-                          interested = Map.fromEntries(
-                            events.map(
-                              (event) => MapEntry(
-                                event,
-                                interests.any((i) => i.eventId == event.id),
+              // Events List
+              Expanded(
+                child: BlocBuilder<EventsCubit, EventsState>(
+                  builder: (context, state) {
+                    if (state is EventsLoading) {
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: 60,
+                              height: 60,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF667EEA).withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: const Center(
+                                child: CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    Color(0xFF667EEA),
+                                  ),
+                                ),
                               ),
                             ),
-                          );
-                        }
+                            const SizedBox(height: 16),
+                            Text(
+                              "Loading events...",
+                              style: TextStyle(
+                                color: Colors.grey[600],
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                    if (state is EventsError) {
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: 80,
+                              height: 80,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFFF6B6B).withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: const Icon(
+                                Icons.error_outline_rounded,
+                                color: Color(0xFFFF6B6B),
+                                size: 40,
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              loc.errorOccurred(state.error),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.grey[700],
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                    if (state is EventsFetched) {
+                      final events = state.events;
+                      if (events.isEmpty) {
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                width: 100,
+                                height: 100,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(24),
+                                ),
+                                child: Icon(
+                                  Icons.event_busy_rounded,
+                                  size: 48,
+                                  color: Colors.grey[400],
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                              Text(
+                                "No events found",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.grey[700],
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                "Try adjusting your filters",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.grey[500],
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
 
-                        return Expanded(
-                          child: Refreshable(
+                      return BlocConsumer<InterestsCubit, InterestsState>(
+                        listener: (context, state) async {
+                          final authCubit = context.read<AccountCubit>();
+                          final authState = authCubit.state;
+                          if (state is InterestsMutated) {
+                            if (authState is UserFetched) {
+                              await context
+                                  .read<InterestsCubit>()
+                                  .getUserInterests(userId: authState.user.id!);
+                            } else {
+                              debugPrint("User not fetched. Cannot refetch feed");
+                            }
+                          }
+                        },
+                        builder: (context, state) {
+                          print("Interests State ${state.runtimeType}");
+                          Map<EventModel, bool> interested = Map.fromEntries(
+                            events.map((event) => MapEntry(event, false)),
+                          );
+
+                          if (state is InterestsFetched) {
+                            final interests = state.interests;
+                            interested = Map.fromEntries(
+                              events.map(
+                                (event) => MapEntry(
+                                  event,
+                                  interests.any((i) => i.eventId == event.id),
+                                ),
+                              ),
+                            );
+                          }
+
+                          return Refreshable(
                             refresh: refresh,
                             child: ListView.builder(
                               physics: const AlwaysScrollableScrollPhysics(),
+                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                               itemCount: events.length,
                               itemBuilder: (context, index) {
                                 final event = events[index];
@@ -210,76 +382,72 @@ class _EventFeedState extends State<EventFeed> {
                                   builder: (context, state) {
                                     if (state is! AccountGuest) {
                                       print("state is : ${state.toString()}");
-                                      return Column(
-                                        children: [
-                                          GestureDetector(
-                                            onTap: () {
-                                              context
-                                                  .read<AccountCubit>()
-                                                  .getAssoc(
-                                                    event.associationId,
-                                                  );
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (_) => EventDetails(
-                                                    event: event,
-                                                  ),
+                                      return Padding(
+                                        padding: const EdgeInsets.only(bottom: 16),
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            context
+                                                .read<AccountCubit>()
+                                                .getAssoc(
+                                                  event.associationId,
+                                                );
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (_) => EventDetails(
+                                                  event: event,
                                                 ),
-                                              ).then((_) async {
-                                                // Refresh when coming back
-                                                context
-                                                    .read<EventsCubit>()
-                                                    .getAll();
-                                                print("${asso.toString()} ${state.toString()}");
-                                                if ((state
-                                                    is AssociationFetched || state is AssoicationDetailFetched) &&
-                                                    asso) {
-                                                  await context
-                                                      .read<AccountCubit>()
-                                                      .getcurrentAssociation(
-                                                        userId,
-                                                      );
-                                                } else if (state
-                                                    is UserFetched || state is AssoicationDetailFetched) {
-                                                  await context
-                                                      .read<AccountCubit>()
-                                                      .getcurrentUser(userId);
-                                                }
-                                              });
-                                            },
-                                            child: FeedEventCard(
-                                              event: event,
-                                              isInterested: interested[event]!,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 16),
-                                        ],
-                                      );
-                                    }
-                                    return Column(
-                                      children: [
-                                        GestureDetector(
-                                          onTap: () {},
+                                              ),
+                                            ).then((_) async {
+                                              // Refresh when coming back
+                                              context
+                                                  .read<EventsCubit>()
+                                                  .getAll();
+                                              print("${asso.toString()} ${state.toString()}");
+                                              if ((state
+                                                  is AssociationFetched || state is AssoicationDetailFetched) &&
+                                                  asso) {
+                                                await context
+                                                    .read<AccountCubit>()
+                                                    .getcurrentAssociation(
+                                                      userId,
+                                                    );
+                                              } else if (state
+                                                  is UserFetched || state is AssoicationDetailFetched) {
+                                                await context
+                                                    .read<AccountCubit>()
+                                                    .getcurrentUser(userId);
+                                              }
+                                            });
+                                          },
                                           child: FeedEventCard(
                                             event: event,
                                             isInterested: interested[event]!,
                                           ),
                                         ),
-                                        const SizedBox(height: 16),
-                                      ],
+                                      );
+                                    }
+                                    return Padding(
+                                      padding: const EdgeInsets.only(bottom: 16),
+                                      child: GestureDetector(
+                                        onTap: () {},
+                                        child: FeedEventCard(
+                                          event: event,
+                                          isInterested: interested[event]!,
+                                        ),
+                                      ),
                                     );
                                   },
                                 );
                               },
                             ),
-                          ),
-                        );
-                      },
-                    );
-                  }
-                  return const SizedBox();
-                },
+                          );
+                        },
+                      );
+                    }
+                    return const SizedBox();
+                  },
+                ),
               ),
             ],
           ),
@@ -299,6 +467,7 @@ class Filters extends StatefulWidget {
 
 class _FiltersState extends State<Filters> {
   late Map<String, bool> filtersState;
+  
   @override
   void initState() {
     super.initState();
@@ -314,8 +483,8 @@ class _FiltersState extends State<Filters> {
     });
     await context.read<EventsCubit>().getFilteredEvents(
       filters: filtersState.entries
-          .where((entry) => entry.value) // keep only true values
-          .map((entry) => entry.key) // take the key
+          .where((entry) => entry.value)
+          .map((entry) => entry.key)
           .toList(),
     );
     return true;
@@ -323,31 +492,87 @@ class _FiltersState extends State<Filters> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: [
-          for (final filter in widget.filters)
-            Padding(
-              padding: const EdgeInsets.only(right: 8.0),
-              child: OutlinedButton(
-                style: OutlinedButton.styleFrom(
-                  backgroundColor: Colors.blue.shade50,
-                  foregroundColor: filtersState[filter]!
-                      ? Colors.red
-                      : Colors.black,
-                  padding: EdgeInsets.symmetric(horizontal: 18, vertical: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
+    return SizedBox(
+      height: 44,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: widget.filters.length,
+        itemBuilder: (context, index) {
+          final filter = widget.filters[index];
+          final isActive = filtersState[filter]!;
+          
+          return Padding(
+            padding: EdgeInsets.only(
+              right: index < widget.filters.length - 1 ? 10 : 0,
+            ),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () async {
+                    await toggleFilter(filter);
+                  },
+                  borderRadius: BorderRadius.circular(24),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 10,
+                    ),
+                    decoration: BoxDecoration(
+                      gradient: isActive
+                          ? const LinearGradient(
+                              colors: [Color(0xFF667EEA), Color(0xFF764BA2)],
+                            )
+                          : null,
+                      color: isActive ? null : Colors.white,
+                      borderRadius: BorderRadius.circular(24),
+                      border: Border.all(
+                        color: isActive
+                            ? Colors.transparent
+                            : const Color(0xFFE8ECF4),
+                        width: 1.5,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: isActive
+                              ? const Color(0xFF667EEA).withOpacity(0.3)
+                              : Colors.black.withOpacity(0.04),
+                          blurRadius: isActive ? 12 : 8,
+                          offset: Offset(0, isActive ? 4 : 2),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (isActive) ...[
+                          const Icon(
+                            Icons.check_circle_rounded,
+                            size: 16,
+                            color: Colors.white,
+                          ),
+                          const SizedBox(width: 6),
+                        ],
+                        Text(
+                          filter,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: isActive
+                                ? Colors.white
+                                : const Color(0xFF2D3748),
+                            letterSpacing: 0.2,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-                onPressed: () async {
-                  await toggleFilter(filter);
-                },
-                child: Text(filter),
               ),
             ),
-        ],
+          );
+        },
       ),
     );
   }

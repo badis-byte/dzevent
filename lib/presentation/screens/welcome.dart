@@ -55,141 +55,230 @@ class _ImageCarouselState extends State<ImageCarousel> {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(10),
-      color: const Color.fromARGB(255, 240, 242, 245),
-      child: Column(
-        children: [
-          SizedBox(height: 55,),
-          SizedBox(
-            height: 350,
-            child: PageView.builder(
-              controller: _controller,
-              onPageChanged: (index) {
-                setState(() => _currentIndex = index % items.length);
-              },
-              itemBuilder: (context, index) {
-                final item = items[index % items.length];
-                return AnimatedContainer(
-                  duration: const Duration(milliseconds: 400),
-                  margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.transparent,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            const Color(0xFFF8F9FA),
+            const Color(0xFFFFFFFF),
+          ],
+        ),
+      ),
+      child: SafeArea(
+        child: Column(
+          children: [
+            const SizedBox(height: 40),
+            // Carousel Section
+            Expanded(
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 380,
+                    child: PageView.builder(
+                      controller: _controller,
+                      onPageChanged: (index) {
+                        setState(() => _currentIndex = index % items.length);
+                      },
+                      itemBuilder: (context, index) {
+                        final item = items[index % items.length];
+                        return AnimatedContainer(
+                          duration: const Duration(milliseconds: 400),
+                          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              // Image with enhanced shadow and styling
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.15),
+                                      blurRadius: 20,
+                                      offset: const Offset(0, 8),
+                                      spreadRadius: 2,
+                                    ),
+                                  ],
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(20),
+                                  child: Image.asset(
+                                    item['image']!,
+                                    width: double.infinity,
+                                    height: 300,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                              // Enhanced text styling
+                              Text(
+                                item['text']!,
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  decoration: TextDecoration.none,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w700,
+                                  color: Color(0xFF1A1A2E),
+                                  height: 1.4,
+                                  letterSpacing: 0.3,
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
                   ),
-                  child: Column(
+                  const SizedBox(height: 20),
+                  // Enhanced page indicators
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: Image.asset(
-                          item['image']!,
-                          width: double.infinity,
-                          height: 300,
-                          fit: BoxFit.cover,
+                    children: List.generate(items.length, (i) {
+                      final isActive = _currentIndex == i;
+                      return AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        margin: const EdgeInsets.symmetric(horizontal: 5),
+                        width: isActive ? 28 : 8,
+                        height: 8,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(4),
+                          color: isActive 
+                            ? const Color(0xFF0310CA) 
+                            : Colors.grey.withOpacity(0.3),
+                          boxShadow: isActive ? [
+                            BoxShadow(
+                              color: const Color(0xFF0310CA).withOpacity(0.3),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
+                            ),
+                          ] : [],
+                        ),
+                      );
+                    }),
+                  ),
+                ],
+              ),
+            ),
+            // Buttons Section
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+              child: Column(
+                children: [
+                  // Sign Up Button with gradient
+                  Container(
+                    width: double.infinity,
+                    height: 56,
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFF0310CA), Color(0xFF0520E8)],
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
+                      ),
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFF0310CA).withOpacity(0.3),
+                          blurRadius: 12,
+                          offset: const Offset(0, 6),
+                        ),
+                      ],
+                    ),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        print('Sign Up button pressed!');
+                        Navigator.pushNamed(context, '/signup');
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        foregroundColor: Colors.white,
+                        shadowColor: Colors.transparent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                      ),
+                      child: Text(
+                        local.signUp,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0.5,
                         ),
                       ),
-                      const SizedBox(height: 12),
-                      Text(
-                      item['text']!,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        decoration: TextDecoration.none,
-                        fontSize: 17,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF1A1A1A),
-                        height: 1.3, // line height
-                        shadows: [
-                          Shadow(
-                            color: Colors.black26,
-                            blurRadius: 4,
-                            offset: Offset(1, 2),
-                          )
-                        ],
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  // Login Button with border style
+                  Container(
+                    width: double.infinity,
+                    height: 56,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: const Color(0xFFE0E0E0),
+                        width: 1.5,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.04),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        print('Login button pressed!');
+                        Navigator.pushNamed(context, '/login');
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        foregroundColor: const Color(0xFF1A1A2E),
+                        shadowColor: Colors.transparent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                      ),
+                      child: Text(
+                        local.login,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0.5,
+                        ),
                       ),
                     ),
-                    ],
                   ),
-                );
-              },
-            ),
-          ),
-          const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(items.length, (i) {
-              final isActive = _currentIndex == i;
-              return AnimatedContainer(
-                duration: const Duration(milliseconds: 250),
-                margin: const EdgeInsets.symmetric(horizontal: 4),
-                width: isActive ? 12 : 8,
-                height: isActive ? 12 : 8,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: isActive ? Colors.blue : Colors.grey.withOpacity(0.4),
-                ),
-              );
-            }),
-          ),
-          const SizedBox(height: 65),
-          ElevatedButton(
-            onPressed: () {
-              print('Sign Up button pressed!');
-              Navigator.pushNamed(context, '/signup');
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color.fromARGB(255, 3, 16, 202),
-              foregroundColor: Colors.white,
-              minimumSize: const Size(400, 60),
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              elevation: 5,
-            ),
-            child: Text(
-              local.signUp,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-          ),
-          const SizedBox(height: 17),
-          ElevatedButton(
-            onPressed: () {
-              print('Login button pressed!');
-              Navigator.pushNamed(context, '/login');
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color.fromARGB(255, 220, 216, 216),
-              foregroundColor: Colors.black,
-              minimumSize: const Size(400, 60),
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              elevation: 5,
-            ),
-            child: Text(
-              local.login,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-          ),
-          const SizedBox(height: 15),
-          Container(
-            margin: const EdgeInsets.only(top: 20),
-            child: TextButton(
-              onPressed: () => {
-                Navigator.pushReplacementNamed(context, '/event_feed')
-              },
-              child: Text(
-                local.continueAsGuest,
-                style: const TextStyle(
-                  color: Color.fromARGB(255, 81, 78, 78),
-                  fontSize: 15,
-                  decoration: TextDecoration.none,
-                ),
+                  const SizedBox(height: 20),
+                  // Continue as Guest
+                  TextButton(
+                    onPressed: () => {
+                      Navigator.pushReplacementNamed(context, '/event_feed')
+                    },
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    ),
+                    child: Text(
+                      local.continueAsGuest,
+                      style: TextStyle(
+                        color: Colors.grey[600],
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                        decoration: TextDecoration.none,
+                        letterSpacing: 0.3,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                ],
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

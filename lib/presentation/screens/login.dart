@@ -13,14 +13,39 @@ class Login extends StatefulWidget {
   State<Login> createState() => _LoginState();
 }
 
-class _LoginState extends State<Login> {
+class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
   var formkey = GlobalKey<FormState>();
   var emailController = TextEditingController();
   var passController = TextEditingController();
+  
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
+  late Animation<Offset> _slideAnimation;
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 900),
+    );
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeIn),
+    );
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 0.15),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeOutCubic,
+    ));
+    _animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
   @override
@@ -36,62 +61,113 @@ class _LoginState extends State<Login> {
               MaterialPageRoute(builder: (_) => Assocadmin()),
             );
           },
-          child: Icon(Icons.privacy_tip),
+          child: Container(
+            margin: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.9),
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: const Icon(
+              Icons.privacy_tip,
+              color: Color(0xFF667EEA),
+              size: 22,
+            ),
+          ),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
       ),
+      extendBodyBehindAppBar: true,
       body: Form(
         key: formkey,
         child: Container(
           height: MediaQuery.of(context).size.height,
-          color: Color.fromARGB(255, 240, 242, 245),
-          //margin: EdgeInsets.all(10),
-          padding: EdgeInsets.all(10),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(height: 40),
-                logoGetter(),
-                Text(
-                  "Welcome Back",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 35,
-                    decoration: TextDecoration.none,
-                    fontWeight: FontWeight.bold,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                const Color(0xFFF8F9FC),
+                const Color(0xFFFFFFFF),
+                const Color(0xFFF0F4FF),
+              ],
+            ),
+          ),
+          child: SafeArea(
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: FadeTransition(
+                opacity: _fadeAnimation,
+                child: SlideTransition(
+                  position: _slideAnimation,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const SizedBox(height: 20),
+                      logoGetter(),
+                      const SizedBox(height: 16),
+                      const Text(
+                        "Welcome Back",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Color(0xFF1A1A2E),
+                          fontSize: 32,
+                          decoration: TextDecoration.none,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        "Sign in to continue your journey",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.grey[600],
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const SizedBox(height: 40),
+                      buildInput(
+                        label: "Email or username",
+                        hint: "Enter email or username",
+                        pass: false,
+                        icon: Icons.email_outlined,
+                        textcontroller: emailController,
+                        validate: _emailValidate,
+                      ),
+                      const SizedBox(height: 20),
+                      buildInput(
+                        label: "Password",
+                        hint: "Enter your password",
+                        pass: true,
+                        icon: Icons.lock_outline_rounded,
+                        textcontroller: passController,
+                        validate: _passValidate,
+                      ),
+                      const SizedBox(height: 12),
+                      forgotPassword(loc),
+                      const SizedBox(height: 32),
+                      loginButton(loc),
+                      const SizedBox(height: 28),
+                      orDevider(loc),
+                      const SizedBox(height: 28),
+                      googleButton(loc),
+                      const SizedBox(height: 32),
+                      noAccount(loc),
+                      const SizedBox(height: 40),
+                    ],
                   ),
                 ),
-                SizedBox(height: 20),
-                buildInput(
-                  label: "Email or username",
-                  hint: "Enter email or username",
-                  pass: false,
-                  textcontroller: emailController,
-                  validate: _emailValidate,
-                ),
-                SizedBox(height: 20),
-                buildInput(
-                  label: "Password",
-                  hint: "Enter your password",
-                  pass: true,
-                  textcontroller: passController,
-                  validate: _passValidate,
-                ),
-                SizedBox(height: 10),
-                forgotPassword(loc),
-                SizedBox(height: 30),
-                loginButton(loc),
-                SizedBox(height: 30),
-                orDevider(loc),
-                SizedBox(height: 30),
-                googleButton(loc),
-                SizedBox(height: 30),
-                noAccount(loc),
-                SizedBox(height: 40),
-              ],
+              ),
             ),
           ),
         ),
@@ -99,16 +175,17 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Row noAccount(AppLocalizations loc) {
+  Widget noAccount(AppLocalizations loc) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
           loc.dontHaveAccount,
           textAlign: TextAlign.center,
-          style: const TextStyle(
-            color: Colors.black,
+          style: TextStyle(
+            color: Colors.grey[700],
             fontSize: 15,
+            fontWeight: FontWeight.w500,
             decoration: TextDecoration.none,
           ),
         ),
@@ -118,8 +195,9 @@ class _LoginState extends State<Login> {
             " ${loc.signUp}",
             textAlign: TextAlign.center,
             style: const TextStyle(
-              color: Colors.blue,
+              color: Color(0xFF667EEA),
               fontSize: 15,
+              fontWeight: FontWeight.w700,
               decoration: TextDecoration.none,
             ),
           ),
@@ -128,18 +206,32 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Container googleButton(AppLocalizations loc) {
+  Widget googleButton(AppLocalizations loc) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 25),
+      width: double.infinity,
+      height: 56,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: const Color(0xFFE8ECF4),
+          width: 1.5,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.white,
-          foregroundColor: Colors.black,
-          minimumSize: const Size(400, 60),
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          backgroundColor: Colors.transparent,
+          foregroundColor: const Color(0xFF2D3748),
+          shadowColor: Colors.transparent,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(6),
-            side: const BorderSide(color: Colors.grey, width: 1),
+            borderRadius: BorderRadius.circular(14),
           ),
         ),
         onPressed: () {
@@ -148,9 +240,16 @@ class _LoginState extends State<Login> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset("assets/images/google1.png", height: 35, width: 35),
-            const SizedBox(width: 10),
-            Text(loc.continueWithGoogle, style: const TextStyle(fontSize: 16)),
+            Image.asset("assets/images/google1.png", height: 24, width: 24),
+            const SizedBox(width: 12),
+            Text(
+              loc.continueWithGoogle,
+              style: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0.3,
+              ),
+            ),
           ],
         ),
       ),
@@ -160,48 +259,74 @@ class _LoginState extends State<Login> {
   Row orDevider(AppLocalizations loc) {
     return Row(
       children: [
-        const Expanded(
-          child: Divider(
-            color: Colors.grey,
-            thickness: 1,
-            indent: 25,
-            endIndent: 10,
+        Expanded(
+          child: Container(
+            height: 1,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Colors.transparent,
+                  Colors.grey.withOpacity(0.3),
+                ],
+              ),
+            ),
           ),
         ),
-        Text(
-          loc.or,
-          style: const TextStyle(
-            color: Color.fromARGB(255, 109, 107, 107),
-            fontWeight: FontWeight.normal,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Text(
+            loc.or,
+            style: TextStyle(
+              color: Colors.grey[500],
+              fontWeight: FontWeight.w600,
+              fontSize: 14,
+              letterSpacing: 0.5,
+            ),
           ),
         ),
-        const Expanded(
-          child: Divider(
-            color: Colors.grey,
-            thickness: 1,
-            indent: 10,
-            endIndent: 25,
+        Expanded(
+          child: Container(
+            height: 1,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Colors.grey.withOpacity(0.3),
+                  Colors.transparent,
+                ],
+              ),
+            ),
           ),
         ),
       ],
     );
   }
 
-Container loginButton(AppLocalizations loc) {
-  return Container(
-    margin: const EdgeInsets.symmetric(horizontal: 25),
-    child: BlocConsumer<AccountCubit, AccountState>(
+  Widget loginButton(AppLocalizations loc) {
+    return BlocConsumer<AccountCubit, AccountState>(
       listener: (context, state) {
         if (state is AccountError) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.error)),
+            SnackBar(
+              content: Text(state.error),
+              backgroundColor: const Color(0xFFFF6B6B),
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
           );
         }
         if (state is AccountNotVerified) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text(
-                  "Your account is not approved yet! Please try again later"),
+            SnackBar(
+              content: const Text(
+                "Your account is not approved yet! Please try again later",
+              ),
+              backgroundColor: const Color(0xFFFFA36C),
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
             ),
           );
         }
@@ -210,72 +335,109 @@ Container loginButton(AppLocalizations loc) {
         }
       },
       builder: (context, state) {
-        return SizedBox(
+        if (state is AccountLoading) {
+          return Container(
+            height: 56,
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [Color(0xFF667EEA), Color(0xFF764BA2)],
+              ),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: const Center(
+              child: SizedBox(
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  strokeWidth: 3,
+                ),
+              ),
+            ),
+          );
+        }
+        return Container(
           width: double.infinity,
-          height: 60, // height of the button
-          child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 200),
-            transitionBuilder: (child, animation) {
-              return FadeTransition(opacity: animation, child: child);
+          height: 56,
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [Color(0xFF667EEA), Color(0xFF764BA2)],
+            ),
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF667EEA).withOpacity(0.4),
+                blurRadius: 16,
+                offset: const Offset(0, 8),
+              ),
+            ],
+          ),
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.transparent,
+              shadowColor: Colors.transparent,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+            ),
+            onPressed: () {
+              print('Login button pressed!');
+              _process();
             },
-            child: state is AccountLoading
-                ? const Center(
-                    key: ValueKey('loading'),
-                    child: SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 3,
-                        color: Color.fromARGB(255, 161, 213, 255),
-                      ),
-                    ),
-                  )
-                : ElevatedButton(
-                    key: const ValueKey('button'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 0, 51, 102),
-                      foregroundColor: Colors.white,
-                      minimumSize: const Size(double.infinity, 60),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 24, vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      elevation: 5,
-                    ),
-                    onPressed: _process,
-                    child: const Text(
-                      'Login',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  ),
+            child: const Text(
+              'Login',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                color: Colors.white,
+                letterSpacing: 0.5,
+              ),
+            ),
           ),
         );
       },
-    ),
-  );
-}
-
-
-  Widget logoGetter() {
-    return SizedBox(
-      height: 125,
-      width: 125,
-      child: Image.asset('assets/images/logo.png'),
     );
   }
 
-  Container forgotPassword(AppLocalizations loc) {
-    return Container(
-      margin: const EdgeInsets.only(right: 25),
-      child: Text(
-        loc.forgotPassword,
-        textAlign: TextAlign.right,
-        style: const TextStyle(
-          color: Color.fromARGB(255, 37, 153, 237),
-          fontSize: 15,
-          decoration: TextDecoration.none,
-          fontWeight: FontWeight.w400,
+  Widget logoGetter() {
+    return Center(
+      child: Container(
+        height: 140,
+        width: 140,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF667EEA).withOpacity(0.2),
+              blurRadius: 30,
+              offset: const Offset(0, 10),
+              spreadRadius: 5,
+            ),
+          ],
+        ),
+        padding: const EdgeInsets.all(20),
+        child: Image.asset('assets/images/logo.png'),
+      ),
+    );
+  }
+
+  Widget forgotPassword(AppLocalizations loc) {
+    return GestureDetector(
+      onTap: () {
+        // Add forgot password logic here if needed
+      },
+      child: Align(
+        alignment: Alignment.centerRight,
+        child: Text(
+          loc.forgotPassword,
+          style: const TextStyle(
+            color: Color(0xFF667EEA),
+            fontSize: 14,
+            decoration: TextDecoration.none,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.2,
+          ),
         ),
       ),
     );
@@ -285,41 +447,103 @@ Container loginButton(AppLocalizations loc) {
     required String label,
     required String hint,
     required bool pass,
+    required IconData icon,
     required TextEditingController textcontroller,
     required String? Function(String?)? validate,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          margin: const EdgeInsets.only(left: 25),
+        Padding(
+          padding: const EdgeInsets.only(left: 4, bottom: 8),
           child: Text(
             label,
             style: const TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: 15,
-              color: Color.fromARGB(255, 60, 59, 59),
+              color: Color(0xFF2D3748),
+              letterSpacing: 0.2,
             ),
           ),
         ),
         Container(
-          margin: EdgeInsets.only(left: 25, right: 25, top: 7),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(14),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.04),
+                blurRadius: 10,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
           child: TextFormField(
             controller: textcontroller,
             validator: validate,
             obscureText: pass,
+            style: const TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w500,
+              color: Color(0xFF2D3748),
+            ),
             decoration: InputDecoration(
               filled: true,
               fillColor: Colors.white,
-              border: const OutlineInputBorder(),
+              prefixIcon: Container(
+                margin: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF667EEA).withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(
+                  icon,
+                  color: const Color(0xFF667EEA),
+                  size: 20,
+                ),
+              ),
               hintText: hint,
-              hintStyle: const TextStyle(
-                color: Color.fromARGB(255, 124, 124, 157),
+              hintStyle: TextStyle(
+                color: Colors.grey[400],
                 fontSize: 15,
+                fontWeight: FontWeight.w400,
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: BorderSide.none,
               ),
               enabledBorder: OutlineInputBorder(
-                borderSide: const BorderSide(color: Colors.grey),
-                borderRadius: BorderRadius.circular(8),
+                borderSide: const BorderSide(
+                  color: Color(0xFFE8ECF4),
+                  width: 1.5,
+                ),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: const BorderSide(
+                  color: Color(0xFF667EEA),
+                  width: 2,
+                ),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              errorBorder: OutlineInputBorder(
+                borderSide: const BorderSide(
+                  color: Color(0xFFFF6B6B),
+                  width: 1.5,
+                ),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderSide: const BorderSide(
+                  color: Color(0xFFFF6B6B),
+                  width: 2,
+                ),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 20,
+                vertical: 18,
               ),
             ),
           ),
@@ -335,7 +559,6 @@ Container loginButton(AppLocalizations loc) {
     final regeX = RegExp(r'^email\d+$');
     if(regeX.hasMatch(text)){return null;}
 
-    // Simple and effective regex
     final regex = RegExp(r'^[^@]+@[^@]+\.[^@]+$');
 
     if (!regex.hasMatch(text)) {
@@ -380,14 +603,21 @@ Container loginButton(AppLocalizations loc) {
         );
       } else {
         context.read<AccountCubit>().login(
-          emailController.text,
-          passController.text,
-        );
+              emailController.text,
+              passController.text,
+            );
       }
     } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Please try again.')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Please try again.'),
+          backgroundColor: const Color(0xFFFF6B6B),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+      );
     }
   }
 }
