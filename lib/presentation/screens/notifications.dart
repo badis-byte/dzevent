@@ -1,5 +1,5 @@
-import 'package:dzevent/logic/notifications/notifications_cubits.dart';
-import 'package:dzevent/logic/notifications/notifications_state.dart';
+import 'package:dzevent/logic/cubits/notifications/notifications_cubits.dart';
+import 'package:dzevent/logic/cubits/notifications/notifications_state.dart';
 import 'package:dzevent/presentation/widgets/notificationCard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

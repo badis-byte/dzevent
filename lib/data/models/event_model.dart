@@ -81,6 +81,21 @@ class EventModel {
     );
   }
 
+  factory EventModel.fromSupaMap(Map<String, dynamic> map) {
+    return EventModel(
+      id: map['id'].toString(),
+      title: map['title'] as String,
+      description: map['description'] as String,
+      startDatetime: DateTime.parse(map['startDatetime']),
+      endDatetime: DateTime.parse(map['endDatetime']),
+      imageUrl: map['imageUrl'] as String,
+      location: map['location'] as String,
+      createdAt: DateTime.parse(map['createdAt']),
+      associationId: map['associationId'] as int,
+      category: map['category'] as String,
+    );
+  }
+
   String toJson() => json.encode(toMap());
 
   factory EventModel.fromJson(String source) =>

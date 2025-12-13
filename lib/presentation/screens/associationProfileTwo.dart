@@ -40,6 +40,7 @@ class _AssocProfTwoState extends State<AssocProfTwo> {
       id: 2,
       name: "Meta",
       email: "Meta@gmail.com",
+      password: "pass",
       profilePicture:
           "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBzkx9EjnTvs28LpVsnDW72jM0jNN-D4wOvw&s",
       bio: "meta",

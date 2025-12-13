@@ -1,5 +1,5 @@
 import 'package:dzevent/data/models/event_model.dart';
-import 'package:dzevent/data/repo/events/events_repo.dart';
+import 'package:dzevent/data/remoteRepo/events/events_repo.dart';
 import 'package:dzevent/logic/cubits/events/events_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

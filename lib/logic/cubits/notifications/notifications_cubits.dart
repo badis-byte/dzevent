@@ -1,5 +1,5 @@
 import 'package:dzevent/data/models/notifi_model.dart';
-import 'package:dzevent/logic/notifications/notifications_state.dart';
+import 'package:dzevent/logic/cubits/notifications/notifications_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class NotificationsCubit extends Cubit<NotificationsState> {

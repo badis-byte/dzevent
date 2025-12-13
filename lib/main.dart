@@ -5,7 +5,7 @@ import 'dart:io';
 import 'package:dzevent/logic/cubits/events/events_cubit.dart';
 import 'package:dzevent/logic/cubits/followers/followers_cubits.dart';
 import 'package:dzevent/logic/cubits/interests/interests_cubit.dart';
-import 'package:dzevent/logic/notifications/notifications_cubits.dart';
+import 'package:dzevent/logic/cubits/notifications/notifications_cubits.dart';
 import 'package:dzevent/presentation/screens/assocAdmin.dart';
 import 'package:dzevent/presentation/screens/asosciationEventInterests.dart';
 import 'package:dzevent/presentation/screens/associationProfileTwo.dart';

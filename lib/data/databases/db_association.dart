@@ -9,6 +9,7 @@ class AssociationTable extends DBBaseTable {
               id INTEGER PRIMARY KEY AUTOINCREMENT, 
               name TEXT NOT NULL CHECK (name <> ''),
               email TEXT UNIQUE NOT NULL CHECK (email <> ''),
+              password TEXT UNIQUE NOT NULL CHECK (email <> ''),
               profilePicture TEXT,
               bio TEXT NOT NULL CHECK (bio <> ''),
               createdAt TIMESTAMP NOT NULL CHECK (createdAt <> ''),
