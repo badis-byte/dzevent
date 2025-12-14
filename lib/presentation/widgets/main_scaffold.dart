@@ -7,6 +7,7 @@ import 'package:dzevent/presentation/screens/event_feed.dart';
 import 'package:dzevent/presentation/screens/followers.dart';
 import 'package:dzevent/presentation/screens/interested_events.dart';
 import 'package:dzevent/presentation/screens/login.dart';
+import 'package:dzevent/presentation/screens/my_account_credentials.dart';
 import 'package:dzevent/presentation/screens/notifications.dart';
 import 'package:dzevent/presentation/screens/notifications.dart';
 import 'package:dzevent/presentation/screens/user_profile.dart';
@@ -433,9 +434,9 @@ class MainScaffold extends StatelessWidget {
       {
         'label': "Profile",
         'icon': Icons.account_box,
-        'route': () => UserProfileScreen.route(),
+        'route': () => Myaccountcredentials.route(),
       },
-      {'label': "Followed Associations", 'icon': Icons.group},
+      //{'label': "Followed Associations", 'icon': Icons.group},
     ];
     final drawerItemsBottom = [
       {'label': "Settings", 'icon': Icons.settings},
