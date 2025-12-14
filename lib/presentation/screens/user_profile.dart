@@ -10,7 +10,7 @@ class UserMenu extends StatefulWidget {
 
 class _UserMenuState extends State<UserMenu> {
   bool isEditing = false;
-
+  
   // Controllers to preserve edited values
   final nameCtrl = TextEditingController(text: "Annette Black");
   final emailCtrl = TextEditingController(text: "annette@gmail.com");

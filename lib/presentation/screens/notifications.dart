@@ -15,7 +15,7 @@ class NotificationsPage extends StatefulWidget {
   State<NotificationsPage> createState() => _NotificationsPageState();
 }
 
-class _NotificationScreenState extends State<NotificationScreen> 
+class _NotificationsPageState extends State<NotificationsPage> 
     with SingleTickerProviderStateMixin {
   late AnimationController _animController;
   late Animation<double> _fadeAnimation;

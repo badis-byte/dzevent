@@ -124,22 +124,25 @@ class AccountCubit extends Cubit<AccountState> {
     }
   }
 
-  Future<bool> getUserData() async {
-    try {
-      emit(AccountLoading());
-      final response = await localUserRepo.getData();
-      if (response.isEmpty) {
-        emit(AccountGuest());
-        return false;
-      } else {
-        emit(UserFetched(user: response[0]));
-        return true;
-      }
-    } catch (e) {
-      emit(AccountError(error: "Failed to get user data. Error: $e"));
+Future<bool> getUserData() async {
+  try {
+    emit(AccountLoading());
+    final response = await localUserRepo.getData();
+    if (response.isEmpty) {
+      emit(AccountGuest());
+      currentUser = null; // Clear current user
       return false;
+    } else {
+      currentUser = response[0]; // SET THIS!
+      association = false; // SET THIS TOO!
+      emit(UserFetched(user: response[0]));
+      return true;
     }
+  } catch (e) {
+    emit(AccountError(error: "Failed to get user data. Error: $e"));
+    return false;
   }
+}
 
   Future<bool> getUnvAssoc() async {
     try {
@@ -202,26 +205,30 @@ class AccountCubit extends Cubit<AccountState> {
   }
 
   Future<dynamic> getcurrentAssociation(int id) async {
-    try {
-      var response = await localAssRepo.getAssociation(id);
-      emit(AssociationFetched(association: response.first));
-      print("fetching association");
-      return true;
-    } catch (e) {
-      print("error -> $e");
-    }
+  try {
+    var response = await localAssRepo.getAssociation(id);
+    currentAssociation = response.first; // SET THIS!
+    association = true; // SET THIS TOO!
+    emit(AssociationFetched(association: response.first));
+    print("fetching association");
+    return true;
+  } catch (e) {
+    print("error -> $e");
   }
+}
 
   Future<dynamic> getcurrentUser(int id) async {
-    try {
-      var response = await localUserRepo.getUserById(id);
-      emit(UserFetched(user: response));
-      print("fetching association");
-      return true;
-    } catch (e) {
-      print("error -> $e");
-    }
+  try {
+    var response = await localUserRepo.getUserById(id);
+    currentUser = response; // SET THIS!
+    association = false; // SET THIS TOO!
+    emit(UserFetched(user: response));
+    print("fetching user");
+    return true;
+  } catch (e) {
+    print("error -> $e");
   }
+}
 
     Future<AssociationModel> getFollowedAssociation(int id) async {
     try {

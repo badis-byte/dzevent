@@ -4,6 +4,8 @@ import 'package:dzevent/lib/styles.dart';
 import 'package:dzevent/l10n/app_localizations.dart';
 import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
 import 'package:dzevent/logic/cubits/auth/auth_states.dart';
+import 'package:dzevent/logic/cubits/events/events_cubit.dart';
+import 'package:dzevent/logic/cubits/followers/followers_cubits.dart';
 import 'package:dzevent/presentation/screens/public_assoc_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,7 +24,6 @@ class _EventDetailsState extends State<EventDetails> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 
@@ -450,114 +451,131 @@ class AssociatonLink extends StatelessWidget {
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
     
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: const Color(0xFFE8ECF4),
-          width: 1.5,
+    return GestureDetector(
+      onTap: () {
+        // FIXED: Use the parent context that has BLoC providers
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (newContext) => BlocProvider.value(
+              value: context.read<AccountCubit>(),
+              child: MultiBlocProvider(
+                providers: [
+                  BlocProvider.value(
+                    value: context.read<EventsCubit>(),
+                  ),
+                  BlocProvider.value(
+                    value: context.read<FollowCubit>(),
+                  ),
+                ],
+                child: PublicAssocProfile(asso: association),
+              ),
+            ),
+          ),
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: const Color(0xFFE8ECF4),
+            width: 1.5,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.04),
+              blurRadius: 10,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Container(
-            margin: const EdgeInsets.only(right: 16),
-            clipBehavior: Clip.antiAlias,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: const Color(0xFF667EEA).withOpacity(0.3),
-                width: 2,
+        child: Row(
+          children: [
+            Container(
+              margin: const EdgeInsets.only(right: 16),
+              clipBehavior: Clip.antiAlias,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: const Color(0xFF667EEA).withOpacity(0.3),
+                  width: 2,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF667EEA).withOpacity(0.2),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFF667EEA).withOpacity(0.2),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-            width: associationIconWidth,
-            height: associationIconHeight,
-            child: Image.network(
-              association.profilePicture,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
-                  color: const Color(0xFF667EEA).withOpacity(0.1),
-                  child: const Icon(
-                    Icons.account_balance_rounded,
-                    color: Color(0xFF667EEA),
-                    size: 32,
-                  ),
-                );
-              },
-            ),
-          ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Organized by",
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey[600],
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  association.name,
-                  style: subtitleStyle.copyWith(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    color: const Color(0xFF2D3748),
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  loc.viewProfile,
-                  textAlign: TextAlign.start,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    color: Color(0xFF667EEA),
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            decoration: BoxDecoration(
-              color: const Color(0xFF667EEA).withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: IconButton(
-              icon: const Icon(
-                Icons.arrow_forward_rounded,
-                color: Color(0xFF667EEA),
+              width: associationIconWidth,
+              height: associationIconHeight,
+              child: Image.network(
+                association.profilePicture,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    color: const Color(0xFF667EEA).withOpacity(0.1),
+                    child: const Icon(
+                      Icons.account_balance_rounded,
+                      color: Color(0xFF667EEA),
+                      size: 32,
+                    ),
+                  );
+                },
               ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => PublicAssocProfile(asso: association),
-                  ),
-                );
-              },
             ),
-          ),
-        ],
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Organized by",
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey[600],
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    association.name,
+                    style: subtitleStyle.copyWith(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: const Color(0xFF2D3748),
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    loc.viewProfile,
+                    textAlign: TextAlign.start,
+                    style: const TextStyle(
+                      fontSize: 13,
+                      color: Color(0xFF667EEA),
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                color: const Color(0xFF667EEA).withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Padding(
+                padding: EdgeInsets.all(12.0),
+                child: Icon(
+                  Icons.arrow_forward_rounded,
+                  color: Color(0xFF667EEA),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
