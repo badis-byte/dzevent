@@ -10,6 +10,7 @@ import 'package:dzevent/logic/cubits/events/events_state.dart';
 import 'package:dzevent/logic/cubits/followers/followers_cubits.dart';
 import 'package:dzevent/logic/cubits/followers/followers_state.dart';
 import 'package:dzevent/presentation/screens/event_details.dart';
+import 'package:dzevent/presentation/screens/event_feed.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:dzevent/data/fake_data.dart' as DATA;
@@ -61,8 +62,7 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
       brief: widget.asso.bio ?? 'No description available',
       aboutUs: widget.asso.bio ?? 'No information available',
       contactInfo: [
-        if (widget.asso.email != null)
-          ContactInfo(type: ContactInfoType.email, address: widget.asso.email!),
+        ContactInfo(type: ContactInfoType.email, address: widget.asso.email!),
         ContactInfo(type: ContactInfoType.phone, address: "0695837395"),
         ContactInfo(type: ContactInfoType.web, address: "www.lorem.com"),
       ],
@@ -74,12 +74,12 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
       debugPrint('AccountCubit found: $acc');
       debugPrint('acc.association: ${acc.association}');
       debugPrint('acc.state: ${acc.state}');
-      
+
       if (acc.association == true) {
         // Logged in as association
         loggedInId = acc.currentAssociation?.id;
         debugPrint('Logged in as association: $loggedInId');
-        
+
         // If currentAssociation is null, try to get from state
         if (loggedInId == null && acc.state is AssociationFetched) {
           final assocState = acc.state as AssociationFetched;
@@ -90,7 +90,7 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
         // Logged in as user
         loggedInId = acc.currentUser?.id;
         debugPrint('Logged in as user from currentUser: $loggedInId');
-        
+
         // If currentUser is null, try to get from state
         if (loggedInId == null && acc.state is UserFetched) {
           final userState = acc.state as UserFetched;
@@ -111,8 +111,12 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
         debugPrint('Error calling getFollowedAssociations: $e');
       }
     } else {
-      debugPrint('WARNING: No logged in ID found! Follow functionality will not work.');
-      debugPrint('This usually means AccountCubit.currentUser is null and state is not UserFetched/AssociationFetched');
+      debugPrint(
+        'WARNING: No logged in ID found! Follow functionality will not work.',
+      );
+      debugPrint(
+        'This usually means AccountCubit.currentUser is null and state is not UserFetched/AssociationFetched',
+      );
     }
 
     /// Load association's events
@@ -137,9 +141,10 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
       duration: Duration(milliseconds: 600),
     )..forward();
 
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _fadeController, curve: Curves.easeIn),
-    );
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _fadeController, curve: Curves.easeIn));
 
     _scrollController.addListener(() {
       setState(() {
@@ -172,7 +177,9 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
             shape: BoxShape.circle,
           ),
           child: IconButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () {
+              Navigator.pop(context);
+            },
             icon: Icon(Icons.arrow_back, color: Colors.white),
           ),
         ),
@@ -295,16 +302,26 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
                               fit: BoxFit.cover,
                               errorBuilder: (context, error, stackTrace) {
                                 return Container(
-                                  color: Theme.of(context).colorScheme.primaryContainer,
-                                  child: Icon(Icons.account_balance,
-                                      size: 60, color: Colors.white),
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.primaryContainer,
+                                  child: Icon(
+                                    Icons.account_balance,
+                                    size: 60,
+                                    color: Colors.white,
+                                  ),
                                 );
                               },
                             )
                           : Container(
-                              color: Theme.of(context).colorScheme.primaryContainer,
-                              child: Icon(Icons.account_balance,
-                                  size: 60, color: Colors.white),
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.primaryContainer,
+                              child: Icon(
+                                Icons.account_balance,
+                                size: 60,
+                                color: Colors.white,
+                              ),
                             ),
                     ),
                   ),
@@ -351,8 +368,9 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
               bool isLoading = state is FollowLoading;
 
               if (state is FollowListFetched) {
-                isFollowing =
-                    state.followedAssociationIds.contains(widget.asso.id);
+                isFollowing = state.followedAssociationIds.contains(
+                  widget.asso.id,
+                );
               }
 
               return Container(
@@ -366,17 +384,19 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .primary
-                          .withOpacity(0.3),
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.primary.withOpacity(0.3),
                       blurRadius: 12,
                       offset: Offset(0, 6),
                     ),
                   ],
                 ),
                 child: ElevatedButton(
-                  onPressed: (isLoading || loggedInId == null || widget.asso.id == null)
+                  onPressed:
+                      (isLoading ||
+                          loggedInId == null ||
+                          widget.asso.id == null)
                       ? null
                       : () {
                           final cubit = context.read<FollowCubit>();
@@ -478,17 +498,23 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
         ),
         SizedBox(height: 32),
         _buildSectionHeader(
-            context, loc.contactInformation, Icons.contact_page_outlined),
+          context,
+          loc.contactInformation,
+          Icons.contact_page_outlined,
+        ),
         SizedBox(height: 12),
         ...association.contactInfo
             .map((contact) => _buildContactCard(context, contact))
-            .toList(),
+            ,
       ],
     );
   }
 
   Widget _buildSectionHeader(
-      BuildContext context, String title, IconData icon) {
+    BuildContext context,
+    String title,
+    IconData icon,
+  ) {
     return Row(
       children: [
         Container(
@@ -497,14 +523,14 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
             color: Theme.of(context).colorScheme.primaryContainer,
             borderRadius: BorderRadius.circular(12),
           ),
-          child: Icon(icon,
-              size: 20, color: Theme.of(context).colorScheme.primary),
+          child: Icon(
+            icon,
+            size: 20,
+            color: Theme.of(context).colorScheme.primary,
+          ),
         ),
         SizedBox(width: 12),
-        Text(
-          title,
-          style: headingStyle.copyWith(fontSize: 20),
-        ),
+        Text(title, style: headingStyle.copyWith(fontSize: 20)),
       ],
     );
   }
@@ -566,11 +592,14 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
               indicatorSize: TabBarIndicatorSize.tab,
               dividerColor: Colors.transparent,
               labelColor: Colors.white,
-              unselectedLabelColor:
-                  Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+              unselectedLabelColor: Theme.of(
+                context,
+              ).colorScheme.onSurface.withOpacity(0.6),
               labelStyle: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
-              unselectedLabelStyle:
-                  TextStyle(fontWeight: FontWeight.w500, fontSize: 15),
+              unselectedLabelStyle: TextStyle(
+                fontWeight: FontWeight.w500,
+                fontSize: 15,
+              ),
               padding: EdgeInsets.all(6),
               tabs: [
                 Tab(text: loc.upcomingEvents),
@@ -594,19 +623,17 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
                               Icon(
                                 Icons.event_busy,
                                 size: 64,
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .onSurface
-                                    .withOpacity(0.3),
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurface.withOpacity(0.3),
                               ),
                               SizedBox(height: 16),
                               Text(
                                 "No upcoming events",
                                 style: TextStyle(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onSurface
-                                      .withOpacity(0.6),
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurface.withOpacity(0.6),
                                 ),
                               ),
                             ],
@@ -649,10 +676,9 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
                             Text(
                               "Loading events...",
                               style: TextStyle(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .onSurface
-                                    .withOpacity(0.6),
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurface.withOpacity(0.6),
                               ),
                             ),
                           ],
@@ -788,8 +814,9 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
                       SizedBox(width: 4),
                       Expanded(
                         child: Text(
-                          DateFormat("E, MMM d • h:mm a")
-                              .format(event.startDatetime),
+                          DateFormat(
+                            "E, MMM d • h:mm a",
+                          ).format(event.startDatetime),
                           style: bodyTextStyle.copyWith(fontSize: 13),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,

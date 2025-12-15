@@ -64,7 +64,8 @@ class NotificationsCubit extends Cubit<NotificationsState> {
     if (state is NotificationsLoaded) {
       final s = state as NotificationsLoaded;
       final updated = s.notifications.map((n) {
-        if (n.id == id) return NotificationModel(
+        if (n.id == id) {
+          return NotificationModel(
           id: n.id,
           type: n.type,
           title: n.title,
@@ -73,6 +74,7 @@ class NotificationsCubit extends Cubit<NotificationsState> {
           isRead: true,
           actionId: n.actionId,
         );
+        }
         return n;
       }).toList();
 

@@ -6,7 +6,6 @@ import 'package:dzevent/logic/cubits/events/events_state.dart';
 import 'package:dzevent/logic/cubits/followers/followers_cubits.dart';
 import 'package:dzevent/presentation/screens/add_event.dart';
 import 'package:dzevent/l10n/app_localizations.dart';
-import 'package:dzevent/presentation/screens/event_feed.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';

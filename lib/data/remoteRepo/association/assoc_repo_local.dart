@@ -1,6 +1,5 @@
 import 'package:dzevent/data/models/assoc_model.dart';
 import 'dart:convert';
-import '../../databases/db_association.dart';
 import '../../databases/db_auth.dart';
 import 'package:http/http.dart' as http;
 import 'assoc_repo_base.dart';

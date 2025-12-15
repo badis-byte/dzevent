@@ -15,7 +15,6 @@ import 'package:dzevent/presentation/screens/login.dart';
 import 'package:dzevent/presentation/screens/my_account_credentials.dart';
 import 'package:dzevent/presentation/screens/notifications.dart';
 import 'package:dzevent/presentation/screens/signup.dart';
-import 'package:dzevent/presentation/screens/user_profile.dart';
 import 'package:dzevent/presentation/screens/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

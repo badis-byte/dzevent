@@ -70,7 +70,7 @@ class _MyaccountcredentialsState extends State<Myaccountcredentials>
     String profile = pic;
     final emailCtrl = TextEditingController(text: email);
     final nameCtrl = TextEditingController(text: name);
-    File? _profileImage;
+    File? profileImage;
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -453,7 +453,7 @@ class _MyaccountcredentialsState extends State<Myaccountcredentials>
   // ==========================================================================
   // IMAGE PICKER POPUP
   // ==========================================================================
-  void _showImagePickerDialog(_profileImage) {
+  void _showImagePickerDialog(profileImage) {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
@@ -466,7 +466,7 @@ class _MyaccountcredentialsState extends State<Myaccountcredentials>
               Navigator.pop(context);
               final XFile? img = await picker.pickImage(source: ImageSource.camera);
               if (img != null) {
-                setState(() => _profileImage = File(img.path));
+                setState(() => profileImage = File(img.path));
               }
             },
           ),
@@ -476,7 +476,7 @@ class _MyaccountcredentialsState extends State<Myaccountcredentials>
               Navigator.pop(context);
               final XFile? img = await picker.pickImage(source: ImageSource.gallery);
               if (img != null) {
-                setState(() => _profileImage = File(img.path));
+                setState(() => profileImage = File(img.path));
               }
             },
           ),

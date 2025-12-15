@@ -1,4 +1,3 @@
-import 'package:dzevent/data/models/user_model.dart';
 
 import 'followers_repo_local.dart';
 

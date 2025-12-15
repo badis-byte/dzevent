@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 import '../remotecredentials.dart';
 
 class FollowersRepoLocal extends FollowersRepoBase {
-  final String base = "$baseUrl"; // Django server
+  final String base = baseUrl; // Django server
   
   @override
   Future<int> getFollowers(int assocId) async {
@@ -40,6 +40,7 @@ class FollowersRepoLocal extends FollowersRepoBase {
   }
 
 
+  @override
   Future<List<int>> getFollowedAssociations(int userId) async {
     final res =
         await http.get(Uri.parse("$baseUrl/followers/user/$userId/"));

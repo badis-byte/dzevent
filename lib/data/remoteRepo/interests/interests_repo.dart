@@ -6,7 +6,7 @@ import 'package:dzevent/data/remoteRepo/interests/interests_repo_base.dart';
 import '../remotecredentials.dart';
 
 class InterestsRepo extends InterestsRepoBase {
-  final String base = "$baseUrl"; // Django server
+  final String base = baseUrl; // Django server
 
   //InterestsRepo({required this.baseUrl});
 
