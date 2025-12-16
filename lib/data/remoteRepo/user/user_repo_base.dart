@@ -4,7 +4,7 @@ import 'package:dzevent/data/remoteRepo/user/user_repo_local.dart';
 
 abstract class UserRepoBase {
   Future<List<UserModel>> getData();
-  Future<bool> insertData(UserModel value);
+  Future<UserModel> insertData(UserModel value);
   Future<bool> deleteAllData();
   Future<UserModel> login(String email, String password);
   Future<bool> update(UserModel value, int id);

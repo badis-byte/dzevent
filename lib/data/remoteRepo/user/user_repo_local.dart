@@ -16,13 +16,14 @@ class UserRepoLocal extends UserRepoBase {
   }
 
   @override
-  Future<bool> insertData(UserModel post) async {
+  Future<UserModel> insertData(UserModel post) async {
     final res = await http.post(
       Uri.parse("$base/create/"),
       headers: {"Content-Type": "application/json"},
       body: jsonEncode(post.toJson()),
     );
-    return res.statusCode == 201;
+    final result = UserModel.fromMap(jsonDecode(res.body));
+    return result;
   }
 
   @override

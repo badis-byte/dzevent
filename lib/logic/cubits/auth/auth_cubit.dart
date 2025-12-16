@@ -117,11 +117,10 @@ class AccountCubit extends Cubit<AccountState> {
           profilePicture: "assets/images/users/guest.png",
           createdAt: DateTime.now(),
         );
-        localUserRepo.insertData(user);
+        var gottenuser = await localUserRepo.insertData(user);
 
-        emit(UserFetched(user: user));
-        currentUser = user;
-        // currentUser = localUserRepo.getUserByEmail(email);
+        emit(UserFetched(user: gottenuser));
+        currentUser = gottenuser;
         association = false;
 
         await prefs.setBool("isAssoc", false);
