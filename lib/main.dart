@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dzevent/firebase_options.dart';
 import 'package:dzevent/l10n/app_localizations.dart';
 import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
@@ -20,10 +22,15 @@ import 'package:dzevent/presentation/screens/user_profile.dart';
 import 'package:dzevent/presentation/screens/welcome.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+
+FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,6 +50,55 @@ Future<bool> initFirebaseMessaging() async {
   final topic = "events";
   await FirebaseMessaging.instance.subscribeToTopic(topic);
   print("Subscribed to topic $topic");
+  FirebaseMessaging.onBackgroundMessage(_handleBgMessage);
+  FirebaseMessaging.onMessage.listen(_handleMessageFg);
+  return true;
+}
+
+Future<bool> _handleMessageFg(RemoteMessage message) async {
+  print('Got a message whilst in the foreground!');
+  print('Message data: ${message.data}');
+
+  BigTextStyleInformation bigTextStyleInformation = BigTextStyleInformation(
+    message.notification!.body.toString(),
+    htmlFormatBigText: true,
+    contentTitle: message.notification!.title.toString(),
+    htmlFormatTitle: true,
+  );
+  AndroidNotificationDetails AndroidplatformChannelSpecifics =
+      AndroidNotificationDetails(
+        'Red Green Screen App',
+        'ENSIA APP',
+        importance: Importance.high,
+        styleInformation: bigTextStyleInformation,
+        priority: Priority.high,
+        playSound: true,
+      );
+
+  NotificationDetails platformChannelSpecifics = NotificationDetails(
+    android: AndroidplatformChannelSpecifics,
+  );
+
+  try {
+    await flutterLocalNotificationsPlugin.show(
+      0,
+      message.notification!.title,
+      message.notification!.body.toString(),
+      platformChannelSpecifics,
+      payload: jsonEncode(message.toMap()),
+    );
+  } on Exception catch (e, stack) {
+    print('Exception $e $stack');
+  }
+  return true;
+}
+
+@pragma('vm:entry-point')
+Future<bool> _handleBgMessage(RemoteMessage message) async {
+  print("Running Background Message>>>");
+  print(
+    "Recevied Background message ${message.messageId} -  ${message.toMap().toString()}",
+  );
   return true;
 }
 
