@@ -22,7 +22,6 @@ import 'package:dzevent/presentation/screens/user_profile.dart';
 import 'package:dzevent/presentation/screens/welcome.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -31,6 +30,8 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
+
+final navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -63,8 +64,18 @@ Future<bool> initFirebaseMessaging() async {
       ?.createNotificationChannel(channel);
   print("Channel created");
 
-  // FirebaseMessaging.onBackgroundMessage(_handleBgMessage);
+  FirebaseMessaging.onBackgroundMessage(_handleBgMessage);
   FirebaseMessaging.onMessage.listen(_handleMessageFg);
+
+  // When clicking on the notification
+  FirebaseMessaging.onMessageOpenedApp.listen(_handleMessageOpen);
+  return true;
+}
+
+Future<bool> _handleMessageOpen(RemoteMessage message) async {
+  print("\n\n\n#####Calling FireMessage Opening Handler...\n\n\n");
+  Map<String, dynamic> data = Map.of(message.data);
+  print("\n\n\n#####data : ${data.toString()}...\n\n\n");
   return true;
 }
 
