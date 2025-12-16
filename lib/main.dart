@@ -18,20 +18,17 @@ import 'package:dzevent/presentation/screens/login.dart';
 import 'package:dzevent/presentation/screens/my_account_credentials.dart';
 import 'package:dzevent/presentation/screens/notifications.dart';
 import 'package:dzevent/presentation/screens/signup.dart';
-import 'package:dzevent/presentation/screens/user_profile.dart';
 import 'package:dzevent/presentation/screens/welcome.dart';
+import 'package:dzevent/utils/firebase.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
-
 final navigatorKey = GlobalKey<NavigatorState>();
+final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,96 +39,6 @@ Future<void> main() async {
   }
   await initMyApp();
   runApp(const MainApp());
-}
-
-Future<bool> initFirebaseMessaging() async {
-  await firebaseRequestPermission();
-  final token = await FirebaseMessaging.instance.getToken();
-  print("Firebase token is : $token");
-  final topic = "events";
-  await FirebaseMessaging.instance.subscribeToTopic(topic);
-  print("Subscribed to topic $topic");
-
-  const channel = AndroidNotificationChannel(
-    'high_importance_channel',
-    'High Importance Notifications',
-    importance: Importance.high,
-  );
-  await flutterLocalNotificationsPlugin
-      .resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin
-      >()
-      ?.createNotificationChannel(channel);
-  print("Channel created");
-
-  FirebaseMessaging.onBackgroundMessage(_handleBgMessage);
-  FirebaseMessaging.onMessage.listen(_handleMessageFg);
-
-  // When clicking on the notification
-  FirebaseMessaging.onMessageOpenedApp.listen(_handleMessageOpen);
-  return true;
-}
-
-Future<bool> _handleMessageOpen(RemoteMessage message) async {
-  print("\n\n\n#####Calling FireMessage Opening Handler...\n\n\n");
-  Map<String, dynamic> data = Map.of(message.data);
-  print("\n\n\n#####data : ${data.toString()}...\n\n\n");
-  return true;
-}
-
-Future<void> _handleMessageFg(RemoteMessage message) async {
-  print("Recieved fg message");
-  final notification = message.notification;
-  if (notification == null) return;
-
-  const androidDetails = AndroidNotificationDetails(
-    'high_importance_channel',
-    'High Importance Notifications',
-    importance: Importance.max,
-    priority: Priority.high,
-    icon: '@mipmap/ic_launcher',
-  );
-
-  const details = NotificationDetails(android: androidDetails);
-
-  await flutterLocalNotificationsPlugin.show(
-    0,
-    notification.title,
-    notification.body,
-    details,
-  );
-}
-
-@pragma('vm:entry-point')
-Future<bool> _handleBgMessage(RemoteMessage message) async {
-  print("Running Background Message>>>");
-  print(
-    "Recevied Background message ${message.messageId} -  ${message.toMap().toString()}",
-  );
-  return true;
-}
-
-Future<bool> firebaseRequestPermission() async {
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
-
-  NotificationSettings settings = await messaging.requestPermission(
-    alert: true,
-    announcement: false,
-    badge: true,
-    carPlay: false,
-    criticalAlert: false,
-    provisional: false,
-    sound: true,
-  );
-
-  if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-    print("User garnted permission");
-  } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
-    print("User garnted provisional permission");
-  } else {
-    print("User declined or has not accepted permission");
-  }
-  return true;
 }
 
 Future<bool> initMyApp() async {
@@ -155,7 +62,7 @@ class MainApp extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-
+        navigatorKey: navigatorKey,
         //localization
         locale: Locale('en'),
         localizationsDelegates: [
