@@ -5,7 +5,7 @@ import 'package:dzevent/data/models/user_model.dart';
 import '../remotecredentials.dart';
 import 'package:dzevent/data/remoteRepo/user/user_repo_base.dart';
 
-class UserRepoLocal extends UserRepoBase {
+class UserRepoSupa extends UserRepoBase {
   final String base = "$baseUrl/users";
 
   @override
@@ -43,11 +43,11 @@ class UserRepoLocal extends UserRepoBase {
       throw Exception("Invalid credentials");
     }
     print(res.body);
-    try{
-    return UserModel.fromMap(jsonDecode(res.body));
-  //return UserModel.fromJson(res.body);
-    }catch(e){
-      throw(InvalidCredException());
+    try {
+      return UserModel.fromMap(jsonDecode(res.body));
+      //return UserModel.fromJson(res.body);
+    } catch (e) {
+      throw (InvalidCredException());
     }
   }
 
@@ -66,5 +66,17 @@ class UserRepoLocal extends UserRepoBase {
     final res = await http.get(Uri.parse("$base/$id/"));
     if (res.statusCode != 200) throw Exception("Not found");
     return UserModel.fromMap(jsonDecode(res.body));
+  }
+
+  @override
+  Future<bool> setFcmtoken({
+    required int userId,
+    required String fcmtoken,
+  }) async {
+    final res = await http.post(Uri.parse("$base/$userId/set-fcmtoken"));
+    if (res.statusCode != 201) {
+      throw Exception("Failed to set fcm token for user #$userId");
+    }
+    return true;
   }
 }

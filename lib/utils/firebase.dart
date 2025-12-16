@@ -4,15 +4,25 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+Future<bool> subscribeUserToTopic({required String topic}) async {
+  await FirebaseMessaging.instance.subscribeToTopic(topic);
+  print("Subscribed to topic $topic");
+  return true;
+}
+
+Future<String?> getFcmtoken() async {
+  final token = await FirebaseMessaging.instance.getToken();
+  print("Firebase token is : $token");
+  return token;
+}
+
 Future<bool> initFirebaseMessaging() async {
   await firebaseRequestPermission();
   initLocalPlugin();
 
-  final token = await FirebaseMessaging.instance.getToken();
-  print("Firebase token is : $token");
+  await getFcmtoken();
   final topic = "events";
-  await FirebaseMessaging.instance.subscribeToTopic(topic);
-  print("Subscribed to topic $topic");
+  await subscribeUserToTopic(topic: topic);
 
   const channel = AndroidNotificationChannel(
     'high_importance_channel',
