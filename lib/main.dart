@@ -1,3 +1,4 @@
+import 'package:dzevent/firebase_options.dart';
 import 'package:dzevent/l10n/app_localizations.dart';
 import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
 import 'dart:io';
@@ -17,6 +18,8 @@ import 'package:dzevent/presentation/screens/notifications.dart';
 import 'package:dzevent/presentation/screens/signup.dart';
 import 'package:dzevent/presentation/screens/user_profile.dart';
 import 'package:dzevent/presentation/screens/welcome.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -29,7 +32,44 @@ Future<void> main() async {
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
   }
+  await initMyApp();
   runApp(const MainApp());
+}
+
+Future<bool> initFirebaseMessaging() async {
+  await firebaseRequestPermission();
+  final token = await FirebaseMessaging.instance.getToken();
+  print("Firebase token is : $token");
+  return true;
+}
+
+Future<bool> firebaseRequestPermission() async {
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+  NotificationSettings settings = await messaging.requestPermission(
+    alert: true,
+    announcement: false,
+    badge: true,
+    carPlay: false,
+    criticalAlert: false,
+    provisional: false,
+    sound: true,
+  );
+
+  if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+    print("User garnted permission");
+  } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
+    print("User garnted provisional permission");
+  } else {
+    print("User declined or has not accepted permission");
+  }
+  return true;
+}
+
+Future<bool> initMyApp() async {
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  initFirebaseMessaging();
+  return true;
 }
 
 class MainApp extends StatelessWidget {
@@ -88,18 +128,14 @@ class MainApp extends StatelessWidget {
               fontWeight: FontWeight.bold,
               color: Colors.black87,
             ),
-            bodyMedium: TextStyle(
-              fontSize: 16,
-              color: Colors.black54,
-            ),
+            bodyMedium: TextStyle(fontSize: 16, color: Colors.black54),
           ),
 
           colorScheme: ColorScheme.fromSeed(
             seedColor: Colors.blue,
             surface: Colors.white,
           ),
-        )
-
+        ),
       ),
     );
   }
