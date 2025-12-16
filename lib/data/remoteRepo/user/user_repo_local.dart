@@ -22,6 +22,10 @@ class UserRepoLocal extends UserRepoBase {
       headers: {"Content-Type": "application/json"},
       body: jsonEncode(post.toJson()),
     );
+    if (res.statusCode != 201) {
+      throw Exception('Failed to create user: ${res.body}');
+    }
+
     final result = UserModel.fromMap(jsonDecode(res.body));
     return result;
   }
