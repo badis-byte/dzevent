@@ -50,47 +50,45 @@ Future<bool> initFirebaseMessaging() async {
   final topic = "events";
   await FirebaseMessaging.instance.subscribeToTopic(topic);
   print("Subscribed to topic $topic");
-  FirebaseMessaging.onBackgroundMessage(_handleBgMessage);
+
+  const channel = AndroidNotificationChannel(
+    'high_importance_channel',
+    'High Importance Notifications',
+    importance: Importance.high,
+  );
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin
+      >()
+      ?.createNotificationChannel(channel);
+  print("Channel created");
+
+  // FirebaseMessaging.onBackgroundMessage(_handleBgMessage);
   FirebaseMessaging.onMessage.listen(_handleMessageFg);
   return true;
 }
 
-Future<bool> _handleMessageFg(RemoteMessage message) async {
-  print('Got a message whilst in the foreground!');
-  print('Message data: ${message.data}');
+Future<void> _handleMessageFg(RemoteMessage message) async {
+  print("Recieved fg message");
+  final notification = message.notification;
+  if (notification == null) return;
 
-  BigTextStyleInformation bigTextStyleInformation = BigTextStyleInformation(
-    message.notification!.body.toString(),
-    htmlFormatBigText: true,
-    contentTitle: message.notification!.title.toString(),
-    htmlFormatTitle: true,
-  );
-  AndroidNotificationDetails AndroidplatformChannelSpecifics =
-      AndroidNotificationDetails(
-        'Red Green Screen App',
-        'ENSIA APP',
-        importance: Importance.high,
-        styleInformation: bigTextStyleInformation,
-        priority: Priority.high,
-        playSound: true,
-      );
-
-  NotificationDetails platformChannelSpecifics = NotificationDetails(
-    android: AndroidplatformChannelSpecifics,
+  const androidDetails = AndroidNotificationDetails(
+    'high_importance_channel',
+    'High Importance Notifications',
+    importance: Importance.max,
+    priority: Priority.high,
+    icon: '@mipmap/ic_launcher',
   );
 
-  try {
-    await flutterLocalNotificationsPlugin.show(
-      0,
-      message.notification!.title,
-      message.notification!.body.toString(),
-      platformChannelSpecifics,
-      payload: jsonEncode(message.toMap()),
-    );
-  } on Exception catch (e, stack) {
-    print('Exception $e $stack');
-  }
-  return true;
+  const details = NotificationDetails(android: androidDetails);
+
+  await flutterLocalNotificationsPlugin.show(
+    0,
+    notification.title,
+    notification.body,
+    details,
+  );
 }
 
 @pragma('vm:entry-point')
