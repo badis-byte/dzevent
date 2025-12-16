@@ -40,6 +40,9 @@ Future<bool> initFirebaseMessaging() async {
   await firebaseRequestPermission();
   final token = await FirebaseMessaging.instance.getToken();
   print("Firebase token is : $token");
+  final topic = "events";
+  await FirebaseMessaging.instance.subscribeToTopic(topic);
+  print("Subscribed to topic $topic");
   return true;
 }
 
