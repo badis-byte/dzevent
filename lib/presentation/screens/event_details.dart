@@ -11,6 +11,7 @@ import 'package:dzevent/presentation/screens/public_assoc_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class EventDetails extends StatefulWidget {
   final EventModel event;
@@ -26,6 +27,19 @@ class _EventDetailsState extends State<EventDetails> {
   @override
   void initState() {
     super.initState();
+  }
+
+  Future<void> openInGoogleMaps(String address) async {
+    final encodedAddress = Uri.encodeComponent(address);
+    final googleMapsUrl = Uri.parse(
+      "https://www.google.com/maps/search/?api=1&query=$encodedAddress",
+    );
+
+    try {
+      await launchUrl(googleMapsUrl, mode: LaunchMode.externalApplication);
+    } catch (e) {
+      debugPrint("Could not open Google Maps: $e");
+    }
   }
 
   @override
@@ -222,78 +236,89 @@ class _EventDetailsState extends State<EventDetails> {
                       const SizedBox(height: 12),
 
                       // Location Info Card
-                      Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(
-                            color: const Color(0xFFE8ECF4),
-                            width: 1.5,
+                      InkWell(
+                        borderRadius: BorderRadius.circular(16),
+                        onTap: () {
+                          openInGoogleMaps(widget.event.location);
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: const Color(0xFFE8ECF4),
+                              width: 1.5,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.04),
+                                blurRadius: 10,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
                           ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.04),
-                              blurRadius: 10,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF4ECDC4).withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(12),
+                          child: Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: const Color(
+                                    0xFF4ECDC4,
+                                  ).withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: const Icon(
+                                  Icons.location_on_rounded,
+                                  color: Color(0xFF4ECDC4),
+                                  size: 24,
+                                ),
                               ),
-                              child: const Icon(
-                                Icons.location_on_rounded,
-                                color: Color(0xFF4ECDC4),
-                                size: 24,
-                              ),
-                            ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Location",
-                                    style: TextStyle(
-                                      color: Colors.grey[600],
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w600,
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Location",
+                                      style: TextStyle(
+                                        color: Colors.grey[600],
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
+                                      ),
                                     ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    widget.event.location,
-                                    style: const TextStyle(
-                                      color: Color(0xFF2D3748),
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w700,
-                                      letterSpacing: 0.3,
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      widget.event.location,
+                                      style: const TextStyle(
+                                        color: Color(0xFF2D3748),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w700,
+                                        letterSpacing: 0.3,
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF4ECDC4).withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(10),
+                              Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  color: const Color(
+                                    0xFF4ECDC4,
+                                  ).withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: const Icon(
+                                  Icons.directions_rounded,
+                                  color: Color(0xFF4ECDC4),
+                                  size: 20,
+                                ),
                               ),
-                              child: const Icon(
-                                Icons.directions_rounded,
-                                color: Color(0xFF4ECDC4),
-                                size: 20,
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
+
                       const SizedBox(height: 28),
 
                       // Association Section
