@@ -81,7 +81,7 @@ class MainScaffold extends StatelessWidget {
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
                           // Use a color that stands out, e.g., secondary or primary
-                          color: Theme.of(context).colorScheme.secondary, 
+                          color: Theme.of(context).colorScheme.secondary,
                           letterSpacing: 1.2,
                         ),
                       ),
@@ -96,7 +96,8 @@ class MainScaffold extends StatelessWidget {
                             : () {
                                 Navigator.pop(context);
                                 Navigator.of(context).push(
-                                  (item['route'] as MaterialPageRoute Function())(),
+                                  (item['route']
+                                      as MaterialPageRoute Function())(),
                                 );
                               },
                       ),
@@ -138,7 +139,7 @@ class MainScaffold extends StatelessWidget {
                       label: item['label'] as String,
                       icon: item['icon'] as IconData,
                       isDestructive: item['label'] == "Log Out",
-                      onTap: () {
+                      onTap: () async {
                         if (item['label'] == "Log Out") {
                           // The business logic is preserved here
                           Navigator.pop(context);
@@ -147,7 +148,7 @@ class MainScaffold extends StatelessWidget {
                             MaterialPageRoute(builder: (_) => ImageCarousel()),
                           );
                           // This line assumes 'AccountCubit' is the correct cubit for logout.
-                          context.read<AccountCubit>().logout(); 
+                          await context.read<AccountCubit>().logout();
                         }
                       },
                     ),
@@ -170,13 +171,15 @@ class MainScaffold extends StatelessWidget {
           padding: EdgeInsets.all(16),
           decoration: BoxDecoration(
             // Use onPrimary to ensure visibility against the primary-based gradient
-            color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.2), 
+            color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.2),
             shape: BoxShape.circle,
           ),
           child: Icon(
             Icons.person_outline,
             size: 48,
-            color: Theme.of(context).colorScheme.onPrimary, // e.g., white or a bright color
+            color: Theme.of(
+              context,
+            ).colorScheme.onPrimary, // e.g., white or a bright color
           ),
         ),
         SizedBox(height: 16),
@@ -185,7 +188,9 @@ class MainScaffold extends StatelessWidget {
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
-            color: Theme.of(context).colorScheme.onPrimary, // e.g., white or a bright color
+            color: Theme.of(
+              context,
+            ).colorScheme.onPrimary, // e.g., white or a bright color
           ),
         ),
         SizedBox(height: 4),
@@ -210,7 +215,7 @@ class MainScaffold extends StatelessWidget {
           end: Alignment.bottomRight,
           colors: [
             // Use primaryContainer for a light, inviting card background
-            Theme.of(context).colorScheme.primaryContainer, 
+            Theme.of(context).colorScheme.primaryContainer,
             Theme.of(context).colorScheme.secondaryContainer,
           ],
         ),
@@ -231,7 +236,9 @@ class MainScaffold extends StatelessWidget {
               Container(
                 padding: EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary, // Icon background
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.primary, // Icon background
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(
@@ -259,7 +266,9 @@ class MainScaffold extends StatelessWidget {
             "Sign in to save favorites, RSVP to events, and get personalized recommendations!",
             style: TextStyle(
               fontSize: 13,
-              color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.8),
+              color: Theme.of(
+                context,
+              ).colorScheme.onPrimaryContainer.withOpacity(0.8),
               height: 1.4,
             ),
           ),
@@ -277,7 +286,9 @@ class MainScaffold extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                    color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.primary.withOpacity(0.3),
                     blurRadius: 8,
                     offset: Offset(0, 4),
                   ),
@@ -305,7 +316,9 @@ class MainScaffold extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
-                    color: Theme.of(context).colorScheme.onPrimary, // Text color on primary
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onPrimary, // Text color on primary
                   ),
                 ),
               ),
@@ -329,8 +342,8 @@ class MainScaffold extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         // Use a slight primary color overlay on selection/hover
-        color: onTap != null 
-            ? Theme.of(context).colorScheme.primary.withOpacity(0.05) 
+        color: onTap != null
+            ? Theme.of(context).colorScheme.primary.withOpacity(0.05)
             : Colors.transparent,
       ),
       child: Material(
@@ -348,7 +361,8 @@ class MainScaffold extends StatelessWidget {
                     // Background for the icon
                     color: isDestructive
                         ? Theme.of(context).colorScheme.error.withOpacity(0.1)
-                        : Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.6), // A softer tone
+                        : Theme.of(context).colorScheme.secondaryContainer
+                              .withOpacity(0.6), // A softer tone
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Icon(
@@ -427,10 +441,11 @@ class MainScaffold extends StatelessWidget {
         'icon': Icons.notifications,
         'route': () => NotificationsPage.route(),
       },
-      {'label': "Followed Associations",
-       'icon': Icons.group,
-       'route': () => FollowedAssociationsScreen.route()
-       },
+      {
+        'label': "Followed Associations",
+        'icon': Icons.group,
+        'route': () => FollowedAssociationsScreen.route(),
+      },
       {
         'label': "Profile",
         'icon': Icons.account_box,
@@ -461,7 +476,7 @@ class MainScaffold extends StatelessWidget {
             margin: EdgeInsets.all(8),
             decoration: BoxDecoration(
               // Use primaryContainer for a soft, themed background
-              color: Theme.of(context).colorScheme.primaryContainer, 
+              color: Theme.of(context).colorScheme.primaryContainer,
               borderRadius: BorderRadius.circular(12),
             ),
             child: IconButton(
@@ -478,7 +493,8 @@ class MainScaffold extends StatelessWidget {
       // ... (BlocBuilder and body are unchanged - Business Logic)
       drawer: BlocBuilder<AccountCubit, AccountState>(
         builder: (context, state) {
-          if (state is AssociationFetched) {
+          if (state is AssociationFetched ||
+              state is AssoicationDetailFetched) {
             return drawer(
               drawerItemsUpAssociation,
               drawerItemsBottom,
@@ -486,19 +502,9 @@ class MainScaffold extends StatelessWidget {
               false,
             );
           } else if (state is UserFetched) {
-            return drawer(
-              drawerItemsUpUser,
-              drawerItemsBottom,
-              context,
-              false,
-            );
+            return drawer(drawerItemsUpUser, drawerItemsBottom, context, false);
           }
-          return drawer(
-            [],
-            [],
-            context,
-            true,
-          );
+          return drawer([], [], context, true);
         },
       ),
       body: body,
