@@ -7,6 +7,7 @@ import 'package:dzevent/logic/cubits/auth/auth_states.dart';
 import 'package:dzevent/logic/cubits/followers/followers_cubits.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AccountCubit extends Cubit<AccountState> {
   AccountCubit() : super(AccountGuest());
@@ -18,17 +19,23 @@ class AccountCubit extends Cubit<AccountState> {
   var authTable = DBAuth();
 
   Future<bool> login(String email, String password) async {
+    final prefs = await SharedPreferences.getInstance();
     try {
       emit(AccountLoading());
       currentUser = await localUserRepo.login(email, password);
       association = false;
       emit(UserFetched(user: currentUser!));
+      await prefs.setBool("isAssoc", false);
+      await prefs.setInt("id", currentUser!.id!);
     } catch (e) {
       if (e is InvalidCredException) {
         try {
           currentAssociation = await localAssRepo.login(email, password);
+          print("current association is ${currentAssociation!.name}");
           association = true;
           emit(AssociationFetched(association: currentAssociation!));
+          await prefs.setBool("isAssoc", true);
+          await prefs.setInt("id", currentAssociation!.id!);
         } catch (a) {
           if (a is InvalidCredException) {
             emit(AccountError(error: "Invalid Credentials"));
@@ -46,7 +53,10 @@ class AccountCubit extends Cubit<AccountState> {
     return true;
   }
 
-  bool logout() {
+  Future<bool> logout() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('id');
+    await prefs.remove('isAssoc');
     emit(AccountGuest());
     return true;
   }
@@ -68,6 +78,7 @@ class AccountCubit extends Cubit<AccountState> {
     bool association,
   ) async {
     emit(AccountLoading());
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
       await authTable.checkUnique(email);
     } catch (e) {
@@ -107,42 +118,43 @@ class AccountCubit extends Cubit<AccountState> {
           createdAt: DateTime.now(),
         );
         localUserRepo.insertData(user);
+
         emit(UserFetched(user: user));
         currentUser = user;
+        // currentUser = localUserRepo.getUserByEmail(email);
         association = false;
+
+        await prefs.setBool("isAssoc", false);
+        await prefs.setInt("id", currentUser!.id!);
         print("registered: ");
         print(currentUser.toString());
       }
       return true;
     } catch (e) {
-      emit(
-        AccountError(
-          error: "$e",
-        ),
-      );
+      emit(AccountError(error: "$e"));
       return true;
     }
   }
 
-Future<bool> getUserData() async {
-  try {
-    emit(AccountLoading());
-    final response = await localUserRepo.getData();
-    if (response.isEmpty) {
-      emit(AccountGuest());
-      currentUser = null; // Clear current user
+  Future<bool> getUserData() async {
+    try {
+      emit(AccountLoading());
+      final response = await localUserRepo.getData();
+      if (response.isEmpty) {
+        emit(AccountGuest());
+        currentUser = null; // Clear current user
+        return false;
+      } else {
+        currentUser = response[0]; // SET THIS!
+        association = false; // SET THIS TOO!
+        emit(UserFetched(user: response[0]));
+        return true;
+      }
+    } catch (e) {
+      emit(AccountError(error: "Failed to get user data. Error: $e"));
       return false;
-    } else {
-      currentUser = response[0]; // SET THIS!
-      association = false; // SET THIS TOO!
-      emit(UserFetched(user: response[0]));
-      return true;
     }
-  } catch (e) {
-    emit(AccountError(error: "Failed to get user data. Error: $e"));
-    return false;
   }
-}
 
   Future<bool> getUnvAssoc() async {
     try {
@@ -205,32 +217,33 @@ Future<bool> getUserData() async {
   }
 
   Future<dynamic> getcurrentAssociation(int id) async {
-  try {
-    var response = await localAssRepo.getAssociation(id);
-    currentAssociation = response.first; // SET THIS!
-    association = true; // SET THIS TOO!
-    emit(AssociationFetched(association: response.first));
-    print("fetching association");
-    return true;
-  } catch (e) {
-    print("error -> $e");
+    try {
+      var response = await localAssRepo.getAssociation(id);
+      print("response is : ${response.first}");
+      currentAssociation = response.first; // SET THIS!
+      association = true; // SET THIS TOO!
+      emit(AssociationFetched(association: response.first));
+      print("fetching association");
+      return true;
+    } catch (e) {
+      print("error -> $e");
+    }
   }
-}
 
   Future<dynamic> getcurrentUser(int id) async {
-  try {
-    var response = await localUserRepo.getUserById(id);
-    currentUser = response; // SET THIS!
-    association = false; // SET THIS TOO!
-    emit(UserFetched(user: response));
-    print("fetching user");
-    return true;
-  } catch (e) {
-    print("error -> $e");
+    try {
+      var response = await localUserRepo.getUserById(id);
+      currentUser = response; // SET THIS!
+      association = false; // SET THIS TOO!
+      emit(UserFetched(user: response));
+      print("fetching user");
+      return true;
+    } catch (e) {
+      print("error -> $e");
+    }
   }
-}
 
-    Future<AssociationModel> getFollowedAssociation(int id) async {
+  Future<AssociationModel> getFollowedAssociation(int id) async {
     try {
       var response = await localAssRepo.getAssociation(id);
       return response[0];
@@ -239,22 +252,19 @@ Future<bool> getUserData() async {
     }
   }
 
-  Future<bool> update(UserModel user, int id)async{
-    try{
+  Future<bool> update(UserModel user, int id) async {
+    try {
       var response = await localUserRepo.update(user, id);
       emit(UserFetched(user: user));
       return response;
-    }catch(e){
+    } catch (e) {
       print("error -> $e");
       return true;
     }
   }
 
-  bool setUser(UserModel user){
-  currentUser= user;
-  return true;
+  bool setUser(UserModel user) {
+    currentUser = user;
+    return true;
   }
 }
-
-
-
