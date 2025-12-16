@@ -192,6 +192,40 @@ class AccountCubit extends Cubit<AccountState> {
     }
   }
 
+  Future<AssociationModel> getAssocInstance(int id) async {
+    try {
+      print("fetching association by id");
+      emit(AccountLoading());
+      final response = await localAssRepo.getAssociation(id);
+      if (response.isEmpty) {
+        AccountError(error: "empty data");
+        return AssociationModel(
+          name: "",
+          email: "",
+          password: "",
+          profilePicture: "",
+          bio: "",
+          createdAt: DateTime.now(),
+          isVerified: true,
+        );
+      } else {
+        emit(AssoicationDetailFetched(asso: response.first));
+        return response.first;
+      }
+    } catch (e) {
+      emit(AccountError(error: "Failed to get user data. Error: $e"));
+      return AssociationModel(
+        name: "",
+        email: "",
+        password: "",
+        profilePicture: "",
+        bio: "",
+        createdAt: DateTime.now(),
+        isVerified: true,
+      );
+    }
+  }
+
   Future<bool> verifyAccount(int id) async {
     try {
       emit(AccountLoading());

@@ -1,6 +1,7 @@
 import 'package:dzevent/data/models/assoc_model.dart';
 import 'package:dzevent/data/models/event_model.dart';
 import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
+import 'package:dzevent/logic/cubits/auth/auth_states.dart';
 import 'package:dzevent/logic/cubits/events/events_cubit.dart';
 import 'package:dzevent/logic/cubits/events/events_state.dart';
 import 'package:dzevent/logic/cubits/followers/followers_cubits.dart';
@@ -10,6 +11,7 @@ import 'package:dzevent/presentation/screens/event_feed.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main(List<String> args) {
   runApp(const AssocProfTwo());
@@ -24,8 +26,10 @@ class AssocProfTwo extends StatefulWidget {
   State<AssocProfTwo> createState() => _AssocProfTwoState();
 }
 
-class _AssocProfTwoState extends State<AssocProfTwo> with TickerProviderStateMixin {
+class _AssocProfTwoState extends State<AssocProfTwo>
+    with TickerProviderStateMixin {
   AssociationModel? _currentAssoc;
+  bool _isLoading = true;
   late AnimationController _headerAnimController;
   late AnimationController _fadeController;
   late Animation<double> _fadeAnimation;
@@ -34,47 +38,73 @@ class _AssocProfTwoState extends State<AssocProfTwo> with TickerProviderStateMix
   @override
   void initState() {
     super.initState();
-    
+
     _headerAnimController = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 800),
-    )..forward();
+    );
 
     _fadeController = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 600),
-    )..forward();
-
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _fadeController, curve: Curves.easeIn),
     );
+
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _fadeController, curve: Curves.easeIn));
 
     _slideAnimation = Tween<Offset>(
       begin: Offset(0, 0.3),
       end: Offset.zero,
     ).animate(CurvedAnimation(parent: _fadeController, curve: Curves.easeOut));
 
-    //store current user
-    //fetch events
-    final state = context.read<AccountCubit>().association;
-    if (state == true) {
-      final assoc = context.read<AccountCubit>().currentAssociation;
-      _currentAssoc = assoc;
-    }
+    _initializeData();
+  }
 
-    _currentAssoc ??= AssociationModel(
-      id: 2,
-      name: "Meta",
-      email: "Meta@gmail.com",
-      password: "pass",
-      profilePicture:
-          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBzkx9EjnTvs28LpVsnDW72jM0jNN-D4wOvw&s",
-      bio: "meta",
-      createdAt: DateTime(2000),
-      isVerified: true,
-    );
-    debugPrint(_currentAssoc?.id.toString() ?? "no id");
-    context.read<EventsCubit>().getAllEventsByUser(_currentAssoc!.id!);
+  Future<void> _initializeData() async {
+    try {
+      // First check if association is available in cubit
+      final state = context.read<AccountCubit>().association;
+      if (state == true) {
+        final assoc = context.read<AccountCubit>().currentAssociation;
+        if (assoc != null) {
+          _currentAssoc = assoc;
+        }
+      }
+
+      // If not available, fetch from SharedPreferences
+      if (_currentAssoc == null) {
+        final prefs = await SharedPreferences.getInstance();
+        final id = prefs.getInt("id");
+        
+        if (id != null) {
+          _currentAssoc = await context.read<AccountCubit>().getAssocInstance(id);
+        }
+      }
+
+      // Fetch events if we have an association
+      if (_currentAssoc != null) {
+        debugPrint("Association loaded: ${_currentAssoc!.id}");
+        context.read<EventsCubit>().getAllEventsByUser(_currentAssoc!.id!);
+        
+        // Start animations after data is loaded
+        _headerAnimController.forward();
+        _fadeController.forward();
+      }
+
+      if (!mounted) return;
+
+      setState(() {
+        _isLoading = false;
+      });
+    } catch (e) {
+      debugPrint("Error initializing data: $e");
+      if (!mounted) return;
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   @override
@@ -83,9 +113,6 @@ class _AssocProfTwoState extends State<AssocProfTwo> with TickerProviderStateMix
     _fadeController.dispose();
     super.dispose();
   }
-
-  var logo =
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0NfsQx_-GICZJcadqDeNBMvwzq-RInkcOzg&s";
 
   Widget getStatCard(String title, String subTitle) {
     return Container(
@@ -165,7 +192,9 @@ class _AssocProfTwoState extends State<AssocProfTwo> with TickerProviderStateMix
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.primary.withOpacity(0.3),
                       blurRadius: 15,
                       spreadRadius: 3,
                     ),
@@ -177,7 +206,9 @@ class _AssocProfTwoState extends State<AssocProfTwo> with TickerProviderStateMix
                 ),
                 child: CircleAvatar(
                   radius: 48,
-                  backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                  backgroundColor: Theme.of(
+                    context,
+                  ).colorScheme.primaryContainer,
                   child: ClipOval(
                     child: Image.network(
                       assos.profilePicture,
@@ -221,11 +252,7 @@ class _AssocProfTwoState extends State<AssocProfTwo> with TickerProviderStateMix
                           color: Theme.of(context).colorScheme.primary,
                           shape: BoxShape.circle,
                         ),
-                        child: Icon(
-                          Icons.check,
-                          size: 14,
-                          color: Colors.white,
-                        ),
+                        child: Icon(Icons.check, size: 14, color: Colors.white),
                       ),
                     ],
                   ],
@@ -255,32 +282,33 @@ class _AssocProfTwoState extends State<AssocProfTwo> with TickerProviderStateMix
             position: _slideAnimation,
             child: FadeTransition(
               opacity: _fadeAnimation,
-              child: 
-              Row(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-          Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            FutureBuilder(
-              future: context.read<FollowCubit>().getFollowers(_currentAssoc!.id!),   // The future you want to wait for
-              initialData: null,              // Optional: data to show before the future completes
-              builder: (BuildContext context, AsyncSnapshot snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();  // loading state
-                }
+                  FutureBuilder(
+                    future: context.read<FollowCubit>().getFollowers(
+                      assos.id!,
+                    ),
+                    initialData: null,
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return getStatCard("...", loc.subscribers);
+                      }
 
-                if (snapshot.hasError) {
-                  return Text("N/A");
-                }
+                      if (snapshot.hasError) {
+                        return getStatCard("N/A", loc.subscribers);
+                      }
 
-                if (snapshot.hasData) {
-                  return getStatCard("${snapshot.data}", loc.subscribers);              
-                }
+                      if (snapshot.hasData) {
+                        return getStatCard(
+                          "${snapshot.data}",
+                          loc.subscribers,
+                        );
+                      }
 
-                return Text("N/A");
-              },
-            ),
+                      return getStatCard("N/A", loc.subscribers);
+                    },
+                  ),
                   SizedBox(width: 12),
                   BlocBuilder<EventsCubit, EventsState>(
                     builder: (context, state) {
@@ -294,8 +322,7 @@ class _AssocProfTwoState extends State<AssocProfTwo> with TickerProviderStateMix
                     },
                   ),
                 ],
-              ),],
-            ),
+              ),
             ),
           ),
         ],
@@ -409,7 +436,9 @@ class _AssocProfTwoState extends State<AssocProfTwo> with TickerProviderStateMix
                             SizedBox(width: 6),
                             Expanded(
                               child: Text(
-                                DateFormat("EEE, MMM d • h:mm a").format(event.startDatetime),
+                                DateFormat(
+                                  "EEE, MMM d • h:mm a",
+                                ).format(event.startDatetime),
                                 style: TextStyle(
                                   fontSize: 14,
                                   color: Theme.of(context).colorScheme.primary,
@@ -427,9 +456,14 @@ class _AssocProfTwoState extends State<AssocProfTwo> with TickerProviderStateMix
                     Row(
                       children: [
                         Container(
-                          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 6,
+                          ),
                           decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.secondaryContainer,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.secondaryContainer,
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Row(
@@ -437,7 +471,9 @@ class _AssocProfTwoState extends State<AssocProfTwo> with TickerProviderStateMix
                               Icon(
                                 Icons.people_outline,
                                 size: 16,
-                                color: Theme.of(context).colorScheme.onSecondaryContainer,
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSecondaryContainer,
                               ),
                               SizedBox(width: 4),
                               Text(
@@ -445,7 +481,9 @@ class _AssocProfTwoState extends State<AssocProfTwo> with TickerProviderStateMix
                                 style: TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w600,
-                                  color: Theme.of(context).colorScheme.onSecondaryContainer,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSecondaryContainer,
                                 ),
                               ),
                             ],
@@ -487,9 +525,7 @@ class _AssocProfTwoState extends State<AssocProfTwo> with TickerProviderStateMix
                         SizedBox(width: 12),
                         Text(
                           'Edit',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                          ),
+                          style: TextStyle(fontWeight: FontWeight.w500),
                         ),
                       ],
                     ),
@@ -525,7 +561,9 @@ class _AssocProfTwoState extends State<AssocProfTwo> with TickerProviderStateMix
                       final cubit = context.read<EventsCubit>();
                       try {
                         if (await cubit.deleteInstace(event.id)) {
-                          cubit.getAllEventsByUser(_currentAssoc!.id!);
+                          if (_currentAssoc != null) {
+                            cubit.getAllEventsByUser(_currentAssoc!.id!);
+                          }
                           print("Event deleted successfully");
                         }
                       } catch (e) {
@@ -554,9 +592,135 @@ class _AssocProfTwoState extends State<AssocProfTwo> with TickerProviderStateMix
     );
   }
 
+  Widget _buildEventsSection() {
+    final loc = AppLocalizations.of(context)!;
+    
+    return BlocBuilder<EventsCubit, EventsState>(
+      builder: (context, state) {
+        if (state is EventsLoading) {
+          return Expanded(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(),
+                  SizedBox(height: 16),
+                  Text(
+                    "Loading events...",
+                    style: TextStyle(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withOpacity(0.6),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+        
+        if (state is EventsError) {
+          return Expanded(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.error_outline,
+                    size: 64,
+                    color: Theme.of(context).colorScheme.error,
+                  ),
+                  SizedBox(height: 16),
+                  Text(
+                    state.error,
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+        
+        if (state is EventsFetched) {
+          if (state.events.isEmpty) {
+            return Expanded(
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.event_busy,
+                      size: 64,
+                      color: Theme.of(context).colorScheme.outline,
+                    ),
+                    SizedBox(height: 16),
+                    Text(
+                      "No events yet",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
+          
+          return Expanded(
+            child: ListView.builder(
+              itemCount: state.events.length,
+              itemBuilder: (context, index) {
+                return AnimatedOpacity(
+                  opacity: 1.0,
+                  duration: Duration(
+                    milliseconds: 300 + (index * 100),
+                  ),
+                  child: eventCard(state.events[index]),
+                );
+              },
+            ),
+          );
+        }
+        
+        return Expanded(
+          child: Center(
+            child: Text(
+              "Unexpected state: ${state.runtimeType}",
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
+    
+    // Show loading screen while data is being fetched
+    if (_isLoading || _currentAssoc == null) {
+      return Scaffold(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircularProgressIndicator(),
+              SizedBox(height: 16),
+              Text(
+                "Loading association...",
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+    
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       extendBodyBehindAppBar: true,
@@ -569,10 +733,7 @@ class _AssocProfTwoState extends State<AssocProfTwo> with TickerProviderStateMix
             color: Theme.of(context).colorScheme.surface,
             shape: BoxShape.circle,
             boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 8,
-              ),
+              BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 8),
             ],
           ),
           child: IconButton(
@@ -591,10 +752,7 @@ class _AssocProfTwoState extends State<AssocProfTwo> with TickerProviderStateMix
               color: Theme.of(context).colorScheme.surface,
               shape: BoxShape.circle,
               boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 8,
-                ),
+                BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 8),
               ],
             ),
             child: IconButton(
@@ -638,187 +796,7 @@ class _AssocProfTwoState extends State<AssocProfTwo> with TickerProviderStateMix
                 ],
               ),
               SizedBox(height: 16),
-              _currentAssoc == null
-                  ? BlocBuilder<EventsCubit, EventsState>(
-                      builder: (context, state) {
-                        if (state is EventsLoading) {
-                          return Expanded(
-                            child: Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  CircularProgressIndicator(),
-                                  SizedBox(height: 16),
-                                  Text(
-                                    "Loading events...",
-                                    style: TextStyle(
-                                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        }
-                        if (state is EventsError) {
-                          return Expanded(
-                            child: Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.error_outline,
-                                    size: 64,
-                                    color: Theme.of(context).colorScheme.error,
-                                  ),
-                                  SizedBox(height: 16),
-                                  Text(
-                                    state.error,
-                                    style: TextStyle(fontSize: 16),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        }
-                        if (state is EventsFetched) {
-                          debugPrint(state.events.toString());
-                          if (state.events.isEmpty) {
-                            return Expanded(
-                              child: Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.event_busy,
-                                      size: 64,
-                                      color: Theme.of(context).colorScheme.outline,
-                                    ),
-                                    SizedBox(height: 16),
-                                    Text(
-                                      "No events yet",
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w600,
-                                        color: Theme.of(context).colorScheme.onSurface,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          }
-                          return Expanded(
-                            child: ListView.builder(
-                              itemCount: state.events.length,
-                              itemBuilder: (context, index) {
-                                return AnimatedOpacity(
-                                  opacity: 1.0,
-                                  duration: Duration(milliseconds: 300 + (index * 100)),
-                                  child: eventCard(state.events[index]),
-                                );
-                              },
-                            ),
-                          );
-                        }
-                        return Expanded(
-                          child: Center(
-                            child: Text("Unexpected state: ${state.runtimeType}"),
-                          ),
-                        );
-                      },
-                    )
-                  : BlocBuilder<EventsCubit, EventsState>(
-                      builder: (context, state) {
-                        if (state is EventsLoading) {
-                          return Expanded(
-                            child: Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  CircularProgressIndicator(),
-                                  SizedBox(height: 16),
-                                  Text(
-                                    "Loading events...",
-                                    style: TextStyle(
-                                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        }
-                        if (state is EventsError) {
-                          return Expanded(
-                            child: Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.error_outline,
-                                    size: 64,
-                                    color: Theme.of(context).colorScheme.error,
-                                  ),
-                                  SizedBox(height: 16),
-                                  Text(
-                                    state.error,
-                                    style: TextStyle(fontSize: 16),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        }
-                        if (state is EventsFetched) {
-                          debugPrint(state.events.toString());
-                          if (state.events.isEmpty) {
-                            return Expanded(
-                              child: Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.event_busy,
-                                      size: 64,
-                                      color: Theme.of(context).colorScheme.outline,
-                                    ),
-                                    SizedBox(height: 16),
-                                    Text(
-                                      "No events yet",
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w600,
-                                        color: Theme.of(context).colorScheme.onSurface,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          }
-                          return Expanded(
-                            child: ListView.builder(
-                              itemCount: state.events.length,
-                              itemBuilder: (context, index) {
-                                return AnimatedOpacity(
-                                  opacity: 1.0,
-                                  duration: Duration(milliseconds: 300 + (index * 100)),
-                                  child: eventCard(state.events[index]),
-                                );
-                              },
-                            ),
-                          );
-                        } else {
-                          debugPrint("no event fetched");
-                        }
-                        return Expanded(
-                          child: Center(
-                            child: Text("Unexpected state: ${state.runtimeType}"),
-                          ),
-                        );
-                      },
-                    ),
+              _buildEventsSection(),
             ],
           ),
         ),
