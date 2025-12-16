@@ -73,7 +73,12 @@ class UserRepoSupa extends UserRepoBase {
     required int userId,
     required String fcmtoken,
   }) async {
-    final res = await http.post(Uri.parse("$base/$userId/set-fcmtoken"));
+    final res = await http.post(
+      Uri.parse("$base/$userId/set-fcmtoken"),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'fcm_token': fcmtoken}),
+    );
+
     if (res.statusCode != 201) {
       throw Exception("Failed to set fcm token for user #$userId");
     }
