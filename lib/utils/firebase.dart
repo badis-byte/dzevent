@@ -6,6 +6,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 Future<bool> initFirebaseMessaging() async {
   await firebaseRequestPermission();
+  initLocalPlugin();
+
   final token = await FirebaseMessaging.instance.getToken();
   print("Firebase token is : $token");
   final topic = "events";
@@ -93,4 +95,21 @@ Future<bool> firebaseRequestPermission() async {
     print("User declined or has not accepted permission");
   }
   return true;
+}
+
+void initLocalPlugin() {
+  const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
+
+  const settings = InitializationSettings(android: androidSettings);
+
+  flutterLocalNotificationsPlugin.initialize(
+    settings,
+    onDidReceiveNotificationResponse: (_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        navigatorKey.currentState?.push(
+          MaterialPageRoute(builder: (_) => EventFeed()),
+        );
+      });
+    },
+  );
 }
