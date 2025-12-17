@@ -257,7 +257,7 @@ class _ImageCarouselState extends State<ImageCarousel> {
                   // Continue as Guest
                   TextButton(
                     onPressed: () => {
-                      Navigator.pushReplacementNamed(context, '/event_feed')
+                      Navigator.pushReplacementNamed(context, '../widgets/mainContainer')
                     },
                     style: TextButton.styleFrom(
                       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),

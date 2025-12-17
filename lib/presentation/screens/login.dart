@@ -2,6 +2,7 @@ import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
 import 'package:dzevent/logic/cubits/auth/auth_states.dart';
 import 'package:dzevent/presentation/screens/assocAdmin.dart';
 import 'package:dzevent/presentation/screens/event_feed.dart';
+import 'package:dzevent/presentation/widgets/mainContainer.dart';
 import 'package:flutter/material.dart';
 import 'package:dzevent/l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -331,7 +332,7 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
           );
         }
         if (state is UserFetched || state is AssociationFetched) {
-          Navigator.push(context, EventFeed.route());
+          Navigator.push(context, MainContainer.route());
         }
       },
       builder: (context, state) {

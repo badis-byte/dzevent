@@ -8,6 +8,7 @@ import 'package:dzevent/logic/cubits/events/events_cubit.dart';
 import 'package:dzevent/logic/cubits/followers/followers_cubits.dart';
 import 'package:dzevent/presentation/screens/event_feed.dart';
 import 'package:dzevent/presentation/screens/public_assoc_profile.dart';
+import 'package:dzevent/presentation/widgets/mainContainer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -61,7 +62,7 @@ class _EventDetailsState extends State<EventDetails> {
             icon: const Icon(Icons.arrow_back, color: Colors.white),
             onPressed: () => Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (_) => EventFeed()),
+              MaterialPageRoute(builder: (_) => MainContainer()),
             ),
           ),
         ),

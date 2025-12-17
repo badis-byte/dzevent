@@ -41,27 +41,27 @@ class MainScaffold extends StatelessWidget {
         child: Column(
           children: [
             // Enhanced Header
-            Container(
-              decoration: BoxDecoration(
-                // Using a gradient for visual appeal in the header
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Theme.of(context).colorScheme.primary,
-                    Theme.of(context).colorScheme.primaryContainer,
-                  ],
-                ),
-              ),
-              child: SafeArea(
-                bottom: false,
-                child: Container(
-                  padding: EdgeInsets.fromLTRB(20, 20, 20, 24),
-                  // Assuming ProfileHeader manages its own colors correctly
-                  child: isGuest ? _buildGuestHeader(context) : ProfileHeader(),
-                ),
-              ),
-            ),
+            // Container(
+            //   decoration: BoxDecoration(
+            //     // Using a gradient for visual appeal in the header
+            //     gradient: LinearGradient(
+            //       begin: Alignment.topLeft,
+            //       end: Alignment.bottomRight,
+            //       colors: [
+            //         Theme.of(context).colorScheme.primary,
+            //         Theme.of(context).colorScheme.primaryContainer,
+            //       ],
+            //     ),
+            //   ),
+            //   child: SafeArea(
+            //     bottom: false,
+            //     child: Container(
+            //       padding: EdgeInsets.fromLTRB(20, 20, 20, 24),
+            //       // Assuming ProfileHeader manages its own colors correctly
+            //       child: isGuest ? _buildGuestHeader(context) : ProfileHeader(),
+            //     ),
+            //   ),
+            // ),
 
             // Menu Items
             Expanded(
@@ -407,27 +407,27 @@ class MainScaffold extends StatelessWidget {
     // ... (drawerItemsUpAssociation, drawerItemsUpUser, drawerItemsBottom, drawerItemsBottomGuest are unchanged - Business Logic)
 
     final drawerItemsUpAssociation = [
-      {'label': "Feed", 'icon': Icons.home, 'route': () => EventFeed.route()},
-      {
-        'label': "Profile",
-        'icon': Icons.account_box,
-        'route': () => AssocProfTwo.route(),
-      },
+      // {'label': "Feed", 'icon': Icons.home, 'route': () => EventFeed.route()},
+      // {
+      //   'label': "Profile",
+      //   'icon': Icons.account_box,
+      //   'route': () => AssocProfTwo.route(),
+      // },
       {
         'label': "Notifications",
         'icon': Icons.notifications,
         'route': () => NotificationsPage.route(),
       },
-      {
-        'label': "Add Event",
-        'icon': Icons.add,
-        'route': () => Addevent.route(),
-      },
-      {
-        'label': "Interested Users",
-        'icon': Icons.add_reaction,
-        'route': () => AssociationInterestRequestsPage.route(),
-      },
+      // {
+      //   'label': "Add Event",
+      //   'icon': Icons.add,
+      //   'route': () => Addevent.route(),
+      // },
+      // {
+      //   'label': "Interested Users",
+      //   'icon': Icons.add_reaction,
+      //   'route': () => AssociationInterestRequestsPage.route(),
+      // },
     ];
     final drawerItemsUpUser = [
       {'label': "Feed", 'icon': Icons.home, 'route': () => EventFeed.route()},
