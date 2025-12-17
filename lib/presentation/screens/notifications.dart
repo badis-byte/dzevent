@@ -1,3 +1,5 @@
+import 'package:dzevent/data/models/notification_model.dart';
+import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
 import 'package:dzevent/logic/cubits/notifications/notifications_cubits.dart';
 import 'package:dzevent/logic/cubits/notifications/notifications_state.dart';
 import 'package:dzevent/presentation/widgets/notificationCard.dart';
@@ -15,45 +17,26 @@ class NotificationsPage extends StatefulWidget {
   State<NotificationsPage> createState() => _NotificationsPageState();
 }
 
-class _NotificationsPageState extends State<NotificationsPage> 
+class _NotificationsPageState extends State<NotificationsPage>
     with SingleTickerProviderStateMixin {
   late AnimationController _animController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
 
-  final List<Map<String, String>> notifications = const [
-    {
-      "title": "New Event Added",
-      "body": "A new hiking event is now available.",
-      "time": "2h ago",
-      "type": "event",
-    },
-    {
-      "title": "Reminder",
-      "body": "Don't forget your event tomorrow!",
-      "time": "5h ago",
-      "type": "reminder",
-    },
-    {
-      "title": "Update",
-      "body": "Your reservation has been approved.",
-      "time": "Yesterday",
-      "type": "update",
-    },
-  ];
-
   @override
   void initState() {
     super.initState();
-  context.read<NotificationsCubit>().load();
+    final userId = context.read<AccountCubit>().currentUser!.id!;
+    context.read<NotificationsCubit>().getUserNotifications(userId: userId);
     _animController = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 600),
     )..forward();
 
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _animController, curve: Curves.easeIn),
-    );
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _animController, curve: Curves.easeIn));
 
     _slideAnimation = Tween<Offset>(
       begin: Offset(0, 0.1),
@@ -123,7 +106,7 @@ class _NotificationsPageState extends State<NotificationsPage>
               itemBuilder: (_, i) {
                 final n = state.notifications[i];
                 return Dismissible(
-                  key: Key(n.id),
+                  key: Key(n.id.toString()),
                   direction: DismissDirection.endToStart,
                   background: Container(
                     alignment: Alignment.centerRight,
@@ -135,7 +118,8 @@ class _NotificationsPageState extends State<NotificationsPage>
                     ),
                     child: const Icon(Icons.delete, color: Colors.white),
                   ),
-                  onDismissed: (_) => context.read<NotificationsCubit>().delete(n.id),
+                  onDismissed: (_) =>
+                      context.read<NotificationsCubit>().delete(n.id),
                   child: NotificationCard(
                     notification: n,
                     onTap: () {
@@ -154,8 +138,12 @@ class _NotificationsPageState extends State<NotificationsPage>
     );
   }
 
-  Widget _buildNotificationCard(BuildContext context, Map<String, String> item, int index) {
-    final type = item["type"];
+  Widget _buildNotificationCard(
+    BuildContext context,
+    NotificationModel item,
+    int index,
+  ) {
+    final type = /* item.type */ "Fake type";
     final color = _getColorForType(context, type);
     final icon = _getIconForType(type);
 
@@ -192,11 +180,7 @@ class _NotificationsPageState extends State<NotificationsPage>
                     color: color.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(14),
                   ),
-                  child: Icon(
-                    icon,
-                    color: color,
-                    size: 24,
-                  ),
+                  child: Icon(icon, color: color, size: 24),
                 ),
                 SizedBox(width: 16),
                 // Content
@@ -209,7 +193,8 @@ class _NotificationsPageState extends State<NotificationsPage>
                         children: [
                           Expanded(
                             child: Text(
-                              item["title"]!,
+                              // item.title,
+                              "Fake title",
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
@@ -218,17 +203,25 @@ class _NotificationsPageState extends State<NotificationsPage>
                             ),
                           ),
                           Container(
-                            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
                             decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.surfaceContainer,
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.surfaceContainer,
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
-                              item["time"]!,
+                              // item.time.toString(),
+                              "Fake time",
                               style: TextStyle(
                                 fontSize: 11,
                                 fontWeight: FontWeight.w500,
-                                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurface.withOpacity(0.6),
                               ),
                             ),
                           ),
@@ -236,10 +229,12 @@ class _NotificationsPageState extends State<NotificationsPage>
                       ),
                       SizedBox(height: 6),
                       Text(
-                        item["body"]!,
+                        item.body,
                         style: TextStyle(
                           fontSize: 14,
-                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.onSurface.withOpacity(0.7),
                           height: 1.4,
                         ),
                       ),
@@ -262,7 +257,9 @@ class _NotificationsPageState extends State<NotificationsPage>
           Container(
             padding: EdgeInsets.all(30),
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.3),
+              color: Theme.of(
+                context,
+              ).colorScheme.primaryContainer.withOpacity(0.3),
               shape: BoxShape.circle,
             ),
             child: Container(

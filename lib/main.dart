@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:dzevent/firebase_options.dart';
 import 'package:dzevent/l10n/app_localizations.dart';
 import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
