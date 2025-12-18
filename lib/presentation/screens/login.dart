@@ -2,6 +2,8 @@ import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
 import 'package:dzevent/logic/cubits/auth/auth_states.dart';
 import 'package:dzevent/presentation/screens/assocAdmin.dart';
 import 'package:dzevent/presentation/screens/event_feed.dart';
+import 'package:dzevent/presentation/widgets/mainContainerAsso.dart';
+import 'package:dzevent/presentation/widgets/mainContainerUser.dart';
 import 'package:flutter/material.dart';
 import 'package:dzevent/l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,7 +19,7 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
   var formkey = GlobalKey<FormState>();
   var emailController = TextEditingController();
   var passController = TextEditingController();
-  
+
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
@@ -32,13 +34,13 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeIn),
     );
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.15),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOutCubic,
-    ));
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(0, 0.15), end: Offset.zero).animate(
+          CurvedAnimation(
+            parent: _animationController,
+            curve: Curves.easeOutCubic,
+          ),
+        );
     _animationController.forward();
   }
 
@@ -213,10 +215,7 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: const Color(0xFFE8ECF4),
-          width: 1.5,
-        ),
+        border: Border.all(color: const Color(0xFFE8ECF4), width: 1.5),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.04),
@@ -264,10 +263,7 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
             height: 1,
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [
-                  Colors.transparent,
-                  Colors.grey.withOpacity(0.3),
-                ],
+                colors: [Colors.transparent, Colors.grey.withOpacity(0.3)],
               ),
             ),
           ),
@@ -289,10 +285,7 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
             height: 1,
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [
-                  Colors.grey.withOpacity(0.3),
-                  Colors.transparent,
-                ],
+                colors: [Colors.grey.withOpacity(0.3), Colors.transparent],
               ),
             ),
           ),
@@ -330,8 +323,10 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
             ),
           );
         }
-        if (state is UserFetched || state is AssociationFetched) {
-          Navigator.push(context, EventFeed.route());
+        if (state is UserFetched) {
+          Navigator.pushReplacement(context, MainContainerUser.route());
+        } else if(state is! AccountGuest && (state is AssociationFetched || state is AssoicationDetailFetched)){
+          Navigator.pushReplacement(context, MainContainerAsso.route());
         }
       },
       builder: (context, state) {
@@ -497,11 +492,7 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
                   color: const Color(0xFF667EEA).withOpacity(0.1),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: Icon(
-                  icon,
-                  color: const Color(0xFF667EEA),
-                  size: 20,
-                ),
+                child: Icon(icon, color: const Color(0xFF667EEA), size: 20),
               ),
               hintText: hint,
               hintStyle: TextStyle(
@@ -557,7 +548,9 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
       return "Email is required";
     }
     final regeX = RegExp(r'^email\d+$');
-    if(regeX.hasMatch(text)){return null;}
+    if (regeX.hasMatch(text)) {
+      return null;
+    }
 
     final regex = RegExp(r'^[^@]+@[^@]+\.[^@]+$');
 
@@ -572,7 +565,9 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
     if (text == null || text.isEmpty) {
       return "Password is required";
     }
-    if(text == "pass"){return null;}
+    if (text == "pass") {
+      return null;
+    }
 
     if (text.length < 8) {
       return "Password must be at least 8 characters long";
@@ -603,9 +598,9 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
         );
       } else {
         context.read<AccountCubit>().login(
-              emailController.text,
-              passController.text,
-            );
+          emailController.text,
+          passController.text,
+        );
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

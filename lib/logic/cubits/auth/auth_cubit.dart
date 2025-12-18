@@ -5,6 +5,7 @@ import 'package:dzevent/data/remoteRepo/association/assoc_repo_local.dart';
 import 'package:dzevent/data/remoteRepo/user/user_repo_local.dart';
 import 'package:dzevent/logic/cubits/auth/auth_states.dart';
 import 'package:dzevent/logic/cubits/followers/followers_cubits.dart';
+import 'package:dzevent/utils/firebase.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,7 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AccountCubit extends Cubit<AccountState> {
   AccountCubit() : super(AccountGuest());
   final localAssRepo = AssocRepoLocal();
-  final localUserRepo = UserRepoLocal();
+  final localUserRepo = UserRepoSupa();
   UserModel? currentUser;
   AssociationModel? currentAssociation;
   bool association = false;
@@ -25,8 +26,17 @@ class AccountCubit extends Cubit<AccountState> {
       currentUser = await localUserRepo.login(email, password);
       association = false;
       emit(UserFetched(user: currentUser!));
+
+      final fcmtoken = await getFcmtoken();
+      if (fcmtoken != null) {
+        localUserRepo.setFcmtoken(userId: currentUser!.id!, fcmtoken: fcmtoken);
+      } else {
+        print("Failed to fetch fcmtoken");
+      }
+
       await prefs.setBool("isAssoc", false);
       await prefs.setInt("id", currentUser!.id!);
+
     } catch (e) {
       if (e is InvalidCredException) {
         try {
@@ -252,7 +262,9 @@ class AccountCubit extends Cubit<AccountState> {
   Future<dynamic> getcurrentAssociation(int id) async {
     try {
       var response = await localAssRepo.getAssociation(id);
+
       print("response is : ${response.first}");
+
       currentAssociation = response.first; // SET THIS!
       association = true; // SET THIS TOO!
       emit(AssociationFetched(association: response.first));
@@ -271,6 +283,19 @@ class AccountCubit extends Cubit<AccountState> {
       emit(UserFetched(user: response));
       print("fetching user");
       return true;
+    } catch (e) {
+      print("error -> $e");
+    }
+
+  }
+  Future<UserModel?> getUser(int id) async {
+    try {
+      var response = await localUserRepo.getUserById(id);
+      currentUser = response; // SET THIS!
+      association = false; // SET THIS TOO!
+      emit(UserFetched(user: response));
+      print("fetching user");
+      return currentUser;
     } catch (e) {
       print("error -> $e");
     }

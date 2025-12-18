@@ -3,6 +3,7 @@ import 'package:dzevent/logic/cubits/auth/auth_states.dart';
 import 'package:dzevent/logic/cubits/interests/interests_cubit.dart';
 import 'package:dzevent/logic/cubits/interests/interests_state.dart';
 import 'package:dzevent/presentation/widgets/feed_event_card.dart';
+import 'package:dzevent/presentation/widgets/mainContainerUser.dart';
 import 'package:dzevent/presentation/widgets/main_scaffold.dart';
 import 'package:dzevent/presentation/widgets/refreshable.dart';
 import 'package:flutter/material.dart';
@@ -344,7 +345,7 @@ class _InterestedEventsScreenState extends State<InterestedEventsScreen>
                                   ],
                                 ),
                                 child: ElevatedButton.icon(
-                                  onPressed: () => Navigator.pop(context),
+                                  onPressed: () => Navigator.pushReplacement(context,MainContainerUser.route()),
                                   icon: Icon(Icons.explore, color: Colors.white),
                                   label: Text(
                                     "Explore Events",
@@ -378,9 +379,12 @@ class _InterestedEventsScreenState extends State<InterestedEventsScreen>
                           itemBuilder: (context, index) => AnimatedOpacity(
                             opacity: 1.0,
                             duration: Duration(milliseconds: 300 + (index * 100)),
-                            child: FeedEventCard(
-                              event: intrestedEvents[index],
-                              isInterested: true,
+                            child: Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: FeedEventCard(
+                                event: intrestedEvents[index],
+                                isInterested: true,
+                              ),
                             ),
                           ),
                         ),

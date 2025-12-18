@@ -36,34 +36,33 @@ class FollowModel {
     };
   }
 
-factory FollowModel.fromMap(Map<String, dynamic> map) {
-  final idValue = map['id'];
-  final userIdValue = map['userId'];
-  final assocIdValue = map['associationId'];
-  final notifyValue = map['notify'];
+  factory FollowModel.fromMap(Map<String, dynamic> map) {
+    final idValue = map['id'];
+    final userIdValue = map['userId'];
+    final assocIdValue = map['associationId'];
+    final notifyValue = map['notify'];
 
-  return FollowModel(
-    id: idValue != null
-        ? (idValue is int ? idValue : int.tryParse(idValue.toString()) ?? 0)
-        : 0,
-    userId: userIdValue != null
-        ? (userIdValue is int
-            ? userIdValue
-            : int.tryParse(userIdValue.toString()) ?? 0)
-        : 0,
-    associationId: assocIdValue != null
-        ? (assocIdValue is int
-            ? assocIdValue
-            : int.tryParse(assocIdValue.toString()) ?? 0)
-        : 0,
-    notify: notifyValue != null
-        ? (notifyValue is bool
-            ? notifyValue
-            : notifyValue == 1 || notifyValue.toString() == 'true')
-        : false,
-  );
-}
-
+    return FollowModel(
+      id: idValue != null
+          ? (idValue is int ? idValue : int.tryParse(idValue.toString()) ?? 0)
+          : 0,
+      userId: userIdValue != null
+          ? (userIdValue is int
+                ? userIdValue
+                : int.tryParse(userIdValue.toString()) ?? 0)
+          : 0,
+      associationId: assocIdValue != null
+          ? (assocIdValue is int
+                ? assocIdValue
+                : int.tryParse(assocIdValue.toString()) ?? 0)
+          : 0,
+      notify: notifyValue != null
+          ? (notifyValue is bool
+                ? notifyValue
+                : notifyValue == 1 || notifyValue.toString() == 'true')
+          : false,
+    );
+  }
 
   String toJson() => json.encode(toMap());
 

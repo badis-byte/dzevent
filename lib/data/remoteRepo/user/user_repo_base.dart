@@ -1,7 +1,6 @@
 import 'package:dzevent/data/models/user_model.dart';
 import 'package:dzevent/data/remoteRepo/user/user_repo_local.dart';
 
-
 abstract class UserRepoBase {
   Future<List<UserModel>> getData();
   Future<UserModel> insertData(UserModel value);
@@ -9,10 +8,12 @@ abstract class UserRepoBase {
   Future<UserModel> login(String email, String password);
   Future<bool> update(UserModel value, int id);
   Future<UserModel> getUserById(int id);
+  Future<bool> setFcmtoken({required int userId, required String fcmtoken});
+
   static UserRepoBase? _userInstance;
 
   static UserRepoBase getInstance() {
-    _userInstance ??= UserRepoLocal();
+    _userInstance ??= UserRepoSupa();
     return _userInstance!; // For backend data
   }
 }

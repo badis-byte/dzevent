@@ -1,4 +1,4 @@
-import 'package:dzevent/data/models/notifi_model.dart';
+import 'package:dzevent/data/models/notification_model.dart';
 import 'package:flutter/material.dart';
 
 class NotificationCard extends StatelessWidget {
@@ -18,7 +18,7 @@ class NotificationCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 8),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: notification.isRead ? Colors.white : Colors.blue.shade50,
+        // color: notification.isRead ? Colors.white : Colors.blue.shade50,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
@@ -34,27 +34,28 @@ class NotificationCard extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildIcon(notification.type),
+            _buildIcon(/* notification.type */ "fake type"),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(notification.title,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      )),
+                  Text(
+                    // notification.title,
+                    "Fake title",
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   const SizedBox(height: 4),
                   Text(notification.body),
                   const SizedBox(height: 6),
                   Text(
-                    _timeAgo(notification.createdAt),
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey.shade600,
-                    ),
-                  )
+                    // _timeAgo(notification.createdAt),
+                    "Fake time",
+                    style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                  ),
                 ],
               ),
             ),

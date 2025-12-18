@@ -2,6 +2,7 @@ import 'package:dzevent/l10n/app_localizations.dart';
 import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
 import 'package:dzevent/logic/cubits/auth/auth_states.dart';
 import 'package:dzevent/presentation/screens/event_feed.dart';
+import 'package:dzevent/presentation/widgets/mainContainerUser.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -354,7 +355,7 @@ class _SignupState extends State<Signup> with SingleTickerProviderStateMixin {
               ),
               borderRadius: BorderRadius.circular(16),
             ),
-            child: const Center(
+            child:  Center(
               child: SizedBox(
                 width: 24,
                 height: 24,
@@ -434,10 +435,10 @@ class _SignupState extends State<Signup> with SingleTickerProviderStateMixin {
               ),
             ),
           );
-        } else if (state is UserFetched || state is AssociationFetched) {
+        } else if (state is UserFetched) {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (_) => EventFeed()),
+            MaterialPageRoute(builder: (_) => MainContainerUser()),
           );
         }
       },
