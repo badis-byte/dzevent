@@ -6,6 +6,8 @@ import 'package:dzevent/logic/cubits/events/events_state.dart';
 import 'package:dzevent/presentation/screens/associationProfileTwo.dart';
 import 'package:dzevent/presentation/screens/map.dart';
 import 'package:dzevent/presentation/widgets/input.dart';
+import 'package:dzevent/presentation/widgets/mainContainerAsso.dart';
+import 'package:dzevent/presentation/widgets/mainContainerUser.dart';
 import 'package:dzevent/presentation/widgets/text_input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -192,16 +194,16 @@ class _AddeventState extends State<Addevent>
 
       if (widget.event != null) {
         await cubit.update(event);
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => AssocProfTwo()),
+          MaterialPageRoute(builder: (context) => MainContainerAsso()),
         );
         return;
       }
       await cubit.insert(event);
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => AssocProfTwo()),
+        MaterialPageRoute(builder: (context) => MainContainerAsso()),
       );
     }
   }
@@ -265,49 +267,49 @@ class _AddeventState extends State<Addevent>
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       extendBodyBehindAppBar: false,
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        leading: Container(
-          margin: EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
-            shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 8),
-            ],
-          ),
-          child: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-        ),
-        title: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              padding: EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primaryContainer,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Icon(
-                isEditing ? Icons.edit_note : Icons.add_circle_outline,
-                color: Theme.of(context).colorScheme.primary,
-                size: 24,
-              ),
-            ),
-            SizedBox(width: 12),
-            Text(
-              isEditing ? "Edit Event" : "Create New Event",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-            ),
-          ],
-        ),
-        centerTitle: true,
-      ),
+      // appBar: AppBar(
+      //   elevation: 0,
+      //   backgroundColor: Colors.transparent,
+      //   leading: Container(
+      //     margin: EdgeInsets.all(8),
+      //     decoration: BoxDecoration(
+      //       color: Theme.of(context).colorScheme.surface,
+      //       shape: BoxShape.circle,
+      //       boxShadow: [
+      //         BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 8),
+      //       ],
+      //     ),
+      //     child: IconButton(
+      //       icon: Icon(Icons.arrow_back),
+      //       onPressed: () {
+      //         Navigator.pushReplacement(context,MainContainerAsso.route());
+      //       },
+      //     ),
+      //   ),
+      //   title: Row(
+      //     mainAxisSize: MainAxisSize.min,
+      //     children: [
+      //       Container(
+      //         padding: EdgeInsets.all(8),
+      //         decoration: BoxDecoration(
+      //           color: Theme.of(context).colorScheme.primaryContainer,
+      //           borderRadius: BorderRadius.circular(10),
+      //         ),
+      //         child: Icon(
+      //           isEditing ? Icons.edit_note : Icons.add_circle_outline,
+      //           color: Theme.of(context).colorScheme.primary,
+      //           size: 24,
+      //         ),
+      //       ),
+      //       SizedBox(width: 12),
+      //       Text(
+      //         isEditing ? "Edit Event" : "Create New Event",
+      //         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+      //       ),
+      //     ],
+      //   ),
+      //   centerTitle: true,
+      // ),
       body: FadeTransition(
         opacity: _fadeAnimation,
         child: SlideTransition(
@@ -368,6 +370,7 @@ class _AddeventState extends State<Addevent>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      SizedBox(height: 32,),
                       // Basic Information Section
                       _buildSectionHeader(
                         "Basic Information",

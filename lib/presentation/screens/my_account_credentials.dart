@@ -1,6 +1,7 @@
 import 'package:dzevent/data/models/user_model.dart';
 import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
 import 'package:dzevent/presentation/screens/event_feed.dart';
+import 'package:dzevent/presentation/widgets/mainContainerUser.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -81,7 +82,7 @@ class _MyaccountcredentialsState extends State<Myaccountcredentials>
           ),
           child: IconButton(
             icon: Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () => Navigator.pushReplacement(context,MaterialPageRoute(builder: (_)=>EventFeed())),
+            onPressed: () => Navigator.pushReplacement(context,MaterialPageRoute(builder: (_)=>MainContainerUser())),
           ),
         ),
         title: Text(
@@ -190,7 +191,7 @@ class _MyaccountcredentialsState extends State<Myaccountcredentials>
                               children: [
                                 Expanded(
                                   child: OutlinedButton(
-                                    onPressed: _isLoading ? null : () => Navigator.pushReplacement(context,MaterialPageRoute(builder: (_)=>EventFeed())),
+                                    onPressed: _isLoading ? null : () => Navigator.pushReplacement(context,MaterialPageRoute(builder: (_)=>MainContainerUser())),
                                     style: OutlinedButton.styleFrom(
                                       padding: EdgeInsets.symmetric(
                                         vertical: 16,
@@ -585,7 +586,7 @@ class _MyaccountcredentialsState extends State<Myaccountcredentials>
       ),
       subtitle: Text(subtitle),
       onTap: () {
-        Navigator.pushReplacement(context,MaterialPageRoute(builder: (_)=>EventFeed()));
+        Navigator.pushReplacement(context,MaterialPageRoute(builder: (_)=>MainContainerUser()));
         onTap();
       },
     );
@@ -714,7 +715,7 @@ class _MyaccountcredentialsState extends State<Myaccountcredentials>
       await Future.delayed(Duration(milliseconds: 500));
       
       if (mounted) {
-        Navigator.pushReplacement(context,MaterialPageRoute(builder: (_)=>EventFeed()));
+        Navigator.pushReplacement(context,MaterialPageRoute(builder: (_)=>MainContainerUser()));
       }
     } catch (e) {
       _showErrorSnackBar('Failed to update profile: $e');

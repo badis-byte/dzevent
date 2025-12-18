@@ -724,44 +724,44 @@ class _AssocProfTwoState extends State<AssocProfTwo>
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: Container(
-          margin: EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
-            shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 8),
-            ],
-          ),
-          child: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () async {
-              debugPrint("routing to eventfeed");
-              await context.read<EventsCubit>().getAll();
-              Navigator.pop(context);
-            },
-          ),
-        ),
-        actions: [
-          Container(
-            margin: EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surface,
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 8),
-              ],
-            ),
-            child: IconButton(
-              icon: Icon(Icons.settings_outlined),
-              onPressed: () {},
-            ),
-          ),
-        ],
-      ),
+      // appBar: AppBar(
+      //   backgroundColor: Colors.transparent,
+      //   elevation: 0,
+      //   leading: Container(
+      //     margin: EdgeInsets.all(8),
+      //     decoration: BoxDecoration(
+      //       color: Theme.of(context).colorScheme.surface,
+      //       shape: BoxShape.circle,
+      //       boxShadow: [
+      //         BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 8),
+      //       ],
+      //     ),
+      //     child: IconButton(
+      //       icon: Icon(Icons.arrow_back),
+      //       onPressed: () async {
+      //         debugPrint("routing to eventfeed");
+      //         await context.read<EventsCubit>().getAll();
+      //         Navigator.pop(context);
+      //       },
+      //     ),
+      //   ),
+      //   actions: [
+      //     Container(
+      //       margin: EdgeInsets.all(8),
+      //       decoration: BoxDecoration(
+      //         color: Theme.of(context).colorScheme.surface,
+      //         shape: BoxShape.circle,
+      //         boxShadow: [
+      //           BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 8),
+      //         ],
+      //       ),
+      //       child: IconButton(
+      //         icon: Icon(Icons.settings_outlined),
+      //         onPressed: () {},
+      //       ),
+      //     ),
+      //   ],
+      // ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(20.0),

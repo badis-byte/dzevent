@@ -1,8 +1,10 @@
 import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
 import 'package:dzevent/logic/cubits/auth/auth_states.dart';
+import 'package:dzevent/presentation/screens/aboutUsPage.dart';
 import 'package:dzevent/presentation/screens/add_event.dart';
 import 'package:dzevent/presentation/screens/asosciationEventInterests.dart';
 import 'package:dzevent/presentation/screens/associationProfileTwo.dart';
+import 'package:dzevent/presentation/screens/contactUs.dart';
 import 'package:dzevent/presentation/screens/event_feed.dart';
 import 'package:dzevent/presentation/screens/followers.dart';
 import 'package:dzevent/presentation/screens/interested_events.dart';
@@ -64,6 +66,7 @@ class MainScaffold extends StatelessWidget {
             // ),
 
             // Menu Items
+            SizedBox(height: 48,),
             Expanded(
               child: ListView(
                 padding: EdgeInsets.symmetric(vertical: 8),
@@ -406,7 +409,7 @@ class MainScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     // ... (drawerItemsUpAssociation, drawerItemsUpUser, drawerItemsBottom, drawerItemsBottomGuest are unchanged - Business Logic)
 
-    final drawerItemsUpAssociation = [
+    final drawerItemsUp = [
       // {'label': "Feed", 'icon': Icons.home, 'route': () => EventFeed.route()},
       // {
       //   'label': "Profile",
@@ -418,6 +421,16 @@ class MainScaffold extends StatelessWidget {
         'icon': Icons.notifications,
         'route': () => NotificationsPage.route(),
       },
+      {
+        'label': "About Us",
+        'icon': Icons.people,
+        'route': () => AboutUsPage.route(),
+      },
+      {
+        'label': "Contact Us",
+        'icon': Icons.mail,
+        'route': () => ContactUsPage.route(),
+      },
       // {
       //   'label': "Add Event",
       //   'icon': Icons.add,
@@ -428,30 +441,6 @@ class MainScaffold extends StatelessWidget {
       //   'icon': Icons.add_reaction,
       //   'route': () => AssociationInterestRequestsPage.route(),
       // },
-    ];
-    final drawerItemsUpUser = [
-      {'label': "Feed", 'icon': Icons.home, 'route': () => EventFeed.route()},
-      {
-        'label': "Interested",
-        'icon': Icons.calendar_month,
-        'route': () => InterestedEventsScreen.route(),
-      },
-      {
-        'label': "Notifications",
-        'icon': Icons.notifications,
-        'route': () => NotificationsPage.route(),
-      },
-      {
-        'label': "Followed Associations",
-        'icon': Icons.group,
-        'route': () => FollowedAssociationsScreen.route(),
-      },
-      {
-        'label': "Profile",
-        'icon': Icons.account_box,
-        'route': () => Myaccountcredentials.route(),
-      },
-      //{'label': "Followed Associations", 'icon': Icons.group},
     ];
     final drawerItemsBottom = [
       {'label': "Settings", 'icon': Icons.settings},
@@ -496,13 +485,13 @@ class MainScaffold extends StatelessWidget {
           if (state is AssociationFetched ||
               state is AssoicationDetailFetched) {
             return drawer(
-              drawerItemsUpAssociation,
+              drawerItemsUp,
               drawerItemsBottom,
               context,
               false,
             );
           } else if (state is UserFetched) {
-            return drawer(drawerItemsUpUser, drawerItemsBottom, context, false);
+            return drawer(drawerItemsUp, drawerItemsBottom, context, false);
           }
           return drawer([], [], context, true);
         },

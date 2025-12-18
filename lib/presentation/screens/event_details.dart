@@ -8,10 +8,12 @@ import 'package:dzevent/logic/cubits/events/events_cubit.dart';
 import 'package:dzevent/logic/cubits/followers/followers_cubits.dart';
 import 'package:dzevent/presentation/screens/event_feed.dart';
 import 'package:dzevent/presentation/screens/public_assoc_profile.dart';
-import 'package:dzevent/presentation/widgets/mainContainer.dart';
+import 'package:dzevent/presentation/widgets/mainContainerAsso.dart';
+import 'package:dzevent/presentation/widgets/mainContainerUser.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class EventDetails extends StatefulWidget {
@@ -28,6 +30,13 @@ class _EventDetailsState extends State<EventDetails> {
   @override
   void initState() {
     super.initState();
+    init();
+  }
+
+  bool asso = false;
+  void init() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    asso = prefs.getBool("isAssoc") ?? false;
   }
 
   Future<void> openInGoogleMaps(String address) async {
@@ -60,10 +69,19 @@ class _EventDetailsState extends State<EventDetails> {
           ),
           child: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () => Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (_) => MainContainer()),
-            ),
+            onPressed: () {
+              if (asso) {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (_) => MainContainerAsso()),
+                );
+              } else {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (_) => MainContainerUser()),
+                );
+              }
+            },
           ),
         ),
         actions: [
@@ -334,22 +352,17 @@ class _EventDetailsState extends State<EventDetails> {
                               color: Colors.grey.withOpacity(0.1),
                               borderRadius: BorderRadius.circular(16),
                             ),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.info_outline,
-                                  color: Colors.grey[600],
-                                ),
-                                const SizedBox(width: 12),
-                                Text(
-                                  "Can't fetch association",
-                                  style: TextStyle(
-                                    color: Colors.grey[700],
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ],
+                            child: Container(
+                              padding: EdgeInsets.all(20),
+                              decoration: BoxDecoration(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.primaryContainer,
+                                shape: BoxShape.circle,
+                              ),
+                              child: CircularProgressIndicator(
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
                             ),
                           );
                         },

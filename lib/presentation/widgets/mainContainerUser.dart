@@ -3,28 +3,32 @@ import 'package:dzevent/presentation/screens/add_event.dart';
 import 'package:dzevent/presentation/screens/asosciationEventInterests.dart';
 import 'package:dzevent/presentation/screens/associationProfileTwo.dart';
 import 'package:dzevent/presentation/screens/event_feed.dart';
+import 'package:dzevent/presentation/screens/followers.dart';
+import 'package:dzevent/presentation/screens/interested_events.dart';
+import 'package:dzevent/presentation/screens/my_account_credentials.dart';
+import 'package:dzevent/presentation/screens/notifications.dart';
 import 'package:flutter/material.dart';
 
 // SIMPLE 3-STEP SETUP:
 
 // STEP 1: Create one main widget with the nav bar
-class MainContainer extends StatefulWidget {
-  const MainContainer({super.key});
+class MainContainerUser extends StatefulWidget {
+  const MainContainerUser({super.key});
   static MaterialPageRoute route() =>
-      MaterialPageRoute(builder: (context) => MainContainer());
+      MaterialPageRoute(builder: (context) => MainContainerUser());
   @override
-  State<MainContainer> createState() => _MainContainerState();
+  State<MainContainerUser> createState() => _MainContainerUserState();
 }
 
-class _MainContainerState extends State<MainContainer> {
+class _MainContainerUserState extends State<MainContainerUser> {
   int _currentPage = 0;
 
   // STEP 2: List all your pages
   final List<Widget> _pages = [
     EventFeed(),   // Page 0 - Home
-    Addevent(), // Page 1 - Add
-    AssociationInterestRequestsPage(),
-    AssocProfTwo(),     // Page 2 - Profile
+    InterestedEventsScreen(), // Page 1 - Add
+    FollowedAssociationsScreen(),
+    Myaccountcredentials(),     // Page 2 - Profile
   ];
 
   @override
@@ -48,17 +52,17 @@ class _MainContainerState extends State<MainContainer> {
             color: _currentPage == 0 ? Colors.white : Theme.of(context).colorScheme.primary,
           ),
           Icon(
-            Icons.add_circle_rounded,
+            Icons.calendar_month,
             size: 32,
             color: _currentPage == 1 ? Colors.white : Theme.of(context).colorScheme.primary,
           ),
           Icon(
-            Icons.add_reaction,
+            Icons.group,
             size: 32,
             color: _currentPage == 2 ? Colors.white : Theme.of(context).colorScheme.primary,
           ),
           Icon(
-            Icons.person_rounded,
+            Icons.account_box,
             size: 28,
             color: _currentPage == 3 ? Colors.white : Theme.of(context).colorScheme.primary,
           ),

@@ -79,30 +79,30 @@ class _EventFeedState extends State<EventFeed>
     final authState = authCubit.state;
 
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    int id = prefs.getInt("id") ?? -1;
+    int _id = prefs.getInt("id") ?? -1;
     bool? isAssoc = prefs.getBool("isAssoc");
-    userId = id;
+    userId = _id;
     if (isAssoc != null) {
-      print("user id is $id");
+      print("user id is $_id");
       print("is Assoc $isAssoc");
       if (isAssoc && authState is! AssociationFetched) {
         print("getting association after sharedPref");
-        authCubit.getAssoc(id);
+        authCubit.getAssoc(_id);
       } else if (authState is! UserFetched) {
-        authCubit.getcurrentUser(id);
+        authCubit.getcurrentUser(_id);
       }
     }
     if (authState is! UserFetched && authState is! AssociationFetched) {
       print("User / Association not fetched");
       return false;
     }
-    if (isAssoc != null && !isAssoc && id > 0) {
-      userId = id;
+    if (isAssoc != null && !isAssoc && _id > 0) {
+      userId = _id;
       final interestsCubit = context.read<InterestsCubit>();
       await interestsCubit.getUserInterests(userId: userId);
       return true;
-    } else if (isAssoc != null && !isAssoc && id > 0) {
-      userId = id;
+    } else if (isAssoc != null && !isAssoc && _id > 0) {
+      userId = _id;
       asso = true;
       // print("EventCard: user fetched ${authState.association.name} ");
       final interestsCubit = context.read<InterestsCubit>();
@@ -254,20 +254,15 @@ class _EventFeedState extends State<EventFeed>
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Container(
-                                width: 60,
-                                height: 60,
+                                padding: EdgeInsets.all(20),
                                 decoration: BoxDecoration(
-                                  color: const Color(
-                                    0xFF667EEA,
-                                  ).withOpacity(0.1),
-                                  borderRadius: BorderRadius.circular(16),
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.primaryContainer,
+                                  shape: BoxShape.circle,
                                 ),
-                                child: const Center(
-                                  child: CircularProgressIndicator(
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                      Color(0xFF667EEA),
-                                    ),
-                                  ),
+                                child: CircularProgressIndicator(
+                                  color: Theme.of(context).colorScheme.primary,
                                 ),
                               ),
                               const SizedBox(height: 16),
