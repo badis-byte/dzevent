@@ -1,3 +1,4 @@
+import 'package:dzevent/data/models/user_model.dart';
 import 'package:dzevent/presentation/screens/add_event.dart';
 import 'package:dzevent/presentation/screens/assocAdmin.dart';
 import 'package:dzevent/presentation/screens/associationProfileTwo.dart';
@@ -55,7 +56,7 @@ class NavScreen extends StatelessWidget {
       //   // page: PublicAssocProfile(),
       // ),
       Link(icon: Icons.add, label: loc.creds, page: Myaccountcredentials()),
-      Link(icon: Icons.add, label: loc.userRegs, page: UserMenu()),
+      // Link(icon: Icons.add, label: loc.userRegs, page: UserMenu()),
     ];
 
     return Scaffold(

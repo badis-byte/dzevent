@@ -4,13 +4,12 @@ import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
 import 'package:dzevent/logic/cubits/events/events_cubit.dart';
 import 'package:dzevent/logic/cubits/events/events_state.dart';
 import 'package:dzevent/presentation/screens/associationProfileTwo.dart';
-import 'package:dzevent/presentation/screens/event_feed.dart';
+import 'package:dzevent/presentation/screens/map.dart';
 import 'package:dzevent/presentation/widgets/input.dart';
-import 'package:dzevent/presentation/widgets/submit_button.dart';
 import 'package:dzevent/presentation/widgets/text_input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import 'package:latlong2/latlong.dart';
 import 'package:uuid/uuid.dart';
 
 class Addevent extends StatefulWidget {
@@ -36,25 +35,31 @@ enum _FormField {
   category,
 }
 
-class _AddeventState extends State<Addevent> with SingleTickerProviderStateMixin {
+class _AddeventState extends State<Addevent>
+    with SingleTickerProviderStateMixin {
   late final Map<_FormField, TextEditingController> controllers;
   late final GlobalKey<FormState> _formKey;
   late AnimationController _animController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
 
+  // Map-related variables
+  LatLng? _selectedLocation;
+  String? _selectedAddress;
+
   @override
   void initState() {
     super.initState();
-    
+
     _animController = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 600),
     )..forward();
 
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _animController, curve: Curves.easeIn),
-    );
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _animController, curve: Curves.easeIn));
 
     _slideAnimation = Tween<Offset>(
       begin: Offset(0, 0.1),
@@ -79,17 +84,14 @@ class _AddeventState extends State<Addevent> with SingleTickerProviderStateMixin
   }
 
   void _populateFormFields(EventModel event) {
-    // Use WidgetsBinding to ensure controllers are ready
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controllers[_FormField.title]!.text = event.title;
       controllers[_FormField.description]!.text = event.description;
 
-      // Format dates - ISO8601 format (YYYY-MM-DD)
       controllers[_FormField.startDate]!.text = event.startDatetime
           .toIso8601String()
           .split('T')[0];
 
-      // Format times - 24-hour format (HH:mm)
       controllers[_FormField.startTime]!.text =
           '${event.startDatetime.hour.toString().padLeft(2, '0')}:${event.startDatetime.minute.toString().padLeft(2, '0')}';
 
@@ -103,6 +105,8 @@ class _AddeventState extends State<Addevent> with SingleTickerProviderStateMixin
       controllers[_FormField.imageUrl]!.text = event.imageUrl;
       controllers[_FormField.location]!.text = event.location;
       controllers[_FormField.category]!.text = event.category;
+
+      _selectedAddress = event.location;
     });
   }
 
@@ -115,10 +119,29 @@ class _AddeventState extends State<Addevent> with SingleTickerProviderStateMixin
     super.dispose();
   }
 
+  Future<void> _openMapPicker() async {
+    final result = await Navigator.push<Map<String, dynamic>>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MapLocationPicker(
+          initialLocation: _selectedLocation,
+          initialAddress: _selectedAddress,
+        ),
+      ),
+    );
+
+    if (result != null) {
+      setState(() {
+        _selectedLocation = result['location'] as LatLng;
+        _selectedAddress = result['address'] as String;
+        controllers[_FormField.location]!.text = _selectedAddress!;
+      });
+    }
+  }
+
   Future<void> submit() async {
     if (_formKey.currentState!.validate()) {
       final cubit = context.read<EventsCubit>();
-      // Use existing ID if editing, generate new ID if creating
       final id = widget.event?.id ?? Uuid().v6();
       final title = controllers[_FormField.title]!.text;
       final description = controllers[_FormField.description]!.text;
@@ -166,6 +189,7 @@ class _AddeventState extends State<Addevent> with SingleTickerProviderStateMixin
         associationId: associationId,
         category: category,
       );
+
       if (widget.event != null) {
         await cubit.update(event);
         Navigator.push(
@@ -250,10 +274,7 @@ class _AddeventState extends State<Addevent> with SingleTickerProviderStateMixin
             color: Theme.of(context).colorScheme.surface,
             shape: BoxShape.circle,
             boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 8,
-              ),
+              BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 8),
             ],
           ),
           child: IconButton(
@@ -281,10 +302,7 @@ class _AddeventState extends State<Addevent> with SingleTickerProviderStateMixin
             SizedBox(width: 12),
             Text(
               isEditing ? "Edit Event" : "Create New Event",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-              ),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
             ),
           ],
         ),
@@ -351,7 +369,10 @@ class _AddeventState extends State<Addevent> with SingleTickerProviderStateMixin
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Basic Information Section
-                      _buildSectionHeader("Basic Information", Icons.info_outline),
+                      _buildSectionHeader(
+                        "Basic Information",
+                        Icons.info_outline,
+                      ),
                       _buildCard(
                         child: Column(
                           children: [
@@ -368,9 +389,11 @@ class _AddeventState extends State<Addevent> with SingleTickerProviderStateMixin
                               child: TextInput(
                                 title: "Description",
                                 maximumLength: 500,
-                                label: "Join us for a day of insightful talks...",
+                                label:
+                                    "Join us for a day of insightful talks...",
                                 expand: true,
-                                controller: controllers[_FormField.description]!,
+                                controller:
+                                    controllers[_FormField.description]!,
                               ),
                             ),
                           ],
@@ -385,8 +408,10 @@ class _AddeventState extends State<Addevent> with SingleTickerProviderStateMixin
                           children: [
                             DatetimeInput(
                               label: "Start Datetime",
-                              timeController: controllers[_FormField.startTime]!,
-                              dateController: controllers[_FormField.startDate]!,
+                              timeController:
+                                  controllers[_FormField.startTime]!,
+                              dateController:
+                                  controllers[_FormField.startDate]!,
                             ),
                             SizedBox(height: 16),
                             DatetimeInput(
@@ -400,16 +425,119 @@ class _AddeventState extends State<Addevent> with SingleTickerProviderStateMixin
                       SizedBox(height: 24),
 
                       // Location & Category Section
-                      _buildSectionHeader("Details", Icons.location_on_outlined),
+                      _buildSectionHeader(
+                        "Details",
+                        Icons.location_on_outlined,
+                      ),
                       _buildCard(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Input(
-                              controller: controllers[_FormField.location]!,
-                              label: "Location",
-                              hint: "123 Main Street, Anytown",
-                              icon: Icons.location_on_outlined,
+                            // Location with Map Button
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Location",
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSurface,
+                                  ),
+                                ),
+                                SizedBox(height: 8),
+                                TextFormField(
+                                  controller: controllers[_FormField.location]!,
+                                  readOnly: true,
+                                  decoration: InputDecoration(
+                                    hintText:
+                                        "Tap the map button to select location",
+                                    prefixIcon: Icon(
+                                      Icons.location_on_outlined,
+                                    ),
+                                    suffixIcon: IconButton(
+                                      icon: Icon(
+                                        Icons.map,
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.primary,
+                                      ),
+                                      onPressed: _openMapPicker,
+                                    ),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                      borderSide: BorderSide(
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.outline.withOpacity(0.3),
+                                      ),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.primary,
+                                        width: 2,
+                                      ),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    filled: true,
+                                    fillColor: Theme.of(
+                                      context,
+                                    ).colorScheme.surface,
+                                  ),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please select a location';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                if (_selectedLocation != null) ...[
+                                  SizedBox(height: 8),
+                                  Container(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                      vertical: 8,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primaryContainer
+                                          .withOpacity(0.3),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.check_circle,
+                                          size: 16,
+                                          color: Theme.of(
+                                            context,
+                                          ).colorScheme.primary,
+                                        ),
+                                        SizedBox(width: 8),
+                                        Expanded(
+                                          child: Text(
+                                            "Location selected: ${_selectedLocation!.latitude.toStringAsFixed(4)}, ${_selectedLocation!.longitude.toStringAsFixed(4)}",
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: Theme.of(
+                                                context,
+                                              ).colorScheme.onSurface,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ],
                             ),
                             SizedBox(height: 16),
                             Text(
@@ -423,47 +551,58 @@ class _AddeventState extends State<Addevent> with SingleTickerProviderStateMixin
                             SizedBox(height: 8),
                             DropdownButtonFormField<String>(
                               initialValue: widget.event?.category,
-                              validator: getIsRequiredValidator(isRequired: true),
+                              validator: getIsRequiredValidator(
+                                isRequired: true,
+                              ),
                               decoration: InputDecoration(
                                 labelText: "Select a category",
                                 prefixIcon: Icon(Icons.category_outlined),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
                                   borderSide: BorderSide(
-                                    color: Theme.of(context).colorScheme.outline,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.outline,
                                   ),
                                 ),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
                                   borderSide: BorderSide(
-                                    color: Theme.of(context).colorScheme.outline.withOpacity(0.3),
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.outline.withOpacity(0.3),
                                   ),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
-                                    color: Theme.of(context).colorScheme.primary,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.primary,
                                     width: 2,
                                   ),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 filled: true,
-                                fillColor: Theme.of(context).colorScheme.surface,
+                                fillColor: Theme.of(
+                                  context,
+                                ).colorScheme.surface,
                               ),
-                              items: [
-                                "Tech",
-                                "AI and Data Science",
-                                "Business",
-                                "Agriculture",
-                                "Sociology",
-                                "Meetup",
-                              ]
-                                  .map(
-                                    (e) => DropdownMenuItem(
-                                      value: e,
-                                      child: Text(e),
-                                    ),
-                                  )
-                                  .toList(),
+                              items:
+                                  [
+                                        "Tech",
+                                        "AI and Data Science",
+                                        "Business",
+                                        "Agriculture",
+                                        "Sociology",
+                                        "Meetup",
+                                      ]
+                                      .map(
+                                        (e) => DropdownMenuItem(
+                                          value: e,
+                                          child: Text(e),
+                                        ),
+                                      )
+                                      .toList(),
                               onChanged: (value) {
                                 controllers[_FormField.category]!.text = value!;
                               },
@@ -505,10 +644,7 @@ class _AddeventState extends State<Addevent> with SingleTickerProviderStateMixin
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Icon(
-                                    Icons.visibility_outlined,
-                                    size: 22,
-                                  ),
+                                  Icon(Icons.visibility_outlined, size: 22),
                                   SizedBox(width: 8),
                                   Text(
                                     "Preview Event",
@@ -530,13 +666,17 @@ class _AddeventState extends State<Addevent> with SingleTickerProviderStateMixin
                                 gradient: LinearGradient(
                                   colors: [
                                     Theme.of(context).colorScheme.primary,
-                                    Theme.of(context).colorScheme.primary.withOpacity(0.8),
+                                    Theme.of(
+                                      context,
+                                    ).colorScheme.primary.withOpacity(0.8),
                                   ],
                                 ),
                                 borderRadius: BorderRadius.circular(16),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.primary.withOpacity(0.3),
                                     blurRadius: 12,
                                     offset: Offset(0, 6),
                                   ),

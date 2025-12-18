@@ -86,9 +86,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                   ),
                 ),
                 onPressed: () {
-                  Navigator.of(
-                    context,
-                  ).pushNamed('/userprofile');
+                  Navigator.of(context).pushNamed('/userprofile');
                 },
                 child: Text(
                   "View Profile",
@@ -102,8 +100,14 @@ class _ProfileHeaderState extends State<ProfileHeader> {
             ],
           );
         }
-        if (state is AssociationFetched) {
-          final user = state.association;
+        if (state is AssociationFetched || state is AssoicationDetailFetched) {
+          var user;
+          if (state is AssociationFetched) {
+            user = state.association;
+          } else if (state is AssoicationDetailFetched) {
+            user = state.asso;
+          }
+
           return Column(
             children: [
               SizedBox(height: 20),
@@ -159,9 +163,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                   ),
                 ),
                 onPressed: () {
-                  Navigator.of(
-                    context,
-                  ).pushNamed('/assocownprofile');
+                  Navigator.of(context).pushNamed('/assocownprofile');
                 },
                 child: Text(
                   "View Profile",

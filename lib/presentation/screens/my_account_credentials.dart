@@ -1,16 +1,14 @@
 import 'package:dzevent/data/models/user_model.dart';
 import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
-import 'package:dzevent/presentation/screens/user_profile.dart';
+import 'package:dzevent/presentation/screens/event_feed.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:dzevent/l10n/app_localizations.dart';
-import 'package:path/path.dart' as path;
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
 class Myaccountcredentials extends StatefulWidget {
-    static MaterialPageRoute route() =>
+  static MaterialPageRoute route() =>
       MaterialPageRoute(builder: (context) => Myaccountcredentials());
   static const String pageRoute = "userprofile";
   const Myaccountcredentials({super.key});
@@ -24,28 +22,31 @@ class _MyaccountcredentialsState extends State<Myaccountcredentials>
   late AnimationController _animController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
-  bool _showOldPassword = false;
-  bool _showNewPassword = false;
-  
-  
+
   final ImagePicker picker = ImagePicker();
+  File? _profileImage;
+  bool _isLoading = false;
 
-  // Controllers
-
-
-  bool isEditingName = false;
+  late TextEditingController nameCtrl;
+  late TextEditingController emailCtrl;
 
   @override
   void initState() {
     super.initState();
+
+    final currentUser = context.read<AccountCubit>().currentUser;
+    nameCtrl = TextEditingController(text: currentUser?.name ?? "");
+    emailCtrl = TextEditingController(text: currentUser?.email ?? "");
+
     _animController = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 600),
     )..forward();
 
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _animController, curve: Curves.easeIn),
-    );
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _animController, curve: Curves.easeIn));
 
     _slideAnimation = Tween<Offset>(
       begin: Offset(0, 0.1),
@@ -56,21 +57,15 @@ class _MyaccountcredentialsState extends State<Myaccountcredentials>
   @override
   void dispose() {
     _animController.dispose();
+    nameCtrl.dispose();
+    emailCtrl.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
-
-    final email = context.read<AccountCubit>().currentUser!.email;
-    final name = context.read<AccountCubit>().currentUser!.name;
-    final pass = context.read<AccountCubit>().currentUser!.hashCode;
-    final pic = context.read<AccountCubit>().currentUser!.profilePicture;
-    String profile = pic;
-    final emailCtrl = TextEditingController(text: email);
-    final nameCtrl = TextEditingController(text: name);
-    File? _profileImage;
+    final currentUser = context.watch<AccountCubit>().currentUser;
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -86,15 +81,12 @@ class _MyaccountcredentialsState extends State<Myaccountcredentials>
           ),
           child: IconButton(
             icon: Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pushReplacement(context,MaterialPageRoute(builder: (_)=>EventFeed())),
           ),
         ),
         title: Text(
           loc.editProfile,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
         centerTitle: true,
       ),
@@ -144,14 +136,12 @@ class _MyaccountcredentialsState extends State<Myaccountcredentials>
           FadeTransition(
             opacity: _fadeAnimation,
             child: SingleChildScrollView(
+              physics: BouncingScrollPhysics(),
               child: Column(
                 children: [
                   SizedBox(height: 120),
                   // Profile Picture
-                  ProfilePic(
-                    image: 'https://i.postimg.cc/cCsYDjvj/user-2.png',
-                    imageUploadBtnPress: () {},
-                  ),
+                  _buildProfilePicture(currentUser?.profilePicture),
                   SizedBox(height: 20),
                   // Form Container
                   SlideTransition(
@@ -183,79 +173,16 @@ class _MyaccountcredentialsState extends State<Myaccountcredentials>
                             _buildTextField(
                               context,
                               label: loc.name,
-                              initialValue: "Annette Black",
+                              controller: nameCtrl,
                               icon: Icons.person_outline,
                             ),
                             SizedBox(height: 16),
                             _buildTextField(
                               context,
                               label: loc.email,
-                              initialValue: "annette@gmail.com",
+                              controller: emailCtrl,
                               icon: Icons.email_outlined,
                               keyboardType: TextInputType.emailAddress,
-                            ),
-                            SizedBox(height: 16),
-                            _buildTextField(
-                              context,
-                              label: loc.phone,
-                              initialValue: "(316) 555-0116",
-                              icon: Icons.phone_outlined,
-                              keyboardType: TextInputType.phone,
-                            ),
-                            SizedBox(height: 16),
-                            _buildTextField(
-                              context,
-                              label: loc.address,
-                              initialValue: "New York, NVC",
-                              icon: Icons.location_on_outlined,
-                            ),
-                            SizedBox(height: 32),
-                            _buildSectionHeader(
-                              context,
-                              "Security",
-                              Icons.lock_outline,
-                            ),
-                            SizedBox(height: 20),
-                            _buildTextField(
-                              context,
-                              label: loc.oldPassword,
-                              initialValue: "demopass",
-                              icon: Icons.lock_outline,
-                              obscureText: !_showOldPassword,
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  _showOldPassword
-                                      ? Icons.visibility_outlined
-                                      : Icons.visibility_off_outlined,
-                                  size: 20,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    _showOldPassword = !_showOldPassword;
-                                  });
-                                },
-                              ),
-                            ),
-                            SizedBox(height: 16),
-                            _buildTextField(
-                              context,
-                              label: loc.newPassword,
-                              hint: loc.newPasswordHint,
-                              icon: Icons.lock_reset,
-                              obscureText: !_showNewPassword,
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  _showNewPassword
-                                      ? Icons.visibility_outlined
-                                      : Icons.visibility_off_outlined,
-                                  size: 20,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    _showNewPassword = !_showNewPassword;
-                                  });
-                                },
-                              ),
                             ),
                             SizedBox(height: 32),
                             // Action Buttons
@@ -263,14 +190,13 @@ class _MyaccountcredentialsState extends State<Myaccountcredentials>
                               children: [
                                 Expanded(
                                   child: OutlinedButton(
-                                    onPressed: () {},
+                                    onPressed: _isLoading ? null : () => Navigator.pushReplacement(context,MaterialPageRoute(builder: (_)=>EventFeed())),
                                     style: OutlinedButton.styleFrom(
-                                      padding:
-                                          EdgeInsets.symmetric(vertical: 16),
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: 16,
+                                      ),
                                       side: BorderSide(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .outline,
+                                        color: Theme.of(context).colorScheme.outline,
                                         width: 1.5,
                                       ),
                                       shape: RoundedRectangleBorder(
@@ -313,35 +239,51 @@ class _MyaccountcredentialsState extends State<Myaccountcredentials>
                                       ],
                                     ),
                                     child: ElevatedButton(
-                                      onPressed: () {},
+                                      onPressed: _isLoading ? null : _saveProfile,
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: Colors.transparent,
                                         foregroundColor: Colors.white,
                                         shadowColor: Colors.transparent,
-                                        padding:
-                                            EdgeInsets.symmetric(vertical: 16),
+                                        disabledBackgroundColor: Colors.transparent,
+                                        padding: EdgeInsets.symmetric(
+                                          vertical: 16,
+                                        ),
                                         shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(16),
+                                          borderRadius: BorderRadius.circular(16),
                                         ),
                                       ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Icon(Icons.check_circle_outline,
-                                              size: 20, color: Colors.white),
-                                          SizedBox(width: 8),
-                                          Text(
-                                            loc.saveUpdate,
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.white,
+                                      child: _isLoading
+                                          ? SizedBox(
+                                              height: 20,
+                                              width: 20,
+                                              child: CircularProgressIndicator(
+                                                strokeWidth: 2,
+                                                valueColor:
+                                                    AlwaysStoppedAnimation<Color>(
+                                                  Colors.white,
+                                                ),
+                                              ),
+                                            )
+                                          : Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Icon(
+                                                  Icons.check_circle_outline,
+                                                  size: 20,
+                                                  color: Colors.white,
+                                                ),
+                                                SizedBox(width: 8),
+                                                Text(
+                                                  loc.saveUpdate,
+                                                  style: TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                          ),
-                                        ],
-                                      ),
                                     ),
                                   ),
                                 ),
@@ -362,8 +304,101 @@ class _MyaccountcredentialsState extends State<Myaccountcredentials>
     );
   }
 
+  Widget _buildProfilePicture(String? profilePicUrl) {
+    return GestureDetector(
+      onTap: _showImagePickerDialog,
+      child: Hero(
+        tag: 'profile_picture',
+        child: Stack(
+          children: [
+            Container(
+              width: 120,
+              height: 120,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.white, width: 4),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    blurRadius: 20,
+                    offset: Offset(0, 10),
+                  ),
+                ],
+                color: Colors.white,
+              ),
+              child: ClipOval(
+                child: _profileImage != null
+                    ? Image.file(
+                        _profileImage!,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return _buildDefaultAvatar();
+                        },
+                      )
+                    : (profilePicUrl != null && profilePicUrl.isNotEmpty)
+                        ? Image.network(
+                            profilePicUrl,
+                            fit: BoxFit.cover,
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return Center(
+                                child: CircularProgressIndicator(
+                                  value: loadingProgress.expectedTotalBytes != null
+                                      ? loadingProgress.cumulativeBytesLoaded /
+                                          loadingProgress.expectedTotalBytes!
+                                      : null,
+                                ),
+                              );
+                            },
+                            errorBuilder: (context, error, stackTrace) {
+                              return _buildDefaultAvatar();
+                            },
+                          )
+                        : _buildDefaultAvatar(),
+              ),
+            ),
+            Positioned(
+              bottom: 0,
+              right: 0,
+              child: Container(
+                padding: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primary,
+                  shape: BoxShape.circle,
+                  border: Border.all(color: Colors.white, width: 3),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      blurRadius: 8,
+                      offset: Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Icon(Icons.camera_alt, size: 18, color: Colors.white),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDefaultAvatar() {
+    return Container(
+      color: Theme.of(context).colorScheme.primaryContainer,
+      child: Icon(
+        Icons.person,
+        size: 60,
+        color: Theme.of(context).colorScheme.primary,
+      ),
+    );
+  }
+
   Widget _buildSectionHeader(
-      BuildContext context, String title, IconData icon) {
+    BuildContext context,
+    String title,
+    IconData icon,
+  ) {
     return Row(
       children: [
         Container(
@@ -394,11 +429,8 @@ class _MyaccountcredentialsState extends State<Myaccountcredentials>
   Widget _buildTextField(
     BuildContext context, {
     required String label,
-    String? initialValue,
-    String? hint,
+    required TextEditingController controller,
     required IconData icon,
-    bool obscureText = false,
-    Widget? suffixIcon,
     TextInputType? keyboardType,
   }) {
     return Column(
@@ -414,19 +446,14 @@ class _MyaccountcredentialsState extends State<Myaccountcredentials>
         ),
         SizedBox(height: 8),
         TextFormField(
-          initialValue: initialValue,
-          obscureText: obscureText,
+          controller: controller,
           keyboardType: keyboardType,
+          enabled: !_isLoading,
           decoration: InputDecoration(
-            hintText: hint,
             prefixIcon: Icon(icon, size: 20),
-            suffixIcon: suffixIcon,
             filled: true,
-            fillColor: Theme.of(context).colorScheme.surfaceContainer,
-            contentPadding: EdgeInsets.symmetric(
-              horizontal: 20,
-              vertical: 16,
-            ),
+            fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+            contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
             border: OutlineInputBorder(
               borderSide: BorderSide.none,
               borderRadius: BorderRadius.circular(16),
@@ -444,277 +471,280 @@ class _MyaccountcredentialsState extends State<Myaccountcredentials>
               ),
               borderRadius: BorderRadius.circular(16),
             ),
+            disabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: Theme.of(context).colorScheme.outline.withOpacity(0.1),
+              ),
+              borderRadius: BorderRadius.circular(16),
+            ),
           ),
         ),
       ],
     );
   }
 
-  // ==========================================================================
-  // IMAGE PICKER POPUP
-  // ==========================================================================
-  void _showImagePickerDialog(_profileImage) {
-    showDialog(
+  void _showImagePickerDialog() {
+    showModalBottomSheet(
       context: context,
-      builder: (_) => AlertDialog(
-        title: const Text("Change Profile Picture"),
-        content: const Text("Choose image source"),
-        actions: [
-          TextButton(
-            child: const Text("Camera"),
-            onPressed: () async {
-              Navigator.pop(context);
-              final XFile? img = await picker.pickImage(source: ImageSource.camera);
-              if (img != null) {
-                setState(() => _profileImage = File(img.path));
-              }
-            },
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(25),
+            topRight: Radius.circular(25),
           ),
-          TextButton(
-            child: const Text("Gallery"),
-            onPressed: () async {
-              Navigator.pop(context);
-              final XFile? img = await picker.pickImage(source: ImageSource.gallery);
-              if (img != null) {
-                setState(() => _profileImage = File(img.path));
-              }
-            },
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.outline.withOpacity(0.3),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                SizedBox(height: 20),
+                Text(
+                  "Change Profile Picture",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 20),
+                _buildImageSourceOption(
+                  icon: Icons.camera_alt,
+                  title: "Camera",
+                  subtitle: "Take a new photo",
+                  onTap: () => _pickImage(ImageSource.camera),
+                ),
+                Divider(height: 1),
+                _buildImageSourceOption(
+                  icon: Icons.photo_library,
+                  title: "Gallery",
+                  subtitle: "Choose from gallery",
+                  onTap: () => _pickImage(ImageSource.gallery),
+                ),
+                if (_profileImage != null || 
+                    (context.read<AccountCubit>().currentUser?.profilePicture?.isNotEmpty ?? false))
+                  Column(
+                    children: [
+                      Divider(height: 1),
+                      _buildImageSourceOption(
+                        icon: Icons.delete_outline,
+                        title: "Remove Photo",
+                        subtitle: "Use default avatar",
+                        onTap: _removePhoto,
+                        isDestructive: true,
+                      ),
+                    ],
+                  ),
+              ],
+            ),
           ),
-        ],
+        ),
       ),
     );
   }
 
-  // ==========================================================================
-  // EMAIL — READ ONLY
-  // ==========================================================================
-  Widget _buildStaticField({
-    required String label,
-    required TextEditingController controller,
+  Widget _buildImageSourceOption({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required VoidCallback onTap,
+    bool isDestructive = false,
   }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
-        const SizedBox(height: 6),
-        TextField(
-          controller: controller,
-          enabled: false,
-          decoration: _inputDecor(),
+    return ListTile(
+      leading: Container(
+        padding: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: isDestructive
+              ? Colors.red.withOpacity(0.1)
+              : Theme.of(context).colorScheme.primaryContainer,
+          borderRadius: BorderRadius.circular(12),
         ),
-      ],
-    );
-  }
-
-  // ==========================================================================
-  // EDITABLE NAME FIELD
-  // ==========================================================================
- Widget _buildEditableName(AppLocalizations loc, TextEditingController nameCtrl, String originalName) {
-  return Row(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Expanded(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(loc.name, style: const TextStyle(fontWeight: FontWeight.bold)),
-            const SizedBox(height: 6),
-            TextField(
-              controller: nameCtrl,
-              enabled: isEditingName,
-              decoration: _inputDecor(),
-            ),
-          ],
+        child: Icon(
+          icon,
+          color: isDestructive
+              ? Colors.red
+              : Theme.of(context).colorScheme.primary,
         ),
       ),
-
-      IconButton(
-        icon: Icon(isEditingName ? Icons.check : Icons.edit),
-        onPressed: () async {
-          if (!isEditingName) {
-            // Enter edit mode
-            setState(() => isEditingName = true);
-          } else {
-            // Leaving edit mode → confirm dialog
-            final confirmed = await _confirmNameChange(nameCtrl);
-
-            if (confirmed == true) {
-              // Save new name through cubit
-              UserModel newuser = context.read<AccountCubit>().currentUser!;
-              newuser.name = nameCtrl.text;
-
-              context.read<AccountCubit>().update(newuser, newuser.id!);
-
-              setState(() => isEditingName = false);
-            } else {
-              // Restore original text and exit edit mode
-              setState(() {
-                nameCtrl.text = originalName;
-                isEditingName = false;
-              });
-            }
-          }
-        },
+      title: Text(
+        title,
+        style: TextStyle(
+          fontWeight: FontWeight.w600,
+          color: isDestructive ? Colors.red : null,
+        ),
       ),
-    ],
-  );
-}
-
-
-  // Popup: confirm name change
-  Future<bool?> _confirmNameChange(TextEditingController nameCtrl) {
-  return showDialog<bool>(
-    context: context,
-    builder: (_) => AlertDialog(
-      title: const Text("Confirm Name Change"),
-      content: Text("Change your name to:\n\n${nameCtrl.text}?"),
-      actions: [
-        TextButton(
-          child: const Text("Cancel"),
-          onPressed: () => Navigator.pop(context, false),
-        ),
-        ElevatedButton(
-          child: const Text("Confirm"),
-          onPressed: () => Navigator.pop(context, true),
-        ),
-      ],
-    ),
-  );
-}
-
-
-
-
-bool isValidPassword(String pass) {
-  final regex = RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$');
-  return regex.hasMatch(pass);
-}
-
-  // ==========================================================================
-  // PASSWORD FIELD → POPUP FOR OLD+NEW PASSWORD
-  // ==========================================================================
-  Widget _buildPasswordField(AppLocalizations loc) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(loc.oldPassword,
-                  style: const TextStyle(fontWeight: FontWeight.bold)),
-              const SizedBox(height: 6),
-              TextField(
-                enabled: false,
-                obscureText: true,
-                decoration: _inputDecor().copyWith(hintText: "********"),
-              ),
-            ],
-          ),
-        ),
-        IconButton(
-          icon: const Icon(Icons.edit),
-          onPressed: () => _passwordPopup(),
-        ),
-      ],
-    );
-  }
-
-void _passwordPopup() {
-  final oldCtrl = TextEditingController();
-  final newCtrl = TextEditingController();
-
-  final currentPass = context.read<AccountCubit>().currentUser!.hashCode.toString();
-  showDialog(
-    context: context,
-    builder: (_) => StatefulBuilder(
-      builder: (context, setStateDialog) {
-        return AlertDialog(
-          title: const Text("Change Password"),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: oldCtrl,
-                obscureText: true,
-                decoration: const InputDecoration(labelText: "Old Password"),
-              ),
-              TextField(
-                controller: newCtrl,
-                obscureText: true,
-                decoration: const InputDecoration(labelText: "New Password"),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              child: const Text("Cancel"),
-              onPressed: () => Navigator.pop(context),
-            ),
-            ElevatedButton(
-              child: const Text("Confirm"),
-              onPressed: () {
-                //OLD PASSWORD CHECK
-                if (oldCtrl.text != currentPass) {
-                  _showError("Old password is incorrect");
-                  return;
-                }
-                // 2NEW PASSWORD VALIDATION
-                if (!isValidPassword(newCtrl.text)) {
-                  _showError(
-                    "Password must be at least 8 characters, include:\n"
-                    "• one uppercase letter\n"
-                    "• one lowercase letter\n"
-                    "• one number"
-                  );
-                  return;
-                }
-                // UPDATE & CLOSE POPUP
-                UserModel updatedUser = context.read<AccountCubit>().currentUser!;
-                // updatedUser.hashCode = newCtrl.text; // no hashcode in user model!! teeetttetetetttt thanks to mokhati!!!~
-
-                context.read<AccountCubit>().update(updatedUser, updatedUser.id!);
-
-                Navigator.pop(context); // Close popup ONLY
-              },
-            ),
-          ],
-        );
+      subtitle: Text(subtitle),
+      onTap: () {
+        Navigator.pushReplacement(context,MaterialPageRoute(builder: (_)=>EventFeed()));
+        onTap();
       },
-    ),
-  );
-}
+    );
+  }
 
-
-
-void _showError(String message) {
-  showDialog(
-    context: context,
-    builder: (_) => AlertDialog(
-      title: const Text("Error"),
-      content: Text(message),
-      actions: [
-        TextButton(
-          child: const Text("OK"),
-          onPressed: () => Navigator.pop(context),
+  Future<void> _pickImage(ImageSource source) async {
+    try {
+      final XFile? img = await picker.pickImage(
+        source: source,
+        maxWidth: 1024,
+        maxHeight: 1024,
+        imageQuality: 85,
+      );
+      
+      if (img != null) {
+        setState(() => _profileImage = File(img.path));
+        
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Photo selected successfully'),
+            backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to pick image: $e'),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
         ),
-      ],
-    ),
-  );
-}
+      );
+    }
+  }
 
+  void _removePhoto() {
+    setState(() => _profileImage = null);
+    
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Profile photo removed'),
+        backgroundColor: Colors.orange,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+    );
+  }
 
-  // ==========================================================================
-  // INPUT DECORATION
-  // ==========================================================================
-  InputDecoration _inputDecor() {
-    return InputDecoration(
-      filled: true,
-      fillColor: Colors.green.withOpacity(0.05),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(50),
-        borderSide: BorderSide.none,
+  Future<void> _saveProfile() async {
+    final currentUser = context.read<AccountCubit>().currentUser;
+    if (currentUser == null) {
+      _showErrorSnackBar('User not found');
+      return;
+    }
+
+    // Validate inputs
+    if (nameCtrl.text.trim().isEmpty) {
+      _showErrorSnackBar('Name cannot be empty');
+      return;
+    }
+
+    if (emailCtrl.text.trim().isEmpty) {
+      _showErrorSnackBar('Email cannot be empty');
+      return;
+    }
+
+    // Basic email validation
+    if (!_isValidEmail(emailCtrl.text.trim())) {
+      _showErrorSnackBar('Please enter a valid email');
+      return;
+    }
+
+    setState(() => _isLoading = true);
+
+    try {
+      // Determine the profile picture path
+      String? profilePicPath;
+      if (_profileImage != null) {
+        // New image selected
+        profilePicPath = _profileImage!.path;
+      } else {
+        // Keep existing or null
+        profilePicPath = currentUser.profilePicture;
+      }
+
+      // Create updated user model
+      final updatedUser = UserModel(
+        name: nameCtrl.text.trim(),
+        email: emailCtrl.text.trim(),
+        password: currentUser.password,
+        profilePicture: profilePicPath ?? '',
+        createdAt: currentUser.createdAt,
+      );
+
+      // Update through cubit
+      await context.read<AccountCubit>().update(updatedUser, currentUser.id!);
+
+      // Show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              Icon(Icons.check_circle, color: Colors.white),
+              SizedBox(width: 12),
+              Text('Profile updated successfully'),
+            ],
+          ),
+          backgroundColor: Colors.green,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+      );
+
+      // Wait a bit for the snackbar to show
+      await Future.delayed(Duration(milliseconds: 500));
+      
+      if (mounted) {
+        Navigator.pushReplacement(context,MaterialPageRoute(builder: (_)=>EventFeed()));
+      }
+    } catch (e) {
+      _showErrorSnackBar('Failed to update profile: $e');
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
+
+  bool _isValidEmail(String email) {
+    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+    return emailRegex.hasMatch(email);
+  }
+
+  void _showErrorSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            Icon(Icons.error_outline, color: Colors.white),
+            SizedBox(width: 12),
+            Expanded(child: Text(message)),
+          ],
+        ),
+        backgroundColor: Colors.red,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
       ),
     );
   }

@@ -8,6 +8,7 @@ import 'package:dzevent/logic/cubits/followers/followers_cubits.dart';
 import 'package:dzevent/utils/firebase.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AccountCubit extends Cubit<AccountState> {
   AccountCubit() : super(AccountGuest());
@@ -19,23 +20,32 @@ class AccountCubit extends Cubit<AccountState> {
   var authTable = DBAuth();
 
   Future<bool> login(String email, String password) async {
+    final prefs = await SharedPreferences.getInstance();
     try {
       emit(AccountLoading());
       currentUser = await localUserRepo.login(email, password);
       association = false;
       emit(UserFetched(user: currentUser!));
+
       final fcmtoken = await getFcmtoken();
       if (fcmtoken != null) {
         localUserRepo.setFcmtoken(userId: currentUser!.id!, fcmtoken: fcmtoken);
       } else {
         print("Failed to fetch fcmtoken");
       }
+
+      await prefs.setBool("isAssoc", false);
+      await prefs.setInt("id", currentUser!.id!);
+
     } catch (e) {
       if (e is InvalidCredException) {
         try {
           currentAssociation = await localAssRepo.login(email, password);
+          print("current association is ${currentAssociation!.name}");
           association = true;
           emit(AssociationFetched(association: currentAssociation!));
+          await prefs.setBool("isAssoc", true);
+          await prefs.setInt("id", currentAssociation!.id!);
         } catch (a) {
           if (a is InvalidCredException) {
             emit(AccountError(error: "Invalid Credentials"));
@@ -53,7 +63,10 @@ class AccountCubit extends Cubit<AccountState> {
     return true;
   }
 
-  bool logout() {
+  Future<bool> logout() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('id');
+    await prefs.remove('isAssoc');
     emit(AccountGuest());
     return true;
   }
@@ -75,6 +88,7 @@ class AccountCubit extends Cubit<AccountState> {
     bool association,
   ) async {
     emit(AccountLoading());
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
       await authTable.checkUnique(email);
     } catch (e) {
@@ -113,10 +127,14 @@ class AccountCubit extends Cubit<AccountState> {
           profilePicture: "assets/images/users/guest.png",
           createdAt: DateTime.now(),
         );
-        localUserRepo.insertData(user);
-        emit(UserFetched(user: user));
-        currentUser = user;
+        var gottenuser = await localUserRepo.insertData(user);
+
+        emit(UserFetched(user: gottenuser));
+        currentUser = gottenuser;
         association = false;
+
+        await prefs.setBool("isAssoc", false);
+        await prefs.setInt("id", currentUser!.id!);
         print("registered: ");
         print(currentUser.toString());
       }
@@ -183,6 +201,40 @@ class AccountCubit extends Cubit<AccountState> {
     }
   }
 
+  Future<AssociationModel> getAssocInstance(int id) async {
+    try {
+      print("fetching association by id");
+      emit(AccountLoading());
+      final response = await localAssRepo.getAssociation(id);
+      if (response.isEmpty) {
+        AccountError(error: "empty data");
+        return AssociationModel(
+          name: "",
+          email: "",
+          password: "",
+          profilePicture: "",
+          bio: "",
+          createdAt: DateTime.now(),
+          isVerified: true,
+        );
+      } else {
+        emit(AssoicationDetailFetched(asso: response.first));
+        return response.first;
+      }
+    } catch (e) {
+      emit(AccountError(error: "Failed to get user data. Error: $e"));
+      return AssociationModel(
+        name: "",
+        email: "",
+        password: "",
+        profilePicture: "",
+        bio: "",
+        createdAt: DateTime.now(),
+        isVerified: true,
+      );
+    }
+  }
+
   Future<bool> verifyAccount(int id) async {
     try {
       emit(AccountLoading());
@@ -210,6 +262,9 @@ class AccountCubit extends Cubit<AccountState> {
   Future<dynamic> getcurrentAssociation(int id) async {
     try {
       var response = await localAssRepo.getAssociation(id);
+
+      print("response is : ${response.first}");
+
       currentAssociation = response.first; // SET THIS!
       association = true; // SET THIS TOO!
       emit(AssociationFetched(association: response.first));
@@ -228,6 +283,19 @@ class AccountCubit extends Cubit<AccountState> {
       emit(UserFetched(user: response));
       print("fetching user");
       return true;
+    } catch (e) {
+      print("error -> $e");
+    }
+
+  }
+  Future<UserModel?> getUser(int id) async {
+    try {
+      var response = await localUserRepo.getUserById(id);
+      currentUser = response; // SET THIS!
+      association = false; // SET THIS TOO!
+      emit(UserFetched(user: response));
+      print("fetching user");
+      return currentUser;
     } catch (e) {
       print("error -> $e");
     }

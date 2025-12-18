@@ -6,7 +6,6 @@ import 'package:http/http.dart' as http;
 import 'assoc_repo_base.dart';
 import '../remotecredentials.dart';
 
-
 class AssocRepoLocal extends AssocRepoBase {
   final String base = "$baseUrl/associations";
 
@@ -44,11 +43,11 @@ class AssocRepoLocal extends AssocRepoBase {
     if (res.statusCode != 200) {
       throw Exception("Invalid credentials");
     }
-  try{
-    return AssociationModel.fromMap(jsonDecode(res.body));
-  }catch(e){
-    throw(InvalidCredException());
-  }
+    try {
+      return AssociationModel.fromMap(jsonDecode(res.body));
+    } catch (e) {
+      throw (InvalidCredException());
+    }
   }
 
   @override
@@ -61,6 +60,7 @@ class AssocRepoLocal extends AssocRepoBase {
   @override
   Future<List<AssociationModel>> getAssociation(int id) async {
     final res = await http.get(Uri.parse("$base/$id/"));
+    print("res is : ${res.body}");
     final list = jsonDecode(res.body) as List;
     return list.map((e) => AssociationModel.fromMap(e)).toList();
   }

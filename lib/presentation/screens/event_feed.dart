@@ -14,6 +14,7 @@ import 'package:dzevent/presentation/widgets/refreshable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dzevent/l10n/app_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EventFeed extends StatefulWidget {
   static MaterialPageRoute route() =>
@@ -26,7 +27,8 @@ class EventFeed extends StatefulWidget {
   State<EventFeed> createState() => _EventFeedState();
 }
 
-class _EventFeedState extends State<EventFeed> with SingleTickerProviderStateMixin {
+class _EventFeedState extends State<EventFeed>
+    with SingleTickerProviderStateMixin {
   final filters = [
     "Tech",
     "AI and Data Science",
@@ -40,7 +42,7 @@ class _EventFeedState extends State<EventFeed> with SingleTickerProviderStateMix
 
   int userId = 2;
   bool asso = false;
-  
+
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
 
@@ -53,7 +55,7 @@ class _EventFeedState extends State<EventFeed> with SingleTickerProviderStateMix
       await eventsCubit.searchEvents(searchStr: searchController.text);
     });
     init();
-    
+
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 600),
@@ -74,19 +76,34 @@ class _EventFeedState extends State<EventFeed> with SingleTickerProviderStateMix
   Future<bool> init() async {
     final authCubit = context.read<AccountCubit>();
     final authState = authCubit.state;
+
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    int id = prefs.getInt("id") ?? -1;
+    bool? isAssoc = prefs.getBool("isAssoc");
+    userId = id;
+    if (isAssoc != null) {
+      print("user id is $id");
+      print("is Assoc $isAssoc");
+      if (isAssoc && authState is! AssociationFetched) {
+        print("getting association after sharedPref");
+        authCubit.getAssoc(id);
+      } else if (authState is! UserFetched) {
+        authCubit.getcurrentUser(id);
+      }
+    }
     if (authState is! UserFetched && authState is! AssociationFetched) {
       print("User / Association not fetched");
       return false;
     }
-    if (authState is UserFetched) {
-      userId = authState.user.id!;
+    if (isAssoc != null && !isAssoc && id > 0) {
+      userId = id;
       final interestsCubit = context.read<InterestsCubit>();
       await interestsCubit.getUserInterests(userId: userId);
       return true;
-    } else if (authState is AssociationFetched) {
-      userId = authState.association.id!;
+    } else if (isAssoc != null && !isAssoc && id > 0) {
+      userId = id;
       asso = true;
-      print("EventCard: user fetched ${authState.association.name} ");
+      // print("EventCard: user fetched ${authState.association.name} ");
       final interestsCubit = context.read<InterestsCubit>();
       await interestsCubit.getUserInterests(userId: userId);
       return true;
@@ -139,10 +156,7 @@ class _EventFeedState extends State<EventFeed> with SingleTickerProviderStateMix
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              const Color(0xFFF8F9FC),
-              const Color(0xFFFFFFFF),
-            ],
+            colors: [const Color(0xFFF8F9FC), const Color(0xFFFFFFFF)],
           ),
         ),
         child: FadeTransition(
@@ -198,7 +212,9 @@ class _EventFeedState extends State<EventFeed> with SingleTickerProviderStateMix
                               fontWeight: FontWeight.w400,
                             ),
                             border: InputBorder.none,
-                            contentPadding: const EdgeInsets.symmetric(vertical: 16),
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: 16,
+                            ),
                           ),
                         ),
                       ),
@@ -347,7 +363,9 @@ class _EventFeedState extends State<EventFeed> with SingleTickerProviderStateMix
                                   .read<InterestsCubit>()
                                   .getUserInterests(userId: authState.user.id!);
                             } else {
-                              debugPrint("User not fetched. Cannot refetch feed");
+                              debugPrint(
+                                "User not fetched. Cannot refetch feed",
+                              );
                             }
                           }
                         },
@@ -373,7 +391,10 @@ class _EventFeedState extends State<EventFeed> with SingleTickerProviderStateMix
                             refresh: refresh,
                             child: ListView.builder(
                               physics: const AlwaysScrollableScrollPhysics(),
-                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 8,
+                              ),
                               itemCount: events.length,
                               itemBuilder: (context, index) {
                                 final event = events[index];
@@ -383,42 +404,21 @@ class _EventFeedState extends State<EventFeed> with SingleTickerProviderStateMix
                                     if (state is! AccountGuest) {
                                       print("state is : ${state.toString()}");
                                       return Padding(
-                                        padding: const EdgeInsets.only(bottom: 16),
+                                        padding: const EdgeInsets.only(
+                                          bottom: 16,
+                                        ),
                                         child: GestureDetector(
                                           onTap: () {
                                             context
                                                 .read<AccountCubit>()
-                                                .getAssoc(
-                                                  event.associationId,
-                                                );
-                                            Navigator.push(
+                                                .getAssoc(event.associationId);
+                                            Navigator.pushReplacement(
                                               context,
                                               MaterialPageRoute(
-                                                builder: (_) => EventDetails(
-                                                  event: event,
-                                                ),
+                                                builder: (_) =>
+                                                    EventDetails(event: event),
                                               ),
-                                            ).then((_) async {
-                                              // Refresh when coming back
-                                              context
-                                                  .read<EventsCubit>()
-                                                  .getAll();
-                                              print("${asso.toString()} ${state.toString()}");
-                                              if ((state
-                                                  is AssociationFetched || state is AssoicationDetailFetched) &&
-                                                  asso) {
-                                                await context
-                                                    .read<AccountCubit>()
-                                                    .getcurrentAssociation(
-                                                      userId,
-                                                    );
-                                              } else if (state
-                                                  is UserFetched || state is AssoicationDetailFetched) {
-                                                await context
-                                                    .read<AccountCubit>()
-                                                    .getcurrentUser(userId);
-                                              }
-                                            });
+                                            );
                                           },
                                           child: FeedEventCard(
                                             event: event,
@@ -428,7 +428,9 @@ class _EventFeedState extends State<EventFeed> with SingleTickerProviderStateMix
                                       );
                                     }
                                     return Padding(
-                                      padding: const EdgeInsets.only(bottom: 16),
+                                      padding: const EdgeInsets.only(
+                                        bottom: 16,
+                                      ),
                                       child: GestureDetector(
                                         onTap: () {},
                                         child: FeedEventCard(
@@ -467,7 +469,7 @@ class Filters extends StatefulWidget {
 
 class _FiltersState extends State<Filters> {
   late Map<String, bool> filtersState;
-  
+
   @override
   void initState() {
     super.initState();
@@ -500,7 +502,7 @@ class _FiltersState extends State<Filters> {
         itemBuilder: (context, index) {
           final filter = widget.filters[index];
           final isActive = filtersState[filter]!;
-          
+
           return Padding(
             padding: EdgeInsets.only(
               right: index < widget.filters.length - 1 ? 10 : 0,

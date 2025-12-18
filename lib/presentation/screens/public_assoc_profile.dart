@@ -10,6 +10,7 @@ import 'package:dzevent/logic/cubits/events/events_state.dart';
 import 'package:dzevent/logic/cubits/followers/followers_cubits.dart';
 import 'package:dzevent/logic/cubits/followers/followers_state.dart';
 import 'package:dzevent/presentation/screens/event_details.dart';
+import 'package:dzevent/presentation/screens/event_feed.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:dzevent/data/fake_data.dart' as DATA;

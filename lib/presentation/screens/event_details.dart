@@ -6,10 +6,12 @@ import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
 import 'package:dzevent/logic/cubits/auth/auth_states.dart';
 import 'package:dzevent/logic/cubits/events/events_cubit.dart';
 import 'package:dzevent/logic/cubits/followers/followers_cubits.dart';
+import 'package:dzevent/presentation/screens/event_feed.dart';
 import 'package:dzevent/presentation/screens/public_assoc_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class EventDetails extends StatefulWidget {
   final EventModel event;
@@ -25,6 +27,19 @@ class _EventDetailsState extends State<EventDetails> {
   @override
   void initState() {
     super.initState();
+  }
+
+  Future<void> openInGoogleMaps(String address) async {
+    final encodedAddress = Uri.encodeComponent(address);
+    final googleMapsUrl = Uri.parse(
+      "https://www.google.com/maps/search/?api=1&query=$encodedAddress",
+    );
+
+    try {
+      await launchUrl(googleMapsUrl, mode: LaunchMode.externalApplication);
+    } catch (e) {
+      debugPrint("Could not open Google Maps: $e");
+    }
   }
 
   @override
@@ -44,7 +59,10 @@ class _EventDetailsState extends State<EventDetails> {
           ),
           child: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => EventFeed()),
+            ),
           ),
         ),
         actions: [
@@ -105,7 +123,7 @@ class _EventDetailsState extends State<EventDetails> {
               ),
             ],
           ),
-          
+
           // Content Section
           Expanded(
             child: Container(
@@ -115,7 +133,10 @@ class _EventDetailsState extends State<EventDetails> {
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 8,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -150,7 +171,7 @@ class _EventDetailsState extends State<EventDetails> {
                         ],
                       ),
                       const SizedBox(height: 24),
-                      
+
                       // Date Info Card
                       Container(
                         padding: const EdgeInsets.all(16),
@@ -196,7 +217,9 @@ class _EventDetailsState extends State<EventDetails> {
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
-                                    DateFormat.MMMEd().format(widget.event.startDatetime),
+                                    DateFormat.MMMEd().format(
+                                      widget.event.startDatetime,
+                                    ),
                                     style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 16,
@@ -211,82 +234,93 @@ class _EventDetailsState extends State<EventDetails> {
                         ),
                       ),
                       const SizedBox(height: 12),
-                      
+
                       // Location Info Card
-                      Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(
-                            color: const Color(0xFFE8ECF4),
-                            width: 1.5,
+                      InkWell(
+                        borderRadius: BorderRadius.circular(16),
+                        onTap: () {
+                          openInGoogleMaps(widget.event.location);
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: const Color(0xFFE8ECF4),
+                              width: 1.5,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.04),
+                                blurRadius: 10,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
                           ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.04),
-                              blurRadius: 10,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF4ECDC4).withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(12),
+                          child: Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: const Color(
+                                    0xFF4ECDC4,
+                                  ).withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: const Icon(
+                                  Icons.location_on_rounded,
+                                  color: Color(0xFF4ECDC4),
+                                  size: 24,
+                                ),
                               ),
-                              child: const Icon(
-                                Icons.location_on_rounded,
-                                color: Color(0xFF4ECDC4),
-                                size: 24,
-                              ),
-                            ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Location",
-                                    style: TextStyle(
-                                      color: Colors.grey[600],
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w600,
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Location",
+                                      style: TextStyle(
+                                        color: Colors.grey[600],
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
+                                      ),
                                     ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    widget.event.location,
-                                    style: const TextStyle(
-                                      color: Color(0xFF2D3748),
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w700,
-                                      letterSpacing: 0.3,
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      widget.event.location,
+                                      style: const TextStyle(
+                                        color: Color(0xFF2D3748),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w700,
+                                        letterSpacing: 0.3,
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF4ECDC4).withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(10),
+                              Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  color: const Color(
+                                    0xFF4ECDC4,
+                                  ).withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: const Icon(
+                                  Icons.directions_rounded,
+                                  color: Color(0xFF4ECDC4),
+                                  size: 20,
+                                ),
                               ),
-                              child: const Icon(
-                                Icons.directions_rounded,
-                                color: Color(0xFF4ECDC4),
-                                size: 20,
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
+
                       const SizedBox(height: 28),
-                      
+
                       // Association Section
                       BlocBuilder<AccountCubit, AccountState>(
                         builder: (context, state) {
@@ -301,7 +335,10 @@ class _EventDetailsState extends State<EventDetails> {
                             ),
                             child: Row(
                               children: [
-                                Icon(Icons.info_outline, color: Colors.grey[600]),
+                                Icon(
+                                  Icons.info_outline,
+                                  color: Colors.grey[600],
+                                ),
                                 const SizedBox(width: 12),
                                 Text(
                                   "Can't fetch association",
@@ -317,7 +354,7 @@ class _EventDetailsState extends State<EventDetails> {
                         },
                       ),
                       const SizedBox(height: 28),
-                      
+
                       // About Section
                       Container(
                         padding: const EdgeInsets.all(20),
@@ -344,7 +381,9 @@ class _EventDetailsState extends State<EventDetails> {
                                 Container(
                                   padding: const EdgeInsets.all(8),
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFF667EEA).withOpacity(0.1),
+                                    color: const Color(
+                                      0xFF667EEA,
+                                    ).withOpacity(0.1),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: const Icon(
@@ -379,7 +418,7 @@ class _EventDetailsState extends State<EventDetails> {
                         ),
                       ),
                       const SizedBox(height: 28),
-                      
+
                       // Show Interest Button
                       Container(
                         width: double.infinity,
@@ -450,7 +489,7 @@ class AssociatonLink extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
-    
+
     return GestureDetector(
       onTap: () {
         // FIXED: Use the parent context that has BLoC providers
@@ -461,12 +500,8 @@ class AssociatonLink extends StatelessWidget {
               value: context.read<AccountCubit>(),
               child: MultiBlocProvider(
                 providers: [
-                  BlocProvider.value(
-                    value: context.read<EventsCubit>(),
-                  ),
-                  BlocProvider.value(
-                    value: context.read<FollowCubit>(),
-                  ),
+                  BlocProvider.value(value: context.read<EventsCubit>()),
+                  BlocProvider.value(value: context.read<FollowCubit>()),
                 ],
                 child: PublicAssocProfile(asso: association),
               ),
@@ -479,10 +514,7 @@ class AssociatonLink extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: const Color(0xFFE8ECF4),
-            width: 1.5,
-          ),
+          border: Border.all(color: const Color(0xFFE8ECF4), width: 1.5),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.04),
