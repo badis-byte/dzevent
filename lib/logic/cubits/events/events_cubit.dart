@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dzevent/data/models/event_model.dart';
 import 'package:dzevent/data/remoteRepo/events/events_repo.dart';
 import 'package:dzevent/logic/cubits/events/events_state.dart';
@@ -69,10 +71,10 @@ class EventsCubit extends Cubit<EventsState> {
     }
   }
 
-  Future<bool> insert(EventModel event) async {
+  Future<bool> insert(EventModel event, File image) async {
     try {
       emit(EventsLoading());
-      final response = await localRepo.insertData(event);
+      final response = await localRepo.insertData(event, image);
       if (!response) {
         emit(EventsError(error: "Failed to add the event"));
         return false;
@@ -87,7 +89,7 @@ class EventsCubit extends Cubit<EventsState> {
     }
   }
 
-  Future<bool> update(EventModel event) async {
+  Future<bool> update(EventModel event, bool picChange, File? image) async {
     try {
       emit(EventsLoading());
       final response = await localRepo.updateRecord(event, event.id);

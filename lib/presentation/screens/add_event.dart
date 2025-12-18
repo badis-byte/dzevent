@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dzevent/data/models/event_model.dart';
 import 'package:dzevent/lib/utils.dart';
 import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
@@ -11,6 +13,7 @@ import 'package:dzevent/presentation/widgets/mainContainerUser.dart';
 import 'package:dzevent/presentation/widgets/text_input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:uuid/uuid.dart';
 
@@ -104,7 +107,7 @@ class _AddeventState extends State<Addevent>
       controllers[_FormField.endTime]!.text =
           '${event.endDatetime.hour.toString().padLeft(2, '0')}:${event.endDatetime.minute.toString().padLeft(2, '0')}';
 
-      controllers[_FormField.imageUrl]!.text = event.imageUrl;
+      //controllers[_FormField.imageUrl]!.text = event.imageUrl;
       controllers[_FormField.location]!.text = event.location;
       controllers[_FormField.category]!.text = event.category;
 
@@ -141,7 +144,7 @@ class _AddeventState extends State<Addevent>
     }
   }
 
-  Future<void> submit() async {
+  Future<void> submit(File image) async {
     if (_formKey.currentState!.validate()) {
       final cubit = context.read<EventsCubit>();
       final id = widget.event?.id ?? Uuid().v6();
@@ -172,7 +175,7 @@ class _AddeventState extends State<Addevent>
         endTime.minute,
       );
 
-      final imageUrl = controllers[_FormField.imageUrl]!.text;
+      final imageUrl = DateTime.now().millisecondsSinceEpoch.toString() + imageURL!.split("/").last;
       final location = controllers[_FormField.location]!.text;
       final createdAt = widget.event?.createdAt ?? DateTime.now();
       final category = controllers[_FormField.category]!.text;
@@ -193,14 +196,15 @@ class _AddeventState extends State<Addevent>
       );
 
       if (widget.event != null) {
-        await cubit.update(event);
+
+        await cubit.update(event,false,image);
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => MainContainerAsso()),
         );
         return;
       }
-      await cubit.insert(event);
+      await cubit.insert(event, image);
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => MainContainerAsso()),
@@ -259,11 +263,26 @@ class _AddeventState extends State<Addevent>
       child: child,
     );
   }
+String? imageURL;
+  Future<File?> pickImage ()async{
+    final imagePicker = ImagePicker();
+    XFile? picture = await imagePicker.pickImage(source: ImageSource.gallery);
+    if(picture==null){
+      return null;
+    }
+    final File file = File(picture.path);
+    setState(() {
+  imageURL= file.path;
+  });
+    return file;
+  }
 
+    
+    File? image;
   @override
   Widget build(BuildContext context) {
     final isEditing = widget.event != null;
-
+    
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       extendBodyBehindAppBar: false,
@@ -617,24 +636,11 @@ class _AddeventState extends State<Addevent>
 
                       // Media Section
                       _buildSectionHeader("Media", Icons.image_outlined),
-                      _buildCard(
-                        child: ImageInput(
-                          label: "Event Image URL",
-                          hint: "https://example.com/image.jpg",
-                          icon: Icons.add_photo_alternate_outlined,
-                          controller: controllers[_FormField.imageUrl]!,
-                        ),
-                      ),
-                      SizedBox(height: 32),
-
-                      // Action Buttons
-                      Column(
-                        children: [
-                          SizedBox(
+                      SizedBox(
                             width: double.infinity,
                             height: 54,
                             child: OutlinedButton(
-                              onPressed: () {},
+                              onPressed: ()async => { image = await pickImage()},
                               style: OutlinedButton.styleFrom(
                                 side: BorderSide(
                                   color: Theme.of(context).colorScheme.outline,
@@ -645,21 +651,39 @@ class _AddeventState extends State<Addevent>
                                 ),
                               ),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.visibility_outlined, size: 22),
-                                  SizedBox(width: 8),
-                                  Text(
-                                    "Preview Event",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                    ),
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.visibility_outlined, size: 22),
+                                      SizedBox(width: 8),
+                                      Text(
+                                        "Choose Picture",
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
-                            ),
-                          ),
+                                ),
+                             ),
+
+                      SizedBox(height: 32),
+                          Column(children: [
+                            if (imageURL != null)
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(16),
+                                        child: Image.file(
+                                          File(imageURL!), // convert path → File
+                                          width: double.infinity,
+                                          height: 200,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                          ],),
+
+                      // Action Buttons
+                      Column(
+                        children: [
                           SizedBox(height: 12),
                           SizedBox(
                             width: double.infinity,
@@ -686,7 +710,11 @@ class _AddeventState extends State<Addevent>
                                 ],
                               ),
                               child: ElevatedButton(
-                                onPressed: submit,
+                                onPressed: () => {if(image != null){
+                                 print("start"),
+                                 submit(image!),
+                                 print("end")}
+                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.transparent,
                                   foregroundColor: Colors.white,
