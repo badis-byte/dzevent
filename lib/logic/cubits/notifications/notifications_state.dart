@@ -1,4 +1,4 @@
-import 'package:dzevent/data/models/notifi_model.dart';
+import 'package:dzevent/data/models/notification_model.dart';
 
 abstract class NotificationsState {}
 

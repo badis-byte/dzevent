@@ -1,3 +1,4 @@
+import 'package:dzevent/firebase_options.dart';
 import 'package:dzevent/l10n/app_localizations.dart';
 import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
 import 'dart:io';
@@ -15,12 +16,17 @@ import 'package:dzevent/presentation/screens/login.dart';
 import 'package:dzevent/presentation/screens/my_account_credentials.dart';
 import 'package:dzevent/presentation/screens/notifications.dart';
 import 'package:dzevent/presentation/screens/signup.dart';
-import 'package:dzevent/presentation/screens/user_profile.dart';
 import 'package:dzevent/presentation/screens/welcome.dart';
+import 'package:dzevent/utils/firebase.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+
+final navigatorKey = GlobalKey<NavigatorState>();
+final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,7 +35,14 @@ Future<void> main() async {
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
   }
+  await initMyApp();
   runApp(const MainApp());
+}
+
+Future<bool> initMyApp() async {
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  initFirebaseMessaging();
+  return true;
 }
 
 class MainApp extends StatelessWidget {
@@ -47,7 +60,7 @@ class MainApp extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-
+        navigatorKey: navigatorKey,
         //localization
         locale: Locale('en'),
         localizationsDelegates: [
@@ -88,18 +101,14 @@ class MainApp extends StatelessWidget {
               fontWeight: FontWeight.bold,
               color: Colors.black87,
             ),
-            bodyMedium: TextStyle(
-              fontSize: 16,
-              color: Colors.black54,
-            ),
+            bodyMedium: TextStyle(fontSize: 16, color: Colors.black54),
           ),
 
           colorScheme: ColorScheme.fromSeed(
             seedColor: Colors.blue,
             surface: Colors.white,
           ),
-        )
-
+        ),
       ),
     );
   }
