@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dzevent/data/models/event_model.dart';
 import 'package:dzevent/data/remoteRepo/events/event_repo_base.dart';
 
@@ -53,14 +55,30 @@ class EventsRepo extends EventsRepoBase {
     return body.map((e) => EventModel.fromSupaMap(e)).toList();
   }
 
+
+
   @override
-  Future<bool> insertData(EventModel post) async {
-    final res = await http.post(
-      Uri.parse("$base/"),
-      headers: {"Content-Type": "application/json"},
-      body: jsonEncode(post.toMap()),
-    );
-    return res.statusCode == 201;
+  Future<bool> insertData(EventModel post, File image) async {
+    try {
+  final res = http.MultipartRequest(
+    "POST",
+    Uri.parse("$base/"),
+  );
+    post.toMap().forEach((key, value)=>
+    res.fields[key] = value.toString()
+  );
+
+    res.files.add(
+    await http.MultipartFile.fromPath("image", image.path),
+  );
+  final response = await res.send();
+  return response.statusCode ==  201;
+
+    } catch (e) {
+      print(e); return false;
+    }
+
+    
   }
 
   @override

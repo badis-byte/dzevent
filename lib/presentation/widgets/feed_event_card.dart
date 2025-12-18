@@ -188,7 +188,7 @@ class FeedEventCard extends StatelessWidget {
                               const SizedBox(width: 6),
                               Flexible(
                                 child: Text(
-                                  event.location,
+                                  (event.location).split(",")[0].contains("+")? (event.location).split(",").skip(1).join(",") :event.location,
                                   style: subtitleStyle.copyWith(
                                     color: Colors.white,
                                     fontSize: 13,
