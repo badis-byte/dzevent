@@ -99,11 +99,12 @@ class _AssociationInterestRequestsPageState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Interest Requests"), centerTitle: true),
+      // appBar: AppBar(title: const Text("Interest Requests"), centerTitle: true),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(12),
         child: Column(
           children: [
+            SizedBox(height: 48,),
             for (var item in requests)
               requestCard(item["event"]!, item["user"]!),
           ],
