@@ -1,6 +1,5 @@
 import 'package:dzevent/data/models/user_model.dart';
 import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
-import 'package:dzevent/presentation/screens/event_feed.dart';
 import 'package:dzevent/presentation/widgets/mainContainerUser.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -533,7 +532,7 @@ class _MyaccountcredentialsState extends State<Myaccountcredentials>
                   onTap: () => _pickImage(ImageSource.gallery),
                 ),
                 if (_profileImage != null || 
-                    (context.read<AccountCubit>().currentUser?.profilePicture?.isNotEmpty ?? false))
+                    (context.read<AccountCubit>().currentUser?.profilePicture.isNotEmpty ?? false))
                   Column(
                     children: [
                       Divider(height: 1),

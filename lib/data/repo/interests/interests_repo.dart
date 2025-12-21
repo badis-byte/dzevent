@@ -42,7 +42,7 @@ class InterestsRepo extends InterestsRepoBase {
     final record = await table.getInterest(userId: userId, eventId: eventId);
     return record == null ? null : InterestModel.fromMap(record);
   }
-
+  
   @override
   Future<List<EventModel>> getUserInterestedEvents({
     required int userId,

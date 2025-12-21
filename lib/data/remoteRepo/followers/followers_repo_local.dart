@@ -1,14 +1,10 @@
-import 'package:dzevent/data/databases/db_auth.dart';
-import 'package:dzevent/data/databases/db_followers.dart';
-import 'package:dzevent/data/models/user_model.dart';
-import '../../databases/db_user.dart';
 import 'followers_repo_base.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../remotecredentials.dart';
 
 class FollowersRepoLocal extends FollowersRepoBase {
-  final String base = "$baseUrl"; // Django server
+  final String base = baseUrl; // Django server
   
   @override
   Future<int> getFollowers(int assocId) async {
@@ -40,6 +36,7 @@ class FollowersRepoLocal extends FollowersRepoBase {
   }
 
 
+  @override
   Future<List<int>> getFollowedAssociations(int userId) async {
     final res =
         await http.get(Uri.parse("$baseUrl/followers/user/$userId/"));

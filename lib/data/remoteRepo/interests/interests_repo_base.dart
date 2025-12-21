@@ -15,7 +15,7 @@ abstract class InterestsRepoBase {
 
   Future<bool> createInterest({required InterestModel interest});
   Future<bool> deleteInterest({required int userId, required String eventId});
-
+  Future<List<InterestModel>> getInterestAssociation({required int assoId});
   static InterestsRepoBase? _instance;
 
   static InterestsRepoBase getInstance() {

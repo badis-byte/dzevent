@@ -1,6 +1,9 @@
+import 'package:dzevent/data/models/event_model.dart';
 import 'package:dzevent/data/models/interest_model.dart';
 import 'package:dzevent/data/remoteRepo/interests/interests_repo.dart';
 import 'package:dzevent/data/remoteRepo/interests/interests_repo_base.dart';
+import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
+import 'package:dzevent/logic/cubits/events/events_cubit.dart';
 import 'package:dzevent/logic/cubits/interests/interests_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -30,6 +33,34 @@ class InterestsCubit extends Cubit<InterestsState> {
     } catch (e) {
       emit(InterestsError(error: e.toString()));
       print("$e");
+      return false;
+    }
+  }
+
+  Future<bool> getAssoUserInterest(int assoId) async {
+    try {
+      emit(InterestsLoading());
+      final interestAssoUsers = await localRepo.getInterestAssociation(
+        assoId: assoId,
+      );
+      emit(InterestsFetched(interests: interestAssoUsers));
+      //can i invoke a fuunction here using event and user cubit
+      final AccountCubit userCubit = AccountCubit();
+      final EventsCubit eventCubit = EventsCubit();
+      //then ill use its functions
+      List<Map<String, dynamic>> result = [];
+      for (var intr in interestAssoUsers) {
+        var user = await userCubit.getUser(intr.userId);
+        var event = await eventCubit.getEvent(id: intr.eventId);
+        if (event is EventModel) {
+          final entery = <String, dynamic>{"user": user, "event": event};
+          result.add(entery);
+        }
+      }
+      emit(InterestsAssoUser(result: result));
+      return true;
+    } catch (e) {
+      emit(InterestsError(error: e.toString()));
       return false;
     }
   }

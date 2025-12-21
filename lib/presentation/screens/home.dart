@@ -1,4 +1,3 @@
-import 'package:dzevent/data/models/user_model.dart';
 import 'package:dzevent/presentation/screens/add_event.dart';
 import 'package:dzevent/presentation/screens/assocAdmin.dart';
 import 'package:dzevent/presentation/screens/associationProfileTwo.dart';
@@ -8,7 +7,6 @@ import 'package:dzevent/presentation/screens/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:dzevent/presentation/screens/login.dart';
 import 'package:dzevent/presentation/screens/my_account_credentials.dart';
-import 'package:dzevent/presentation/screens/user_profile.dart';
 import 'package:dzevent/l10n/app_localizations.dart';
 
 /// # New Screen Setup
