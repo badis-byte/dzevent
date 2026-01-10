@@ -36,7 +36,7 @@ class EventsRepo extends EventsRepoBase {
     final res = await http.post(
       Uri.parse("$base/filtered/"),
       headers: {"Content-Type": "application/json"},
-      body: jsonEncode({"filters": filters}),
+      body: jsonEncode({"categories": filters}),
     );
     final List<dynamic> body = jsonDecode(res.body);
     return body.map((e) => EventModel.fromSupaMap(e)).toList();
@@ -44,11 +44,10 @@ class EventsRepo extends EventsRepoBase {
 
   @override
   Future<List<EventModel>> searchEvents({required String searchStr}) async {
-    final res = await http.post(
-      Uri.parse("$base/search/"),
-      headers: {"Content-Type": "application/json"},
-      body: jsonEncode({"searchStr": searchStr}),
-    );
+    final res = await http.get(
+  Uri.parse("$base/search/?q=$searchStr"),
+  headers: {"Content-Type": "application/json"},
+);
     final List<dynamic> body = jsonDecode(res.body);
     return body.map((e) => EventModel.fromSupaMap(e)).toList();
   }
