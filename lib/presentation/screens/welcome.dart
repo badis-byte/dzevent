@@ -22,7 +22,7 @@ class _ImageCarouselState extends State<ImageCarousel> with TickerProviderStateM
 
   final List<Map<String, String>> items = [
     {'image': 'assets/images/hackathon.jpg', 'text': 'Connect with people'},
-    {'image': 'assets/images/concert.jpg', 'text': 'Relax and do what you love'},
+    {'image': 'assets/images/concert.jpg', 'text': 'Do what you love'},
     {'image': 'assets/images/lecture.jpg', 'text': 'Teach, Learn and thrive'},
   ];
 
