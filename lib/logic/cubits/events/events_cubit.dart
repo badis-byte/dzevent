@@ -21,7 +21,7 @@ class EventsCubit extends Cubit<EventsState> {
     }
   }
 
-  Future<bool> getEvent({required String id}) async {
+  Future<dynamic> getEvent({required String id}) async {
     try {
       emit(EventsLoading());
       final response = await localRepo.getEvent(id: id);
@@ -30,7 +30,7 @@ class EventsCubit extends Cubit<EventsState> {
         return false;
       } else {
         emit(SingleEventFetched(event: response));
-        return true;
+        return response;
       }
     } catch (e) {
       emit(EventsError(error: e.toString()));

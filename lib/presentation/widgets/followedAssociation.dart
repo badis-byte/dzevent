@@ -96,7 +96,7 @@ class FollowedAssociationCard extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 6),
-                      if (association.bio != null && association.bio!.isNotEmpty)
+                      if (association.bio.isNotEmpty)
                         Text(
                           association.bio ?? "",
                           style: TextStyle(

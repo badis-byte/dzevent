@@ -1,12 +1,8 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:dzevent/presentation/screens/add_event.dart';
-import 'package:dzevent/presentation/screens/asosciationEventInterests.dart';
-import 'package:dzevent/presentation/screens/associationProfileTwo.dart';
 import 'package:dzevent/presentation/screens/event_feed.dart';
 import 'package:dzevent/presentation/screens/followers.dart';
 import 'package:dzevent/presentation/screens/interested_events.dart';
 import 'package:dzevent/presentation/screens/my_account_credentials.dart';
-import 'package:dzevent/presentation/screens/notifications.dart';
 import 'package:flutter/material.dart';
 
 // SIMPLE 3-STEP SETUP:

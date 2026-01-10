@@ -68,7 +68,7 @@ Future<bool> seed() async {
     if (!isEventInserted) {
       return false;
     }
-    print("Evnet #${id} is inserted");
+    print("Evnet #$id is inserted");
   }
 
   return true;

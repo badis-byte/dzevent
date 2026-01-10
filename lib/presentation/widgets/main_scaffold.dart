@@ -1,20 +1,9 @@
 import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
 import 'package:dzevent/logic/cubits/auth/auth_states.dart';
 import 'package:dzevent/presentation/screens/aboutUsPage.dart';
-import 'package:dzevent/presentation/screens/add_event.dart';
-import 'package:dzevent/presentation/screens/asosciationEventInterests.dart';
-import 'package:dzevent/presentation/screens/associationProfileTwo.dart';
 import 'package:dzevent/presentation/screens/contactUs.dart';
-import 'package:dzevent/presentation/screens/event_feed.dart';
-import 'package:dzevent/presentation/screens/followers.dart';
-import 'package:dzevent/presentation/screens/interested_events.dart';
-import 'package:dzevent/presentation/screens/login.dart';
-import 'package:dzevent/presentation/screens/my_account_credentials.dart';
 import 'package:dzevent/presentation/screens/notifications.dart';
-import 'package:dzevent/presentation/screens/notifications.dart';
-import 'package:dzevent/presentation/screens/user_profile.dart';
 import 'package:dzevent/presentation/screens/welcome.dart';
-import 'package:dzevent/presentation/widgets/profile_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

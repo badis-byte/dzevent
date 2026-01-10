@@ -1,6 +1,5 @@
 import 'package:dzevent/data/databases/db_base.dart';
 import 'package:dzevent/data/databases/dbhelper.dart';
-import 'package:dzevent/data/models/interest_model.dart';
 
 class InterestsTable extends DBBaseTable {
   @override

@@ -32,17 +32,16 @@ final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-
-void main() {
   if (kIsWeb) {
     print("Running on Web");
   } else {
-      if (Platform.isLinux || Platform.isWindows) {
-    sqfliteFfiInit();
-    databaseFactory = databaseFactoryFfi;
+    if (Platform.isLinux || Platform.isWindows) {
+      sqfliteFfiInit();
+      databaseFactory = databaseFactoryFfi;
+    }
+    await initMyApp();
+    runApp(const MainApp());
   }
-  await initMyApp();
-  runApp(const MainApp());
 }
 
 Future<bool> initMyApp() async {

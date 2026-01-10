@@ -3,11 +3,9 @@ import 'dart:io';
 import 'package:dzevent/data/models/event_model.dart';
 import 'package:dzevent/data/remoteRepo/events/event_repo_base.dart';
 
-import '../../databases/db_events.dart';
 import '../remotecredentials.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:dzevent/data/models/event_model.dart';
 
 class EventsRepo extends EventsRepoBase {
   final String base = "$baseUrl/events"; // Django server

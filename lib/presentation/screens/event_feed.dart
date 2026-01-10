@@ -1,4 +1,3 @@
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:dzevent/data/models/event_model.dart';
 import 'package:dzevent/lib/styles.dart';
 import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
@@ -79,30 +78,30 @@ class _EventFeedState extends State<EventFeed>
     final authState = authCubit.state;
 
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    int _id = prefs.getInt("id") ?? -1;
+    int id = prefs.getInt("id") ?? -1;
     bool? isAssoc = prefs.getBool("isAssoc");
-    userId = _id;
+    userId = id;
     if (isAssoc != null) {
-      print("user id is $_id");
+      print("user id is $id");
       print("is Assoc $isAssoc");
       if (isAssoc && authState is! AssociationFetched) {
         print("getting association after sharedPref");
-        authCubit.getAssoc(_id);
+        authCubit.getAssoc(id);
       } else if (authState is! UserFetched) {
-        authCubit.getcurrentUser(_id);
+        authCubit.getcurrentUser(id);
       }
     }
     if (authState is! UserFetched && authState is! AssociationFetched) {
       print("User / Association not fetched");
       return false;
     }
-    if (isAssoc != null && !isAssoc && _id > 0) {
-      userId = _id;
+    if (isAssoc != null && !isAssoc && id > 0) {
+      userId = id;
       final interestsCubit = context.read<InterestsCubit>();
       await interestsCubit.getUserInterests(userId: userId);
       return true;
-    } else if (isAssoc != null && !isAssoc && _id > 0) {
-      userId = _id;
+    } else if (isAssoc != null && !isAssoc && id > 0) {
+      userId = id;
       asso = true;
       // print("EventCard: user fetched ${authState.association.name} ");
       final interestsCubit = context.read<InterestsCubit>();

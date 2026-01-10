@@ -1,7 +1,6 @@
 import 'package:dzevent/logic/cubits/auth/auth_cubit.dart';
 import 'package:dzevent/logic/cubits/auth/auth_states.dart';
 import 'package:dzevent/presentation/screens/assocAdmin.dart';
-import 'package:dzevent/presentation/screens/event_feed.dart';
 import 'package:dzevent/presentation/widgets/mainContainerAsso.dart';
 import 'package:dzevent/presentation/widgets/mainContainerUser.dart';
 import 'package:flutter/material.dart';

@@ -4,9 +4,7 @@ import 'package:dzevent/data/models/user_model.dart';
 import 'package:dzevent/data/remoteRepo/association/assoc_repo_local.dart';
 import 'package:dzevent/data/remoteRepo/user/user_repo_local.dart';
 import 'package:dzevent/logic/cubits/auth/auth_states.dart';
-import 'package:dzevent/logic/cubits/followers/followers_cubits.dart';
 import 'package:dzevent/utils/firebase.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -299,6 +297,7 @@ class AccountCubit extends Cubit<AccountState> {
     } catch (e) {
       print("error -> $e");
     }
+    return null;
   }
 
   Future<AssociationModel> getFollowedAssociation(int id) async {

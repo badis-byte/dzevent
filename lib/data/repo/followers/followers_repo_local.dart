@@ -1,8 +1,5 @@
-import 'package:dzevent/data/databases/db_auth.dart';
 import 'package:dzevent/data/databases/db_followers.dart';
-import 'package:dzevent/data/models/user_model.dart';
 
-import '../../databases/db_user.dart';
 import 'followers_repo_base.dart';
 
 class FollowersRepoLocal extends FollowersRepoBase {

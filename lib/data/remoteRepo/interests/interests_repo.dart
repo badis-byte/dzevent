@@ -6,7 +6,7 @@ import 'package:dzevent/data/remoteRepo/interests/interests_repo_base.dart';
 import '../remotecredentials.dart';
 
 class InterestsRepo extends InterestsRepoBase {
-  final String base = "$baseUrl"; // Django server
+  final String base = baseUrl; // Django server
 
   //InterestsRepo({required this.baseUrl});
 
@@ -32,22 +32,15 @@ class InterestsRepo extends InterestsRepoBase {
     final res = await http.delete(
       Uri.parse("$baseUrl/interests/delete/"),
       headers: {"Content-Type": "application/json"},
-      body: jsonEncode({
-        "userId": userId,
-        "eventId": int.parse(eventId),
-      }),
+      body: jsonEncode({"userId": userId, "eventId": int.parse(eventId)}),
     );
 
     return res.statusCode == 200;
   }
 
   @override
-  Future<List<InterestModel>> getAllUserInterests({
-    required int userId,
-  }) async {
-    final res = await http.get(
-      Uri.parse("$baseUrl/interests/user/$userId/"),
-    );
+  Future<List<InterestModel>> getAllUserInterests({required int userId}) async {
+    final res = await http.get(Uri.parse("$baseUrl/interests/user/$userId/"));
 
     if (res.statusCode != 200) {
       throw Exception("Failed to fetch interests");
@@ -72,6 +65,24 @@ class InterestsRepo extends InterestsRepoBase {
     }
 
     return InterestModel.fromMap(jsonDecode(res.body));
+  }
+
+  @override
+  Future<List<InterestModel>> getInterestAssociation({
+    required int assoId,
+  }) async {
+    final res = await http.get(Uri.parse("$baseUrl/interests/assoUserInterest/$assoId/"));
+    print("result : ${res.statusCode}");
+    if (res.statusCode == 404) return [];
+    if (res.statusCode != 200) {
+      throw Exception("Failed to fetch interest");
+    }
+  
+    List<InterestModel> result = [];
+    for (var interest in jsonDecode(res.body)) {
+      result.add(InterestModel.fromMap(interest));
+    }
+    return result;
   }
 
   @override

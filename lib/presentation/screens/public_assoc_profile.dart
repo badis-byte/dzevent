@@ -10,7 +10,6 @@ import 'package:dzevent/logic/cubits/events/events_state.dart';
 import 'package:dzevent/logic/cubits/followers/followers_cubits.dart';
 import 'package:dzevent/logic/cubits/followers/followers_state.dart';
 import 'package:dzevent/presentation/screens/event_details.dart';
-import 'package:dzevent/presentation/screens/event_feed.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:dzevent/data/fake_data.dart' as DATA;
@@ -62,8 +61,7 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
       brief: widget.asso.bio ?? 'No description available',
       aboutUs: widget.asso.bio ?? 'No information available',
       contactInfo: [
-        if (widget.asso.email != null)
-          ContactInfo(type: ContactInfoType.email, address: widget.asso.email!),
+        ContactInfo(type: ContactInfoType.email, address: widget.asso.email),
         ContactInfo(type: ContactInfoType.phone, address: "0695837395"),
         ContactInfo(type: ContactInfoType.web, address: "www.lorem.com"),
       ],
@@ -504,7 +502,7 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
         SizedBox(height: 12),
         ...association.contactInfo
             .map((contact) => _buildContactCard(context, contact))
-            .toList(),
+            ,
       ],
     );
   }
