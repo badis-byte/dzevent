@@ -152,12 +152,16 @@ class _EventFeedState extends State<EventFeed>
         ),
       ],
       body: Scaffold(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         body: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [const Color(0xFFF8F9FC), const Color(0xFFFFFFFF)],
+              colors: [
+                Theme.of(context).colorScheme.surfaceContainerHighest,
+                Theme.of(context).scaffoldBackgroundColor,
+              ],
             ),
           ),
           child: FadeTransition(
@@ -170,11 +174,11 @@ class _EventFeedState extends State<EventFeed>
                   child: Container(
                     height: 56,
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.surface,
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.06),
+                          color: Theme.of(context).colorScheme.shadow.withOpacity(0.06),
                           blurRadius: 12,
                           offset: const Offset(0, 4),
                         ),
@@ -200,15 +204,15 @@ class _EventFeedState extends State<EventFeed>
                           child: TextFormField(
                             controller: searchController,
                             focusNode: _searchFocusNode,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w500,
-                              color: Color(0xFF2D3748),
+                              color: Theme.of(context).colorScheme.onSurface,
                             ),
                             decoration: InputDecoration(
                               hintText: "Search for events",
                               hintStyle: TextStyle(
-                                color: Colors.grey[400],
+                                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
                                 fontSize: 15,
                                 fontWeight: FontWeight.w400,
                               ),
@@ -268,7 +272,7 @@ class _EventFeedState extends State<EventFeed>
                               Text(
                                 "Loading events...",
                                 style: TextStyle(
-                                  color: Colors.grey[600],
+                                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
                                   fontSize: 14,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -302,7 +306,7 @@ class _EventFeedState extends State<EventFeed>
                                 loc.errorOccurred(state.error),
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                  color: Colors.grey[700],
+                                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
                                   fontSize: 15,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -322,13 +326,13 @@ class _EventFeedState extends State<EventFeed>
                                   width: 100,
                                   height: 100,
                                   decoration: BoxDecoration(
-                                    color: Colors.grey.withOpacity(0.1),
+                                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
                                     borderRadius: BorderRadius.circular(24),
                                   ),
                                   child: Icon(
                                     Icons.event_busy_rounded,
                                     size: 48,
-                                    color: Colors.grey[400],
+                                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
                                   ),
                                 ),
                                 const SizedBox(height: 20),
@@ -337,7 +341,7 @@ class _EventFeedState extends State<EventFeed>
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.w600,
-                                    color: Colors.grey[700],
+                                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
                                   ),
                                 ),
                                 const SizedBox(height: 8),
@@ -345,7 +349,7 @@ class _EventFeedState extends State<EventFeed>
                                   "Try adjusting your filters",
                                   style: TextStyle(
                                     fontSize: 14,
-                                    color: Colors.grey[500],
+                                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
                                   ),
                                 ),
                               ],
@@ -532,23 +536,26 @@ class _FiltersState extends State<Filters> {
                     ),
                     decoration: BoxDecoration(
                       gradient: isActive
-                          ? const LinearGradient(
-                              colors: [Color(0xFF667EEA), Color(0xFF764BA2)],
+                          ? LinearGradient(
+                              colors: [
+                                Theme.of(context).colorScheme.primary,
+                                Theme.of(context).colorScheme.primary.withOpacity(0.8),
+                              ],
                             )
                           : null,
-                      color: isActive ? null : Colors.white,
+                      color: isActive ? null : Theme.of(context).colorScheme.surface,
                       borderRadius: BorderRadius.circular(24),
                       border: Border.all(
                         color: isActive
                             ? Colors.transparent
-                            : const Color(0xFFE8ECF4),
+                            : Theme.of(context).colorScheme.outline.withOpacity(0.2),
                         width: 1.5,
                       ),
                       boxShadow: [
                         BoxShadow(
                           color: isActive
-                              ? const Color(0xFF667EEA).withOpacity(0.3)
-                              : Colors.black.withOpacity(0.04),
+                              ? Theme.of(context).colorScheme.primary.withOpacity(0.3)
+                              : Theme.of(context).colorScheme.shadow.withOpacity(0.04),
                           blurRadius: isActive ? 12 : 8,
                           offset: Offset(0, isActive ? 4 : 2),
                         ),
@@ -558,10 +565,10 @@ class _FiltersState extends State<Filters> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         if (isActive) ...[
-                          const Icon(
+                          Icon(
                             Icons.check_circle_rounded,
                             size: 16,
-                            color: Colors.white,
+                            color: Theme.of(context).colorScheme.onPrimary,
                           ),
                           const SizedBox(width: 6),
                         ],
@@ -571,8 +578,8 @@ class _FiltersState extends State<Filters> {
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
                             color: isActive
-                                ? Colors.white
-                                : const Color(0xFF2D3748),
+                                ? Theme.of(context).colorScheme.onPrimary
+                                : Theme.of(context).colorScheme.onSurface,
                             letterSpacing: 0.2,
                           ),
                         ),

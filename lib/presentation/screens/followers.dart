@@ -45,7 +45,7 @@ class _FollowedAssociationsScreenState
     final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FC),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: BlocBuilder<FollowCubit, FollowState>(
         builder: (context, state) {
           if (state is FollowLoading) {
@@ -99,12 +99,12 @@ class _FollowedAssociationsScreenState
                       ),
                     ),
                     const SizedBox(height: 24),
-                    const Text(
+                    Text(
                       "No Associations Yet",
                       style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.w700,
-                        color: Color(0xFF2D3748),
+                        color: Theme.of(context).colorScheme.onSurface,
                         letterSpacing: 0.3,
                       ),
                     ),
@@ -116,7 +116,7 @@ class _FollowedAssociationsScreenState
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 15,
-                          color: Colors.grey[600],
+                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
                           height: 1.5,
                           fontWeight: FontWeight.w400,
                         ),
@@ -252,7 +252,7 @@ class _FollowedAssociationsScreenState
                               return Container(
                                 height: 120,
                                 decoration: BoxDecoration(
-                                  color: Colors.white,
+                                  color: Theme.of(context).colorScheme.surface,
                                   borderRadius: BorderRadius.circular(20),
                                   boxShadow: [
                                     BoxShadow(
@@ -280,7 +280,7 @@ class _FollowedAssociationsScreenState
                               return Container(
                                 height: 120,
                                 decoration: BoxDecoration(
-                                  color: Colors.white,
+                                  color: Theme.of(context).colorScheme.surface,
                                   borderRadius: BorderRadius.circular(20),
                                   border: Border.all(
                                     color: colorScheme.error.withOpacity(0.3),
@@ -301,7 +301,7 @@ class _FollowedAssociationsScreenState
                                         "Failed to load association",
                                         style: TextStyle(
                                           fontSize: 13,
-                                          color: Colors.grey[600],
+                                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
                                           fontWeight: FontWeight.w500,
                                         ),
                                       ),
@@ -343,12 +343,12 @@ class _FollowedAssociationsScreenState
                     ),
                   ),
                   const SizedBox(height: 24),
-                  const Text(
+                  Text(
                     "Oops! Something went wrong",
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF2D3748),
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -359,7 +359,7 @@ class _FollowedAssociationsScreenState
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 15,
-                        color: Colors.grey[600],
+                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
                         height: 1.5,
                       ),
                     ),
@@ -426,13 +426,13 @@ class _FollowedAssociationsScreenState
                   width: 100,
                   height: 100,
                   decoration: BoxDecoration(
-                    color: Colors.grey.withOpacity(0.1),
+                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(24),
                   ),
                   child: Icon(
                     Icons.people_outline_rounded,
                     size: 50,
-                    color: Colors.grey[400],
+                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
                   ),
                 ),
                 const SizedBox(height: 24),
@@ -441,7 +441,7 @@ class _FollowedAssociationsScreenState
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
-                    color: Colors.grey[700],
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
               ],

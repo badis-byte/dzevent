@@ -30,13 +30,14 @@ class _MainContainerAssoState extends State<MainContainerAsso> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: _pages[_currentPage], // Show current page
       // STEP 3: Add nav bar that switches pages
       bottomNavigationBar: CurvedNavigationBar(
         index: _currentPage,
         height: 48,
         backgroundColor: Colors.transparent,
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         buttonBackgroundColor: Theme.of(context).colorScheme.primary,
         animationDuration: const Duration(milliseconds: 300),
         animationCurve: Curves.easeInOutCubic,
