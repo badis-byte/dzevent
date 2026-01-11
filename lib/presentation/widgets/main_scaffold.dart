@@ -3,6 +3,7 @@ import 'package:dzevent/logic/cubits/auth/auth_states.dart';
 import 'package:dzevent/presentation/screens/aboutUsPage.dart';
 import 'package:dzevent/presentation/screens/contactUs.dart';
 import 'package:dzevent/presentation/screens/notifications.dart';
+import 'package:dzevent/presentation/screens/settings.dart';
 import 'package:dzevent/presentation/screens/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -141,6 +142,12 @@ class MainScaffold extends StatelessWidget {
                           );
                           // This line assumes 'AccountCubit' is the correct cubit for logout.
                           await context.read<AccountCubit>().logout();
+                        } else if (item['label'] == "Settings") {
+                          Navigator.pop(context);
+                          Navigator.push(
+                            context,
+                            SettingsPage.route(),
+                          );
                         }
                       },
                     ),

@@ -12,10 +12,10 @@ class FollowedAssociationCard extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: const Color(0xFFE8ECF4),
+          color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
           width: 1.5,
         ),
         boxShadow: [
@@ -57,15 +57,15 @@ class FollowedAssociationCard extends StatelessWidget {
                   ),
                   padding: const EdgeInsets.all(3),
                   child: Container(
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.surface,
                       shape: BoxShape.circle,
                     ),
                     padding: const EdgeInsets.all(2),
                     child: CircleAvatar(
                       radius: 32,
                       backgroundImage: NetworkImage(association.profilePicture),
-                      backgroundColor: const Color(0xFFF8F9FC),
+                      backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                       onBackgroundImageError: (_, __) {},
                       child: association.profilePicture.isEmpty
                           ? Icon(
@@ -86,10 +86,10 @@ class FollowedAssociationCard extends StatelessWidget {
                     children: [
                       Text(
                         association.name,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 17,
                           fontWeight: FontWeight.w700,
-                          color: Color(0xFF2D3748),
+                          color: Theme.of(context).colorScheme.onSurface,
                           letterSpacing: 0.2,
                         ),
                         maxLines: 1,
@@ -98,10 +98,10 @@ class FollowedAssociationCard extends StatelessWidget {
                       const SizedBox(height: 6),
                       if (association.bio.isNotEmpty)
                         Text(
-                          association.bio ?? "",
+                          association.bio,
                           style: TextStyle(
                             fontSize: 14,
-                            color: Colors.grey[600],
+                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
                             height: 1.4,
                             fontWeight: FontWeight.w400,
                           ),
@@ -113,7 +113,7 @@ class FollowedAssociationCard extends StatelessWidget {
                           "No bio available",
                           style: TextStyle(
                             fontSize: 14,
-                            color: Colors.grey[400],
+                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
                             fontStyle: FontStyle.italic,
                             fontWeight: FontWeight.w400,
                           ),
