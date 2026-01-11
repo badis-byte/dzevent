@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'assoc_repo_base.dart';
 import '../remotecredentials.dart';
 
+
 class AssocRepoLocal extends AssocRepoBase {
   final String base = "$baseUrl/associations";
 
@@ -76,3 +77,5 @@ class AssocRepoLocal extends AssocRepoBase {
     return res.statusCode == 200;
   }
 }
+
+

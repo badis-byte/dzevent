@@ -754,9 +754,9 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
                 width: 120,
                 height: 130,
                 color: Theme.of(context).colorScheme.primaryContainer,
-                child: association.imageUrl.isNotEmpty
+                child: event.imageUrl.isNotEmpty
                     ? Image.network(
-                        association.imageUrl,
+                        event.imageUrl,
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) {
                           return Icon(
@@ -843,7 +843,7 @@ class _PublicAssocProfileState extends State<PublicAssocProfile>
                       SizedBox(width: 4),
                       Expanded(
                         child: Text(
-                          event.location,
+                          (event.location).split(",")[0].contains("+")? (event.location).split(",").skip(1).join(",") :event.location,
                           style: bodyTextStyle.copyWith(fontSize: 13),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
